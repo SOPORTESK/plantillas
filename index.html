@@ -4,1268 +4,460 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sekunet — Repositorio de Plantillas</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ── Variables de marca ─────────────────────────────────── */
+/*
+  SISTEMA TIPOGRÁFICO SEKUNET — psicología del color aplicada a la letra
+  ──────────────────────────────────────────────────────────────────────
+  Fuente display:  Syne 800 — geométrica, tecnológica, sin ambigüedad
+  Fuente cuerpo:   DM Sans 300/400 — legible, neutra, profesional
+
+  Color tipográfico por etapa (psicología):
+  · Azul profundo   #1B5AA8  → Apertura     — confianza, primer contacto
+  · Verde esmeralda #1A7A52  → Relevamiento — análisis, escucha activa
+  · Ámbar dorado    #C07B00  → Gestión      — proceso activo, atención
+  · Coral acción    #C24E10  → Resolución   — resultado, urgencia positiva
+  · Índigo orden    #5B3FA8  → Cierre       — conclusión, seguridad
+*/
 :root {
-  --azul-oscuro:   #1B4F8A;
-  --azul-medio:    #2471C8;
-  --azul-claro:    #5B9FE0;
-  --naranja:       #F5A623;
-  --naranja-fuego: #E07B0B;
-  --dorado:        #F0C040;
-  --blanco:        #FFFFFF;
-  --gris-fondo:    #F5F7FA;
-  --gris-borde:    #DDE3ED;
-  --gris-texto:    #6B7A99;
-  --texto-oscuro:  #1A2340;
+  --azul:        #1B5AA8;
+  --azul-vivo:   #2472CC;
+  --azul-palido: #C8DEFF;
+  --naranja:     #F5A820;
+  --naranja-d:   #D4820A;
+  --blanco:      #FFFFFF;
+  --gris-bg:     #F4F6FA;
+  --gris-borde:  #E1E7F0;
+  --gris-medio:  #9AAAC4;
+  --negro:       #111828;
 
-  /* Psicología del color por categoría */
-  --cat-apertura-bg:    #EBF4FF;
-  --cat-apertura-borde: #2471C8;
-  --cat-apertura-acento:#1B4F8A;
+  --t-apertura:     #1B5AA8;
+  --t-relevamiento: #1A7A52;
+  --t-gestion:      #C07B00;
+  --t-resolucion:   #C24E10;
+  --t-cierre:       #5B3FA8;
 
-  --cat-relevamiento-bg:    #EFF6EE;
-  --cat-relevamiento-borde: #3A9E6A;
-  --cat-relevamiento-acento:#236B46;
+  --f-apertura:     #EEF4FF;
+  --f-relevamiento: #EDFAF3;
+  --f-gestion:      #FFF8E6;
+  --f-resolucion:   #FFF2EA;
+  --f-cierre:       #F3EEFF;
 
-  --cat-gestion-bg:    #FFF8EC;
-  --cat-gestion-borde: #F5A623;
-  --cat-gestion-acento:#B87A10;
+  --fd: 'Syne', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --r:  12px;
+  --rl: 18px;
+  --sh: 0 1px 8px rgba(17,24,40,0.07), 0 4px 20px rgba(17,24,40,0.04);
+  --shh: 0 6px 28px rgba(27,90,168,0.16);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--blanco);color:var(--negro);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-  --cat-resolucion-bg:    #FFF2EC;
-  --cat-resolucion-borde: #E07B0B;
-  --cat-resolucion-acento:#A35200;
+/* ─ HEADER ─ */
+header{background:var(--blanco);border-bottom:1px solid var(--gris-borde);height:68px;padding:0 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 12px rgba(17,24,40,0.05)}
+.lw{display:flex;align-items:center;gap:14px}
+.lt{display:flex;flex-direction:column;gap:2px}
+/* Nombre SEKUNET: Syne 800, degradado azul→naranja (marca) */
+.ln{font-family:var(--fd);font-size:21px;font-weight:800;letter-spacing:-0.02em;background:linear-gradient(90deg,#1B5AA8 0%,#2472CC 55%,#F5A820 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.ls{font-family:var(--fb);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gris-medio);line-height:1}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;background:var(--f-apertura);color:var(--azul);border:1px solid var(--azul-palido)}
 
-  --cat-cierre-bg:    #F2EEFF;
-  --cat-cierre-borde: #7C5CBF;
-  --cat-cierre-acento:#4E2FA0;
+/* ─ HERO ─ */
+.hero{padding:52px 36px 44px;background:var(--blanco);border-bottom:1px solid var(--gris-borde);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 88% 18%,rgba(245,168,32,.09) 0%,transparent 50%),radial-gradient(circle at 12% 82%,rgba(27,90,168,.07) 0%,transparent 50%);pointer-events:none}
+.htag{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;font-family:var(--fb);font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--naranja-d)}
+.htag::before{content:'';display:inline-block;width:22px;height:2px;background:var(--naranja);border-radius:2px}
+/* H1: Syne 800 con dos líneas de color diferente */
+.hero h1{font-family:var(--fd);font-size:44px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:16px;max-width:620px;position:relative}
+/* "Plantillas de atención" — azul: confianza, solidez */
+.hl1{display:block;color:var(--azul)}
+/* "listas para usar." — degradado naranja: facilidad, acción */
+.hl2{display:block;background:linear-gradient(90deg,var(--naranja-d) 0%,var(--naranja) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:15px;font-weight:300;color:var(--gris-medio);line-height:1.72;max-width:500px;position:relative}
 
-  --sombra-suave: 0 2px 12px rgba(27,79,138,0.09);
-  --sombra-card:  0 4px 20px rgba(27,79,138,0.13);
-  --sombra-hover: 0 8px 32px rgba(27,79,138,0.18);
-  --radio: 14px;
-  --radio-pill: 30px;
-}
+/* ─ STATS ─ */
+.sbar{display:flex;background:var(--gris-bg);border-bottom:1px solid var(--gris-borde);padding:0 36px}
+.st{display:flex;align-items:center;gap:10px;padding:14px 28px 14px 0;margin-right:28px;border-right:1px solid var(--gris-borde)}
+.st:last-child{border-right:none}
+/* Números estadísticos: Syne 700, color semántico */
+.sn{font-family:var(--fd);font-size:26px;font-weight:700;line-height:1;letter-spacing:-0.03em}
+.sl{font-size:11px;font-weight:400;color:var(--gris-medio);line-height:1.35}
 
-/* ── Reset & Base ───────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Barlow', sans-serif;
-  background: var(--blanco);
-  color: var(--texto-oscuro);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* ─ LAYOUT ─ */
+.lay{display:flex;min-height:calc(100vh - 68px)}
 
-/* ── Header ─────────────────────────────────────────────── */
-header {
-  background: var(--blanco);
-  border-bottom: 1.5px solid var(--gris-borde);
-  padding: 0 40px;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 16px rgba(27,79,138,0.07);
-}
+/* ─ SIDEBAR ─ */
+.sb{width:250px;flex-shrink:0;background:var(--blanco);border-right:1px solid var(--gris-borde);padding:24px 0 32px;position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto}
+.sbt{font-family:var(--fb);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gris-medio);padding:0 20px 12px}
+.nb{display:flex;align-items:center;gap:11px;width:100%;padding:11px 20px;border:none;background:none;cursor:pointer;border-left:3px solid transparent;transition:background .16s;text-align:left}
+.nb:hover{background:var(--gris-bg)}
+.nb.active{background:var(--f-apertura);border-left-color:var(--azul-vivo)}
+.ni{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:transform .15s}
+.nb:hover .ni{transform:scale(1.1)}
+.nf{flex:1;min-width:0}
+/* Nombre en sidebar: Syne 700, color de etapa */
+.nm{font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:-0.01em;display:block;line-height:1.2}
+.ns{font-size:11px;font-weight:400;color:var(--gris-medio);display:block;margin-top:1px}
+/* Contador: Syne, color de etapa */
+.nc{font-family:var(--fd);font-size:13px;font-weight:700;min-width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nb[data-cat="apertura"] .nm,.nb[data-cat="apertura"] .nc{color:var(--t-apertura)}
+.nb[data-cat="relevamiento"] .nm,.nb[data-cat="relevamiento"] .nc{color:var(--t-relevamiento)}
+.nb[data-cat="gestion"] .nm,.nb[data-cat="gestion"] .nc{color:var(--t-gestion)}
+.nb[data-cat="resolucion"] .nm,.nb[data-cat="resolucion"] .nc{color:var(--t-resolucion)}
+.nb[data-cat="cierre"] .nm,.nb[data-cat="cierre"] .nc{color:var(--t-cierre)}
+.nb[data-cat="todas"] .nm,.nb[data-cat="todas"] .nc{color:var(--azul-vivo)}
+.nb[data-cat="apertura"] .nc{background:var(--f-apertura)}
+.nb[data-cat="relevamiento"] .nc{background:var(--f-relevamiento)}
+.nb[data-cat="gestion"] .nc{background:var(--f-gestion)}
+.nb[data-cat="resolucion"] .nc{background:var(--f-resolucion)}
+.nb[data-cat="cierre"] .nc{background:var(--f-cierre)}
+.nb[data-cat="todas"] .nc{background:var(--f-apertura)}
+.sep{height:1px;background:var(--gris-borde);margin:10px 20px}
 
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+/* ─ CONTENT ─ */
+.ct{flex:1;padding:32px 36px;background:var(--gris-bg)}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+/* Eyebrow de sección: color semántico */
+.ey{font-family:var(--fb);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.ey::before{content:'';display:inline-block;width:16px;height:2px;border-radius:2px;background:currentColor}
+/* Título de sección: Syne 800 con color semántico */
+.ctit{font-family:var(--fd);font-size:26px;font-weight:800;letter-spacing:-0.03em;line-height:1.15}
+.cd{font-size:13px;font-weight:300;color:var(--gris-medio);margin-top:5px;line-height:1.6;max-width:430px}
+/* Búsqueda */
+.sw{display:flex;align-items:center;background:var(--blanco);border:1px solid var(--gris-borde);border-radius:40px;padding:9px 16px;gap:8px;min-width:210px;transition:border-color .16s,box-shadow .16s}
+.sw:focus-within{border-color:var(--azul-vivo);box-shadow:0 0 0 3px rgba(36,114,204,.1)}
+.sw input{border:none;background:none;outline:none;font-family:var(--fb);font-size:13px;color:var(--negro);flex:1}
+.sw input::placeholder{color:var(--gris-medio)}
+.sw svg{color:var(--gris-medio);flex-shrink:0}
 
-.logo-area img {
-  height: 44px;
-  width: auto;
-  object-fit: contain;
-}
+/* ─ GRID ─ */
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:14px}
 
-.logo-divider {
-  width: 1.5px;
-  height: 32px;
-  background: var(--gris-borde);
-}
+/* ─ CARD ─ */
+.card{background:var(--blanco);border:1px solid var(--gris-borde);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;box-shadow:var(--sh);animation:fu .22s ease both}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shh);border-color:var(--azul-palido)}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.cb{height:4px;flex-shrink:0}
+.cbd{padding:18px 20px 14px;flex:1;display:flex;flex-direction:column}
+.ctag{display:inline-flex;align-items:center;gap:5px;font-family:var(--fb);font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;width:fit-content}
+/* Nombre de plantilla en card: Syne 700, color de etapa */
+.cnm{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-0.02em;line-height:1.25;margin-bottom:9px}
+.cpv{font-family:var(--fb);font-size:12.5px;font-weight:300;color:var(--gris-medio);line-height:1.65;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cf{padding:11px 20px;border-top:1px solid var(--gris-borde);display:flex;align-items:center;justify-content:space-between;background:rgba(244,246,250,.6)}
+/* Etiqueta de etapa en footer: Syne + color de etapa */
+.cet{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:-0.01em}
+.ccp{display:inline-flex;align-items:center;gap:4px;font-family:var(--fb);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid var(--gris-borde);background:var(--blanco);color:var(--azul);cursor:pointer;transition:background .14s,color .14s,border-color .14s}
+.ccp:hover{background:var(--azul-vivo);color:#fff;border-color:var(--azul-vivo)}
+.ccp.ok{background:#1A7A52;color:#fff;border-color:#1A7A52}
 
-.logo-subtitulo {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gris-texto);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.3;
-}
-.logo-subtitulo span {
-  display: block;
-  font-size: 16px;
-  color: var(--azul-oscuro);
-  letter-spacing: 0.04em;
-}
+/* ─ VACÍO ─ */
+.empty{grid-column:1/-1;text-align:center;padding:64px 20px;color:var(--gris-medio)}
+.empty svg{opacity:.2;margin-bottom:14px}
+.empty p{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--gris-medio)}
 
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--gris-texto);
-}
-.badge-version {
-  background: var(--azul-medio);
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.04em;
-}
+/* ─ MODAL ─ */
+.ov{position:fixed;inset:0;background:rgba(10,16,36,.52);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;backdrop-filter:blur(4px)}
+.ov.open{opacity:1;visibility:visible}
+.mo{background:var(--blanco);border-radius:20px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(10,16,40,.22);overflow:hidden;transform:translateY(18px) scale(.97);transition:transform .22s}
+.ov.open .mo{transform:none}
+.mh{padding:22px 24px 18px;border-bottom:1px solid var(--gris-borde);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+/* Eyebrow modal: color semántico */
+.mey{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:5px;font-family:var(--fb)}
+/* Título modal: Syne 800, color de etapa */
+.mtt{font-family:var(--fd);font-size:22px;font-weight:800;letter-spacing:-0.03em;line-height:1.15}
+.mx{width:30px;height:30px;border-radius:50%;border:1px solid var(--gris-borde);background:none;font-size:16px;color:var(--gris-medio);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .14s}
+.mx:hover{background:var(--gris-bg)}
+.mb{padding:22px 24px}
+.fl{font-family:var(--fb);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gris-medio);margin-bottom:8px}
+.ft{background:var(--gris-bg);border:1px solid var(--gris-borde);border-radius:var(--r);padding:16px;font-family:var(--fb);font-size:14px;font-weight:400;line-height:1.7;color:var(--negro);white-space:pre-wrap;margin-bottom:14px}
+.fn{display:none;background:var(--f-gestion);border:1px solid #F0C040;border-radius:var(--r);padding:12px 14px;font-size:12px;font-weight:400;color:#6B4800;line-height:1.6;margin-bottom:18px}
+.fn.on{display:block}
+.mbs{display:flex;gap:10px;flex-wrap:wrap}
+/* Botones: Syne 700 para peso tipográfico */
+.bm{flex:1;min-width:140px;padding:12px 20px;background:var(--azul-vivo);color:#fff;border:none;border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:-0.01em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .14s,transform .12s}
+.bm:hover{background:var(--azul);transform:translateY(-1px)}
+.bm.ok{background:#1A7A52}
+.bs{padding:12px 20px;background:none;border:1px solid var(--gris-borde);border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:-0.01em;color:var(--negro);cursor:pointer;transition:background .14s}
+.bs:hover{background:var(--gris-bg)}
 
-/* ── Hero ────────────────────────────────────────────────── */
-.hero {
-  background: linear-gradient(135deg, #F0F6FF 0%, #FAFBFF 50%, #FFF8EE 100%);
-  border-bottom: 1.5px solid var(--gris-borde);
-  padding: 48px 40px 40px;
-  position: relative;
-  overflow: hidden;
-}
+/* ─ TOAST ─ */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--negro);color:#fff;padding:12px 18px;border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:-0.01em;box-shadow:0 8px 28px rgba(10,16,40,.2);z-index:300;display:flex;align-items:center;gap:7px;transform:translateY(56px);opacity:0;transition:transform .28s,opacity .28s}
+.toast.on{transform:translateY(0);opacity:1}
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 280px; height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,166,35,0.12) 0%, transparent 70%);
-  pointer-events: none;
+/* ─ RESPONSIVE ─ */
+@media(max-width:840px){
+  .lay{flex-direction:column}
+  .sb{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--gris-borde);display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:12px 0;gap:0}
+  .sbt,.sep{display:none}
+  .nb{flex-direction:column;gap:3px;padding:8px 14px;border-left:none;border-bottom:3px solid transparent;flex-shrink:0;align-items:center}
+  .nb.active{border-bottom-color:var(--azul-vivo);border-left:none}
+  .nf,.nc{display:none}
+  .nm{font-size:11px}
+  .ct{padding:20px}
+  .hero,.sbar{padding-left:20px;padding-right:20px}
+  header{padding:0 20px}
+  .hero h1{font-size:32px}
+  .gr{grid-template-columns:1fr}
 }
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -40px; left: -40px;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(36,113,200,0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.hero-inner { position: relative; z-index: 1; max-width: 700px; }
-
-.hero-eyebrow {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--naranja);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.hero-eyebrow::before {
-  content: '';
-  display: inline-block;
-  width: 20px; height: 2px;
-  background: var(--naranja);
-  border-radius: 2px;
-}
-
-.hero h1 {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 38px;
-  font-weight: 700;
-  color: var(--azul-oscuro);
-  line-height: 1.15;
-  margin-bottom: 12px;
-}
-.hero h1 em {
-  font-style: normal;
-  color: var(--azul-medio);
-}
-
-.hero p {
-  font-size: 15px;
-  color: var(--gris-texto);
-  line-height: 1.65;
-  max-width: 520px;
-}
-
-/* ── Stats bar ───────────────────────────────────────────── */
-.stats-bar {
-  display: flex;
-  gap: 0;
-  background: var(--blanco);
-  border-bottom: 1.5px solid var(--gris-borde);
-  padding: 0 40px;
-}
-.stat-item {
-  padding: 16px 32px 16px 0;
-  margin-right: 32px;
-  border-right: 1.5px solid var(--gris-borde);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.stat-item:last-child { border-right: none; }
-.stat-num {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--azul-medio);
-  line-height: 1;
-}
-.stat-label {
-  font-size: 12px;
-  color: var(--gris-texto);
-  line-height: 1.3;
-}
-.stat-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* ── Layout principal ────────────────────────────────────── */
-.main-layout {
-  display: flex;
-  min-height: calc(100vh - 72px);
-}
-
-/* ── Sidebar ─────────────────────────────────────────────── */
-.sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  background: var(--blanco);
-  border-right: 1.5px solid var(--gris-borde);
-  padding: 28px 0;
-  position: sticky;
-  top: 72px;
-  height: calc(100vh - 72px);
-  overflow-y: auto;
-}
-
-.sidebar-section-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gris-texto);
-  padding: 0 24px 10px;
-}
-
-.cat-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 24px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.18s, color 0.18s;
-  border-left: 3px solid transparent;
-  position: relative;
-}
-.cat-btn:hover { background: var(--gris-fondo); }
-.cat-btn.active {
-  border-left-color: var(--azul-medio);
-  background: #EBF4FF;
-}
-
-.cat-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 17px;
-  flex-shrink: 0;
-  transition: transform 0.18s;
-}
-.cat-btn:hover .cat-icon { transform: scale(1.08); }
-
-.cat-info { flex: 1; min-width: 0; }
-.cat-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--texto-oscuro);
-  display: block;
-  line-height: 1.2;
-}
-.cat-sub {
-  font-size: 11px;
-  color: var(--gris-texto);
-  display: block;
-  margin-top: 1px;
-}
-
-.cat-count {
-  font-size: 11px;
-  font-weight: 700;
-  color: white;
-  background: var(--azul-medio);
-  min-width: 22px;
-  height: 22px;
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  flex-shrink: 0;
-}
-
-.sidebar-divider {
-  height: 1px;
-  background: var(--gris-borde);
-  margin: 12px 24px;
-}
-
-/* ── Contenido ───────────────────────────────────────────── */
-.content {
-  flex: 1;
-  padding: 32px 40px;
-  background: var(--gris-fondo);
-  min-height: 100%;
-}
-
-.content-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.content-title-area {}
-.content-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 5px;
-}
-.content-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--texto-oscuro);
-  line-height: 1.2;
-}
-.content-desc {
-  font-size: 13px;
-  color: var(--gris-texto);
-  margin-top: 5px;
-  max-width: 480px;
-  line-height: 1.55;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  background: var(--blanco);
-  border: 1.5px solid var(--gris-borde);
-  border-radius: var(--radio-pill);
-  padding: 8px 16px;
-  gap: 8px;
-  min-width: 220px;
-  transition: border-color 0.18s, box-shadow 0.18s;
-}
-.search-box:focus-within {
-  border-color: var(--azul-medio);
-  box-shadow: 0 0 0 3px rgba(36,113,200,0.12);
-}
-.search-box svg { color: var(--gris-texto); flex-shrink: 0; }
-.search-box input {
-  border: none;
-  background: transparent;
-  font-family: 'Barlow', sans-serif;
-  font-size: 13px;
-  color: var(--texto-oscuro);
-  outline: none;
-  flex: 1;
-}
-.search-box input::placeholder { color: var(--gris-texto); }
-
-/* ── Grid de tarjetas ────────────────────────────────────── */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-/* ── Tarjeta de plantilla ────────────────────────────────── */
-.card {
-  background: var(--blanco);
-  border-radius: var(--radio);
-  border: 1.5px solid var(--gris-borde);
-  box-shadow: var(--sombra-suave);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--sombra-hover);
-}
-
-.card-top {
-  height: 5px;
-  flex-shrink: 0;
-}
-
-.card-body {
-  padding: 18px 20px 14px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 10px;
-  width: fit-content;
-}
-
-.card-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--texto-oscuro);
-  line-height: 1.3;
-  margin-bottom: 8px;
-}
-
-.card-preview {
-  font-size: 13px;
-  color: var(--gris-texto);
-  line-height: 1.6;
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-footer {
-  padding: 12px 20px;
-  border-top: 1px solid var(--gris-borde);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(245,247,250,0.6);
-}
-.card-type {
-  font-size: 11px;
-  color: var(--gris-texto);
-  font-weight: 500;
-}
-.card-copy-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--azul-medio);
-  background: none;
-  border: 1.5px solid var(--azul-claro);
-  border-radius: 20px;
-  padding: 4px 12px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.card-copy-btn:hover {
-  background: var(--azul-medio);
-  color: white;
-  border-color: var(--azul-medio);
-}
-.card-copy-btn.copied {
-  background: #236B46;
-  color: white;
-  border-color: #236B46;
-}
-
-/* ── Estado vacío ────────────────────────────────────────── */
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--gris-texto);
-}
-.empty-state svg { opacity: 0.3; margin-bottom: 16px; }
-.empty-state p { font-size: 15px; }
-
-/* ── Modal de plantilla ──────────────────────────────────── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,20,50,0.45);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.22s, visibility 0.22s;
-  backdrop-filter: blur(3px);
-}
-.modal-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal {
-  background: var(--blanco);
-  border-radius: 20px;
-  max-width: 560px;
-  width: 100%;
-  box-shadow: 0 20px 60px rgba(10,20,60,0.25);
-  overflow: hidden;
-  transform: translateY(20px) scale(0.97);
-  transition: transform 0.22s;
-}
-.modal-overlay.open .modal { transform: translateY(0) scale(1); }
-
-.modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--gris-borde);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-.modal-header-info {}
-.modal-etapa {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-.modal-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--texto-oscuro);
-  line-height: 1.2;
-}
-.modal-close {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 1.5px solid var(--gris-borde);
-  background: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: var(--gris-texto);
-  font-size: 18px;
-  transition: background 0.15s;
-}
-.modal-close:hover { background: var(--gris-fondo); }
-
-.modal-body { padding: 24px; }
-
-.modal-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gris-texto);
-  margin-bottom: 8px;
-}
-
-.modal-text {
-  background: var(--gris-fondo);
-  border: 1px solid var(--gris-borde);
-  border-radius: 10px;
-  padding: 16px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--texto-oscuro);
-  white-space: pre-wrap;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.modal-nota {
-  background: #FFF8EC;
-  border: 1px solid #F5A623;
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 12px;
-  color: #7A5010;
-  line-height: 1.55;
-  margin-bottom: 20px;
-  display: none;
-}
-.modal-nota.visible { display: block; }
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.btn-primary {
-  flex: 1;
-  min-width: 140px;
-  padding: 11px 20px;
-  background: var(--azul-medio);
-  color: white;
-  border: none;
-  border-radius: var(--radio-pill);
-  font-family: 'Barlow', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.12s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.btn-primary:hover { background: var(--azul-oscuro); transform: translateY(-1px); }
-.btn-primary.copied { background: #236B46; }
-
-.btn-secondary {
-  padding: 11px 20px;
-  background: var(--blanco);
-  color: var(--texto-oscuro);
-  border: 1.5px solid var(--gris-borde);
-  border-radius: var(--radio-pill);
-  font-family: 'Barlow', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-secondary:hover { background: var(--gris-fondo); }
-
-/* ── Toast ───────────────────────────────────────────────── */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: var(--azul-oscuro);
-  color: white;
-  padding: 12px 20px;
-  border-radius: var(--radio-pill);
-  font-size: 13px;
-  font-weight: 500;
-  box-shadow: 0 6px 24px rgba(10,20,60,0.22);
-  z-index: 300;
-  transform: translateY(60px);
-  opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-
-/* ── Responsivo ──────────────────────────────────────────── */
-@media (max-width: 860px) {
-  .main-layout { flex-direction: column; }
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: static;
-    border-right: none;
-    border-bottom: 1.5px solid var(--gris-borde);
-    padding: 16px 0;
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 0;
-  }
-  .sidebar-section-title { display: none; }
-  .sidebar-divider { width: 1px; height: 40px; margin: 0 4px; }
-  .cat-btn {
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px 16px;
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    flex-shrink: 0;
-    min-width: 90px;
-    text-align: center;
-  }
-  .cat-btn.active { border-bottom-color: var(--azul-medio); border-left: none; background: #EBF4FF; }
-  .cat-info { display: none; }
-  .cat-icon { width: 32px; height: 32px; font-size: 15px; }
-  .content { padding: 20px; }
-  .hero, .stats-bar { padding-left: 20px; padding-right: 20px; }
-  header { padding: 0 20px; }
-  .cards-grid { grid-template-columns: 1fr; }
-}
-
-/* ── Animación entrada cards ─────────────────────────────── */
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.card { animation: cardIn 0.25s ease both; }
-
 </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
+<!-- HEADER -->
 <header>
-  <div class="logo-area">
-    <img src="https://i.imgur.com/placeholder.png" alt="Sekunet" id="logo-img" style="display:none">
-    <!-- Logo SVG inline como fallback / representación -->
-    <svg id="logo-svg" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="24,6 40,16 40,32 24,42 8,32 8,16" fill="#1B4F8A" opacity="0.15"/>
-      <polygon points="24,10 37,18 37,30 24,38 11,30 11,18" fill="none" stroke="#2471C8" stroke-width="1.5"/>
-      <polygon points="24,14 32,20 32,28 24,34 16,28 16,20" fill="#F5A623"/>
-      <polygon points="24,18 29,22 29,26 24,30 19,26 19,22" fill="#1B4F8A"/>
-      <ellipse cx="24" cy="8" rx="6" ry="3" fill="none" stroke="#F5A623" stroke-width="1.5" opacity="0.7"/>
-      <ellipse cx="24" cy="8" rx="3" ry="1.5" fill="none" stroke="#F5A623" stroke-width="1" opacity="0.5"/>
+  <div class="lw">
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+      <polygon points="21,3 37,12 37,30 21,39 5,30 5,12" fill="#1B5AA8" opacity="0.1"/>
+      <polygon points="21,3 37,12 37,30 21,39 5,30 5,12" fill="none" stroke="#2472CC" stroke-width="1.2"/>
+      <polygon points="21,10 31,21 21,32 11,21" fill="#F5A820" opacity="0.92"/>
+      <polygon points="21,14 27,21 21,28 15,21" fill="#1B5AA8"/>
+      <path d="M14 5.5 Q21 2 28 5.5" stroke="#F5A820" stroke-width="1.2" stroke-linecap="round" opacity="0.55" fill="none"/>
+      <path d="M11 8 Q21 2.5 31 8" stroke="#F5A820" stroke-width="0.8" stroke-linecap="round" opacity="0.25" fill="none"/>
     </svg>
-    <div class="logo-divider"></div>
-    <div class="logo-subtitulo">
-      Servicio &amp; Soporte
-      <span>Repositorio de Plantillas</span>
+    <div class="lt">
+      <span class="ln">SEKUNET</span>
+      <span class="ls">Repositorio de plantillas</span>
     </div>
   </div>
-  <div class="header-meta">
-    <span class="badge-version">v1.0</span>
-    <span style="font-size:12px; color:var(--gris-texto);">Taller de Seguridad</span>
-  </div>
+  <span class="chip">v 1.0 · 2025</span>
 </header>
 
-<!-- ── Hero ── -->
+<!-- HERO -->
 <div class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Comunicación efectiva con el cliente</div>
-    <h1>Plantillas de atención<br><em>listas para usar</em></h1>
-    <p>Seleccione una categoría para explorar las plantillas disponibles para cada etapa de la conversación. Copie el texto con un clic y adáptelo según el caso.</p>
-  </div>
+  <div class="htag">Servicio al cliente · Taller de seguridad</div>
+  <h1>
+    <span class="hl1">Plantillas de atención</span>
+    <span class="hl2">listas para usar.</span>
+  </h1>
+  <p>Seleccione una etapa en el panel lateral para filtrar las plantillas disponibles. Haga clic en cualquier plantilla para ver el texto completo y copiarlo al instante.</p>
 </div>
 
-<!-- ── Stats bar ── -->
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-dot" style="background:var(--azul-medio)"></div>
-    <div>
-      <div class="stat-num" id="total-count">19</div>
-      <div class="stat-label">Plantillas<br>totales</div>
-    </div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-dot" style="background:var(--naranja)"></div>
-    <div>
-      <div class="stat-num">9</div>
-      <div class="stat-label">Existentes<br>en uso</div>
-    </div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-dot" style="background:#E07B0B"></div>
-    <div>
-      <div class="stat-num">10</div>
-      <div class="stat-label">Propuestas<br>nuevas</div>
-    </div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-dot" style="background:#3A9E6A"></div>
-    <div>
-      <div class="stat-num">5</div>
-      <div class="stat-label">Etapas de<br>conversación</div>
-    </div>
-  </div>
+<!-- STATS -->
+<div class="sbar">
+  <div class="st"><div><div class="sn" style="color:var(--azul-vivo)">22</div><div class="sl">Plantillas<br>totales</div></div></div>
+  <div class="st"><div><div class="sn" style="color:var(--t-relevamiento)">9</div><div class="sl">Existentes<br>en uso</div></div></div>
+  <div class="st"><div><div class="sn" style="color:var(--t-resolucion)">13</div><div class="sl">Propuestas<br>nuevas</div></div></div>
+  <div class="st"><div><div class="sn" style="color:var(--t-gestion)">5</div><div class="sl">Etapas de<br>conversación</div></div></div>
 </div>
 
-<!-- ── Layout principal ── -->
-<div class="main-layout">
+<!-- LAYOUT -->
+<div class="lay">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-section-title">Categorías</div>
-
-    <button class="cat-btn active" data-cat="todas" onclick="setCategory('todas', this)">
-      <div class="cat-icon" style="background:#EBF4FF; color:var(--azul-medio);">⊞</div>
-      <div class="cat-info">
-        <span class="cat-name">Todas</span>
-        <span class="cat-sub">Vista completa</span>
-      </div>
-      <span class="cat-count">19</span>
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sbt">Categorías</div>
+    <button class="nb active" data-cat="todas" onclick="setCat('todas',this)">
+      <div class="ni" style="background:#EEF4FF">⊞</div>
+      <div class="nf"><span class="nm">Todas</span><span class="ns">Vista completa</span></div>
+      <span class="nc">22</span>
     </button>
-
-    <div class="sidebar-divider"></div>
-
-    <button class="cat-btn" data-cat="apertura" onclick="setCategory('apertura', this)">
-      <div class="cat-icon" style="background:#EBF4FF; color:#1B4F8A;">👋</div>
-      <div class="cat-info">
-        <span class="cat-name">Apertura</span>
-        <span class="cat-sub">Inicio de contacto</span>
-      </div>
-      <span class="cat-count">2</span>
+    <div class="sep"></div>
+    <button class="nb" data-cat="apertura" onclick="setCat('apertura',this)">
+      <div class="ni" style="background:var(--f-apertura)">👋</div>
+      <div class="nf"><span class="nm">Apertura</span><span class="ns">Inicio de contacto</span></div>
+      <span class="nc">2</span>
     </button>
-
-    <button class="cat-btn" data-cat="relevamiento" onclick="setCategory('relevamiento', this)">
-      <div class="cat-icon" style="background:#EFF6EE; color:#236B46;">🔍</div>
-      <div class="cat-info">
-        <span class="cat-name">Relevamiento</span>
-        <span class="cat-sub">Diagnóstico y datos</span>
-      </div>
-      <span class="cat-count">4</span>
+    <button class="nb" data-cat="relevamiento" onclick="setCat('relevamiento',this)">
+      <div class="ni" style="background:var(--f-relevamiento)">🔍</div>
+      <div class="nf"><span class="nm">Relevamiento</span><span class="ns">Diagnóstico y datos</span></div>
+      <span class="nc">4</span>
     </button>
-
-    <button class="cat-btn" data-cat="gestion" onclick="setCategory('gestion', this)">
-      <div class="cat-icon" style="background:#FFF8EC; color:#B87A10;">⚙️</div>
-      <div class="cat-info">
-        <span class="cat-name">Gestión en taller</span>
-        <span class="cat-sub">Proceso y seguimiento</span>
-      </div>
-      <span class="cat-count">6</span>
+    <button class="nb" data-cat="gestion" onclick="setCat('gestion',this)">
+      <div class="ni" style="background:var(--f-gestion)">⚙️</div>
+      <div class="nf"><span class="nm">Gestión</span><span class="ns">Proceso en taller</span></div>
+      <span class="nc">7</span>
     </button>
-
-    <button class="cat-btn" data-cat="resolucion" onclick="setCategory('resolucion', this)">
-      <div class="cat-icon" style="background:#FFF2EC; color:#A35200;">✅</div>
-      <div class="cat-info">
-        <span class="cat-name">Resolución</span>
-        <span class="cat-sub">Entrega y resultado</span>
-      </div>
-      <span class="cat-count">6</span>
+    <button class="nb" data-cat="resolucion" onclick="setCat('resolucion',this)">
+      <div class="ni" style="background:var(--f-resolucion)">✅</div>
+      <div class="nf"><span class="nm">Resolución</span><span class="ns">Entrega y resultado</span></div>
+      <span class="nc">6</span>
     </button>
-
-    <button class="cat-btn" data-cat="cierre" onclick="setCategory('cierre', this)">
-      <div class="cat-icon" style="background:#F2EEFF; color:#4E2FA0;">🔒</div>
-      <div class="cat-info">
-        <span class="cat-name">Cierre</span>
-        <span class="cat-sub">Fin de conversación</span>
-      </div>
-      <span class="cat-count">3</span>
+    <button class="nb" data-cat="cierre" onclick="setCat('cierre',this)">
+      <div class="ni" style="background:var(--f-cierre)">🔒</div>
+      <div class="nf"><span class="nm">Cierre</span><span class="ns">Fin de conversación</span></div>
+      <span class="nc">3</span>
     </button>
   </aside>
 
-  <!-- Content -->
-  <main class="content">
-    <div class="content-header">
-      <div class="content-title-area">
-        <div class="content-eyebrow" id="cat-eyebrow" style="color:var(--azul-medio)">Vista general</div>
-        <div class="content-title" id="cat-title">Todas las plantillas</div>
-        <div class="content-desc" id="cat-desc">Explore el repositorio completo de plantillas organizadas por etapa de conversación.</div>
+  <!-- CONTENT -->
+  <main class="ct">
+    <div class="ch">
+      <div>
+        <div class="ey" id="ey" style="color:var(--azul-vivo)">Vista general</div>
+        <div class="ctit" id="ctit" style="color:var(--azul)">Todas las plantillas</div>
+        <div class="cd" id="cd">Repositorio completo organizado por etapa de conversación.</div>
       </div>
-      <div class="search-box">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="search-input" placeholder="Buscar plantilla…" oninput="filterCards()">
+      <div class="sw">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="si" placeholder="Buscar plantilla…" oninput="render()">
       </div>
     </div>
-
-    <div class="cards-grid" id="cards-grid">
-      <!-- Cards generadas por JS -->
-    </div>
+    <div class="gr" id="gr"></div>
   </main>
 </div>
 
-<!-- ── Modal ── -->
-<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-header-info">
-        <div class="modal-etapa" id="modal-etapa"></div>
-        <div class="modal-title" id="modal-title"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+<!-- MODAL -->
+<div class="ov" id="ov" onclick="closeOut(event)">
+  <div class="mo">
+    <div class="mh">
+      <div><div class="mey" id="mey"></div><div class="mtt" id="mtt"></div></div>
+      <button class="mx" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="modal-label">Texto de la plantilla</div>
-      <div class="modal-text" id="modal-text"></div>
-      <div class="modal-nota" id="modal-nota"></div>
-      <div class="modal-actions">
-        <button class="btn-primary" id="modal-copy-btn" onclick="copyModalText()">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    <div class="mb">
+      <div class="fl">Texto de la plantilla</div>
+      <div class="ft" id="mft"></div>
+      <div class="fn" id="mfn"></div>
+      <div class="mbs">
+        <button class="bm" id="mcp" onclick="copyModal()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           Copiar texto
         </button>
-        <button class="btn-secondary" onclick="closeModal()">Cerrar</button>
+        <button class="bs" onclick="closeModal()">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Toast ── -->
+<!-- TOAST -->
 <div class="toast" id="toast">
-  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toast-msg">¡Copiado!</span>
+  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span>¡Copiado al portapapeles!</span>
 </div>
 
 <script>
-/* ──────────────────────────────────────────────────────────
-   DATOS: Plantillas
-   ────────────────────────────────────────────────────────── */
-const plantillas = [
-  // APERTURA
-  {
-    id: 1, cat: "apertura", nombre: "Saludo inicial",
-    tipo: "Existente", prob: null,
-    texto: "Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?",
-    nota: null
-  },
-  {
-    id: 2, cat: "apertura", nombre: "Alerta activa / urgencia",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?",
-    nota: "Usar cuando el cliente mencione alarma sonando, humo, activación de sensores u otra emergencia activa."
-  },
-
-  // RELEVAMIENTO
-  {
-    id: 3, cat: "relevamiento", nombre: "Pedir más detalle",
-    tipo: "Existente", prob: null,
-    texto: "Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?",
-    nota: null
-  },
-  {
-    id: 4, cat: "relevamiento", nombre: "Diagnóstico remoto inicial",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar: el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde? Cualquier detalle que nos comparta será de gran ayuda.",
-    nota: "Permite decidir si el equipo requiere visita técnica, envío al taller o se puede resolver de forma remota."
-  },
-  {
-    id: 5, cat: "relevamiento", nombre: "Solicitar número de serie o modelo",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Por lo general, este dato se encuentra en la etiqueta ubicada en la parte posterior o inferior del equipo.",
-    nota: null
-  },
-  {
-    id: 6, cat: "relevamiento", nombre: "Coordinar visita técnica a domicilio",
-    tipo: "Nueva — prioridad media", prob: "media",
-    texto: "Para este tipo de equipo, lo más conveniente es realizar una visita técnica directamente en el lugar de instalación. ¿Nos podría indicar su dirección y disponibilidad horaria para coordinar la visita con nuestro equipo técnico?",
-    nota: "Aplicar cuando el equipo es de instalación fija: paneles de alarma, detectores de humo empotrados, sirenas cableadas, etc."
-  },
-
-  // GESTIÓN EN TALLER
-  {
-    id: 7, cat: "gestion", nombre: "Confirmación de recepción del equipo",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "Le confirmamos que hemos recibido su equipo en buen estado. Le hemos asignado el número de orden [#ORDEN]. Nuestro equipo técnico procederá con la revisión y le informaremos los resultados del diagnóstico a la brevedad. ¿Tiene alguna observación adicional que debamos considerar?",
-    nota: "Enviar máximo en las primeras 2 horas tras recibir el equipo."
-  },
-  {
-    id: 8, cat: "gestion", nombre: "Actualización de estado del dispositivo",
-    tipo: "Existente", prob: null,
-    texto: "Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades sobre el avance, le avisamos de inmediato. ¿Hay algo más en lo que podamos ayudarle?",
-    nota: null
-  },
-  {
-    id: 9, cat: "gestion", nombre: "Presupuesto de reparación / autorización",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "Tras completar el diagnóstico de su equipo [MODELO], el costo estimado de la reparación es de [MONTO], el cual incluye [DESCRIPCIÓN DE TRABAJO Y REPUESTOS]. Para continuar con el proceso, necesitamos su autorización. ¿Nos confirma si desea proceder?",
-    nota: "Siempre detallar qué incluye el costo. Indicar si el precio tiene vigencia limitada en caso de repuestos importados."
-  },
-  {
-    id: 10, cat: "gestion", nombre: "Falta de repuesto — tiempo de espera",
-    tipo: "Nueva — prioridad media", prob: "media",
-    texto: "Le informamos que el repuesto requerido para la reparación de su equipo no se encuentra disponible en stock en este momento. El tiempo estimado de llegada es de aproximadamente [PLAZO]. ¿Desea que procedamos con el pedido del repuesto, o prefiere que exploremos alguna alternativa?",
-    nota: "Frecuente en equipos de marcas específicas o modelos descontinuados. Ofrecer siempre una alternativa si existe."
-  },
-  {
-    id: 11, cat: "gestion", nombre: "Seguimiento proactivo sin respuesta del cliente",
-    tipo: "Nueva — prioridad media", prob: "media",
-    texto: "Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° DE ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto que le enviamos? Quedamos a su disposición para aclarar cualquier duda y proceder cuando usted lo indique.",
-    nota: "Usar 48–72 horas después de enviar el presupuesto sin recibir respuesta."
-  },
-  {
-    id: 12, cat: "gestion", nombre: "Agradecimiento por espera",
-    tipo: "Existente", prob: null,
-    texto: "Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?",
-    nota: null
-  },
-  {
-    id: 13, cat: "gestion", nombre: "Agradecimiento por espera con enlace",
-    tipo: "Existente", prob: null,
-    texto: "Gracias por su paciencia. Aquí le dejo el enlace con lo que nos solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?",
-    nota: null
-  },
-
-  // RESOLUCIÓN
-  {
-    id: 14, cat: "resolucion", nombre: "Confirmar envío para garantía",
-    tipo: "Existente", prob: null,
-    texto: "Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, lo revisaremos y, si se trata de un defecto de fábrica, quedará cubierto por la garantía.",
-    nota: null
-  },
-  {
-    id: 15, cat: "resolucion", nombre: "Garantía no aplica — explicación de motivo",
-    tipo: "Nueva — prioridad media", prob: "media",
-    texto: "Luego de realizar la revisión técnica del equipo, hemos determinado que el daño encontrado corresponde a [CAUSA: daño por tensión eléctrica / intervención de terceros / uso inadecuado / accidente]. Este tipo de situación no está cubierta por la garantía del fabricante. Con gusto le detallamos las opciones de reparación disponibles con su respectivo costo.",
-    nota: "Usar un tono empático. Evitar lenguaje acusatorio. Siempre ofrecer la alternativa de reparación con costo."
-  },
-  {
-    id: 16, cat: "resolucion", nombre: "Equipo listo para retiro o entrega",
-    tipo: "Nueva — alta prioridad", prob: "alta",
-    texto: "¡Buenas noticias! Su equipo [MODELO / N° DE ORDEN] ya se encuentra listo. Puede retirarlo en nuestra oficina ubicada en [DIRECCIÓN] en horario [HORARIO], o si lo prefiere, podemos coordinar el envío a su dirección. ¿Cómo le queda mejor?",
-    nota: null
-  },
-  {
-    id: 17, cat: "resolucion", nombre: "Equipo sin reparación posible",
-    tipo: "Nueva — prioridad media", prob: "media",
-    texto: "Lamentablemente, luego del diagnóstico técnico, hemos determinado que el equipo presenta un daño que no permite una reparación viable, ya sea por el grado del daño o porque el costo de reparación superaría el valor del equipo. Entendemos que esto puede ser una noticia difícil, y con gusto le asesoramos sobre las opciones de reposición disponibles.",
-    nota: "Usar tono cálido y empático. Ofrecer siempre una alternativa concreta: reposición, equipo reacondicionado, etc."
-  },
-  {
-    id: 18, cat: "resolucion", nombre: "Solicitud de certificado técnico",
-    tipo: "Nueva — prioridad baja", prob: "baja",
-    texto: "Con mucho gusto le emitimos el certificado técnico de la reparación realizada, con el detalle completo del trabajo efectuado y los repuestos utilizados. ¿Nos podría indicar si necesita algún formato específico, o si el certificado es para fines de garantía, auditoría o trámite con su aseguradora?",
-    nota: null
-  },
-  {
-    id: 19, cat: "resolucion", nombre: "Transferencia a técnico especializado",
-    tipo: "Nueva — prioridad baja", prob: "baja",
-    texto: "Esta consulta requiere la atención de nuestro técnico especializado. Vamos a ponerle en contacto con [NOMBRE / ÁREA] para que pueda asistirle de la mejor manera. Un momento, por favor.",
-    nota: null
-  },
-
-  // CIERRE
-  {
-    id: 20, cat: "cierre", nombre: "Cierre estándar",
-    tipo: "Existente", prob: null,
-    texto: "Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!",
-    nota: null
-  },
-  {
-    id: 21, cat: "cierre", nombre: "Cierre con confirmación",
-    tipo: "Existente", prob: null,
-    texto: "Ha sido un placer atenderle. Si no tiene ninguna otra consulta, cerramos la conversación por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!",
-    nota: null
-  },
-  {
-    id: 22, cat: "cierre", nombre: "Cierre por inactividad",
-    tipo: "Existente", prob: null,
-    texto: "Debido a que no hemos recibido respuesta, vamos a cerrar esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!",
-    nota: null
-  },
+const P=[
+  {id:1,cat:"apertura",nombre:"Saludo inicial",tipo:"Existente",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?",nota:null},
+  {id:2,cat:"apertura",nombre:"Alerta activa / urgencia",tipo:"Nueva — alta prioridad",texto:"Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?",nota:"Usar cuando el cliente mencione alarma sonando, humo, activación de sensores u otra emergencia activa."},
+  {id:3,cat:"relevamiento",nombre:"Pedir más detalle",tipo:"Existente",texto:"Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?",nota:null},
+  {id:4,cat:"relevamiento",nombre:"Diagnóstico remoto inicial",tipo:"Nueva — alta prioridad",texto:"Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar si el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde? Cualquier detalle que nos comparta será de gran ayuda.",nota:"Permite decidir si el equipo requiere visita técnica, envío al taller o se puede resolver de forma remota."},
+  {id:5,cat:"relevamiento",nombre:"Solicitar número de serie o modelo",tipo:"Nueva — alta prioridad",texto:"Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Por lo general, este dato se encuentra en la etiqueta ubicada en la parte posterior o inferior del equipo.",nota:null},
+  {id:6,cat:"relevamiento",nombre:"Coordinar visita técnica a domicilio",tipo:"Nueva — prioridad media",texto:"Para este tipo de equipo, lo más conveniente es realizar una visita técnica directamente en el lugar de instalación. ¿Nos podría indicar su dirección y disponibilidad horaria para coordinar la visita con nuestro equipo técnico?",nota:"Aplicar cuando el equipo es de instalación fija: paneles de alarma, detectores de humo empotrados, sirenas cableadas, etc."},
+  {id:7,cat:"gestion",nombre:"Confirmación de recepción del equipo",tipo:"Nueva — alta prioridad",texto:"Le confirmamos que hemos recibido su equipo en buen estado. Le hemos asignado el número de orden [#ORDEN]. Nuestro equipo técnico procederá con la revisión y le informaremos los resultados del diagnóstico a la brevedad. ¿Tiene alguna observación adicional que debamos considerar?",nota:"Enviar máximo en las primeras 2 horas tras recibir el equipo."},
+  {id:8,cat:"gestion",nombre:"Actualización de estado del dispositivo",tipo:"Existente",texto:"Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades sobre el avance, le avisamos de inmediato. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
+  {id:9,cat:"gestion",nombre:"Presupuesto de reparación / autorización",tipo:"Nueva — alta prioridad",texto:"Tras completar el diagnóstico de su equipo [MODELO], el costo estimado de la reparación es de [MONTO], el cual incluye [DESCRIPCIÓN DE TRABAJO Y REPUESTOS]. Para continuar con el proceso, necesitamos su autorización. ¿Nos confirma si desea proceder?",nota:"Siempre detallar qué incluye el costo. Indicar si el precio tiene vigencia limitada en caso de repuestos importados."},
+  {id:10,cat:"gestion",nombre:"Falta de repuesto — tiempo de espera",tipo:"Nueva — prioridad media",texto:"Le informamos que el repuesto requerido para la reparación de su equipo no se encuentra disponible en stock en este momento. El tiempo estimado de llegada es de aproximadamente [PLAZO]. ¿Desea que procedamos con el pedido del repuesto, o prefiere que exploremos alguna alternativa?",nota:"Frecuente en equipos de marcas específicas o modelos descontinuados. Ofrecer siempre una alternativa si existe."},
+  {id:11,cat:"gestion",nombre:"Seguimiento proactivo sin respuesta",tipo:"Nueva — prioridad media",texto:"Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° DE ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto que le enviamos? Quedamos a su disposición para aclarar cualquier duda y proceder cuando usted lo indique.",nota:"Usar 48–72 horas después de enviar el presupuesto sin recibir respuesta."},
+  {id:12,cat:"gestion",nombre:"Agradecimiento por espera",tipo:"Existente",texto:"Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
+  {id:13,cat:"gestion",nombre:"Agradecimiento por espera con enlace",tipo:"Existente",texto:"Gracias por su paciencia. Aquí le dejo el enlace con lo que nos solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
+  {id:14,cat:"resolucion",nombre:"Confirmar envío para garantía",tipo:"Existente",texto:"Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, lo revisaremos y, si se trata de un defecto de fábrica, quedará cubierto por la garantía.",nota:null},
+  {id:15,cat:"resolucion",nombre:"Garantía no aplica — explicación",tipo:"Nueva — prioridad media",texto:"Luego de realizar la revisión técnica del equipo, hemos determinado que el daño encontrado corresponde a [CAUSA]. Este tipo de situación no está cubierta por la garantía del fabricante. Con gusto le detallamos las opciones de reparación disponibles con su respectivo costo.",nota:"Usar tono empático. Evitar lenguaje acusatorio. Siempre ofrecer la alternativa de reparación con costo."},
+  {id:16,cat:"resolucion",nombre:"Equipo listo para retiro o entrega",tipo:"Nueva — alta prioridad",texto:"¡Buenas noticias! Su equipo [MODELO / N° DE ORDEN] ya se encuentra listo. Puede retirarlo en nuestra oficina ubicada en [DIRECCIÓN] en horario [HORARIO], o si lo prefiere, podemos coordinar el envío a su dirección. ¿Cómo le queda mejor?",nota:null},
+  {id:17,cat:"resolucion",nombre:"Equipo sin reparación posible",tipo:"Nueva — prioridad media",texto:"Lamentablemente, luego del diagnóstico técnico, hemos determinado que el equipo presenta un daño que no permite una reparación viable, ya sea por el grado del daño o porque el costo de reparación superaría el valor del equipo. Con gusto le asesoramos sobre las opciones de reposición disponibles.",nota:"Usar tono cálido y empático. Ofrecer siempre una alternativa concreta."},
+  {id:18,cat:"resolucion",nombre:"Solicitud de certificado técnico",tipo:"Nueva — prioridad baja",texto:"Con mucho gusto le emitimos el certificado técnico de la reparación realizada, con el detalle completo del trabajo efectuado y los repuestos utilizados. ¿Nos podría indicar si necesita algún formato específico, o si el certificado es para fines de garantía, auditoría o trámite con su aseguradora?",nota:null},
+  {id:19,cat:"resolucion",nombre:"Transferencia a técnico especializado",tipo:"Nueva — prioridad baja",texto:"Esta consulta requiere la atención de nuestro técnico especializado. Vamos a ponerle en contacto con [NOMBRE / ÁREA] para que pueda asistirle de la mejor manera. Un momento, por favor.",nota:null},
+  {id:20,cat:"cierre",nombre:"Cierre estándar",tipo:"Existente",texto:"Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!",nota:null},
+  {id:21,cat:"cierre",nombre:"Cierre con confirmación",tipo:"Existente",texto:"Ha sido un placer atenderle. Si no tiene ninguna otra consulta, cerramos la conversación por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!",nota:null},
+  {id:22,cat:"cierre",nombre:"Cierre por inactividad",tipo:"Existente",texto:"Debido a que no hemos recibido respuesta, vamos a cerrar esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!",nota:null},
 ];
 
-/* ──────────────────────────────────────────────────────────
-   CONFIG DE CATEGORÍAS
-   ────────────────────────────────────────────────────────── */
-const catConfig = {
-  todas:        { label: "Vista general",       title: "Todas las plantillas",      desc: "Repositorio completo organizado por etapa de conversación.", color: "var(--azul-medio)", barColor: "#2471C8" },
-  apertura:     { label: "Etapa 1 — Apertura",  title: "Apertura",                  desc: "Primer contacto con el cliente. El objetivo es generar confianza y disponibilidad.", color: "#1B4F8A", barColor: "#2471C8" },
-  relevamiento: { label: "Etapa 2 — Relevamiento", title: "Relevamiento",           desc: "Recopilación de información técnica y del contexto del cliente para orientar la atención.", color: "#236B46", barColor: "#3A9E6A" },
-  gestion:      { label: "Etapa 3 — Gestión",   title: "Gestión en taller",         desc: "Comunicación durante el proceso de reparación: recepción, avances, presupuestos y seguimiento.", color: "#B87A10", barColor: "#F5A623" },
-  resolucion:   { label: "Etapa 4 — Resolución", title: "Resolución",               desc: "Comunicación del resultado: garantía, entrega, equipo irreparable o derivaciones.", color: "#A35200", barColor: "#E07B0B" },
-  cierre:       { label: "Etapa 5 — Cierre",    title: "Cierre de conversación",    desc: "Finalización adecuada del contacto según el tipo de interacción.", color: "#4E2FA0", barColor: "#7C5CBF" },
+const CAT={
+  todas:        {ey:"Vista general",          tit:"Todas las plantillas",       desc:"Repositorio completo organizado por etapa de conversación.",             color:"var(--azul-vivo)",         bar:"#2472CC"},
+  apertura:     {ey:"Etapa 1 — Apertura",     tit:"Apertura",                   desc:"Primer contacto. El objetivo es generar confianza y disponibilidad.",    color:"var(--t-apertura)",        bar:"#2472CC"},
+  relevamiento: {ey:"Etapa 2 — Relevamiento", tit:"Relevamiento",               desc:"Recopilación de datos técnicos y contexto del cliente.",                 color:"var(--t-relevamiento)",    bar:"#1A7A52"},
+  gestion:      {ey:"Etapa 3 — Gestión",      tit:"Gestión en taller",          desc:"Comunicación durante el proceso: recepción, avances y presupuestos.",    color:"var(--t-gestion)",         bar:"#C07B00"},
+  resolucion:   {ey:"Etapa 4 — Resolución",   tit:"Resolución",                 desc:"Comunicación del resultado: garantía, entrega o derivaciones.",          color:"var(--t-resolucion)",      bar:"#C24E10"},
+  cierre:       {ey:"Etapa 5 — Cierre",       tit:"Cierre de conversación",     desc:"Finalización adecuada del contacto según el tipo de interacción.",       color:"var(--t-cierre)",          bar:"#5B3FA8"},
 };
 
-const tipoConfig = {
-  "Existente":              { bg: "#EAF3DE", color: "#27500A", border: "#97C459", dot: "#3B6D11" },
-  "Nueva — alta prioridad": { bg: "#FAECE7", color: "#712B13", border: "#F0997B", dot: "#993C1D" },
-  "Nueva — prioridad media":{ bg: "#FAEEDA", color: "#633806", border: "#EF9F27", dot: "#854F0B" },
-  "Nueva — prioridad baja": { bg: "#E6F1FB", color: "#0C447C", border: "#85B7EB", dot: "#185FA5" },
+const TIPO={
+  "Existente":               {bg:"#EDF7F1",color:"#155535",border:"#7FD4A6",dot:"#1A7A52"},
+  "Nueva — alta prioridad":  {bg:"#FEF0E6",color:"#7A2800",border:"#F5A060",dot:"#C24E10"},
+  "Nueva — prioridad media": {bg:"#FFF8E0",color:"#6B4800",border:"#F0C040",dot:"#C07B00"},
+  "Nueva — prioridad baja":  {bg:"#EEF4FF",color:"#1B3A7A",border:"#90BAF0",dot:"#2472CC"},
 };
 
-/* ──────────────────────────────────────────────────────────
-   ESTADO
-   ────────────────────────────────────────────────────────── */
-let currentCat = "todas";
-let currentModalText = "";
+let cur="todas", curTxt="";
 
-/* ──────────────────────────────────────────────────────────
-   RENDERIZADO
-   ────────────────────────────────────────────────────────── */
-function setCategory(cat, btn) {
-  currentCat = cat;
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  const cfg = catConfig[cat];
-  document.getElementById('cat-eyebrow').textContent  = cfg.label;
-  document.getElementById('cat-eyebrow').style.color  = cfg.color;
-  document.getElementById('cat-title').textContent    = cfg.title;
-  document.getElementById('cat-desc').textContent     = cfg.desc;
-  document.getElementById('search-input').value       = "";
-
-  renderCards();
-}
-
-function filterCards() { renderCards(); }
-
-function renderCards() {
-  const query = document.getElementById('search-input').value.toLowerCase().trim();
-  const grid  = document.getElementById('cards-grid');
-  grid.innerHTML = "";
-
-  let lista = currentCat === "todas"
-    ? plantillas
-    : plantillas.filter(p => p.cat === currentCat);
-
-  if (query) {
-    lista = lista.filter(p =>
-      p.nombre.toLowerCase().includes(query) ||
-      p.texto.toLowerCase().includes(query) ||
-      p.tipo.toLowerCase().includes(query)
-    );
-  }
-
-  if (lista.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6M11 8v6" opacity="0.5"/></svg>
-        <p>No se encontraron plantillas con esa búsqueda.</p>
-      </div>`;
+function render(){
+  const q=document.getElementById('si').value.toLowerCase().trim();
+  const g=document.getElementById('gr');
+  g.innerHTML="";
+  let list=cur==="todas"?P:P.filter(p=>p.cat===cur);
+  if(q)list=list.filter(p=>p.nombre.toLowerCase().includes(q)||p.texto.toLowerCase().includes(q)||p.tipo.toLowerCase().includes(q));
+  if(!list.length){
+    g.innerHTML=`<div class="empty"><svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><p>Sin resultados para esa búsqueda.</p></div>`;
     return;
   }
-
-  lista.forEach((p, i) => {
-    const cfg = catConfig[p.cat];
-    const tc  = tipoConfig[p.tipo] || tipoConfig["Existente"];
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animationDelay = (i * 0.04) + 's';
-    card.onclick = () => openModal(p);
-    card.innerHTML = `
-      <div class="card-top" style="background:${cfg.barColor}"></div>
-      <div class="card-body">
-        <span class="card-badge" style="background:${tc.bg};color:${tc.color};border:1px solid ${tc.border}">
-          <span style="width:6px;height:6px;border-radius:50%;background:${tc.dot};display:inline-block;flex-shrink:0;"></span>
-          ${p.tipo}
+  list.forEach((p,i)=>{
+    const cc=CAT[p.cat],tc=TIPO[p.tipo]||TIPO["Existente"];
+    const d=document.createElement('div');
+    d.className='card';d.style.animationDelay=(i*.038)+'s';d.onclick=()=>openModal(p);
+    d.innerHTML=`<div class="cb" style="background:${cc.bar}"></div>
+      <div class="cbd">
+        <span class="ctag" style="background:${tc.bg};color:${tc.color};border:1px solid ${tc.border}">
+          <span style="width:6px;height:6px;border-radius:50%;background:${tc.dot};display:inline-block;flex-shrink:0"></span>${p.tipo}
         </span>
-        <div class="card-name">${p.nombre}</div>
-        <div class="card-preview">${p.texto}</div>
+        <div class="cnm" style="color:${cc.color}">${p.nombre}</div>
+        <div class="cpv">${p.texto}</div>
       </div>
-      <div class="card-footer">
-        <span class="card-type" style="color:${cfg.color}">${cfg.title}</span>
-        <button class="card-copy-btn" onclick="event.stopPropagation(); copyCard(this, \`${escapeTpl(p.texto)}\`)">
-          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copiar
+      <div class="cf">
+        <span class="cet" style="color:${cc.color}">${cc.ey}</span>
+        <button class="ccp" onclick="event.stopPropagation();qcp(this,\`${e(p.texto)}\`)">
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar
         </button>
       </div>`;
-    grid.appendChild(card);
+    g.appendChild(d);
   });
 }
 
-function escapeTpl(str) {
-  return str.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+function e(s){return s.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$')}
+
+function setCat(cat,btn){
+  cur=cat;
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const cc=CAT[cat];
+  document.getElementById('ey').textContent=cc.ey;
+  document.getElementById('ey').style.color=cc.color;
+  document.getElementById('ctit').textContent=cc.tit;
+  document.getElementById('ctit').style.color=cc.color;
+  document.getElementById('cd').textContent=cc.desc;
+  document.getElementById('si').value="";
+  render();
 }
 
-/* ──────────────────────────────────────────────────────────
-   MODAL
-   ────────────────────────────────────────────────────────── */
-function openModal(p) {
-  const cfg = catConfig[p.cat];
-  const tc  = tipoConfig[p.tipo] || tipoConfig["Existente"];
-  document.getElementById('modal-etapa').textContent   = cfg.label;
-  document.getElementById('modal-etapa').style.color   = cfg.color;
-  document.getElementById('modal-title').textContent   = p.nombre;
-  document.getElementById('modal-text').textContent    = p.texto;
+function openModal(p){
+  const cc=CAT[p.cat];
+  document.getElementById('mey').textContent=cc.ey;
+  document.getElementById('mey').style.color=cc.color;
+  document.getElementById('mtt').textContent=p.nombre;
+  document.getElementById('mtt').style.color=cc.color;
+  document.getElementById('mft').textContent=p.texto;
+  const n=document.getElementById('mfn');
+  n.textContent=p.nota?"💡 "+p.nota:"";
+  n.classList.toggle('on',!!p.nota);
+  const b=document.getElementById('mcp');
+  b.classList.remove('ok');
+  b.innerHTML=`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto`;
+  curTxt=p.texto;
+  document.getElementById('ov').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('ov').classList.remove('open');document.body.style.overflow='';}
+function closeOut(e){if(e.target===document.getElementById('ov'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
-  const notaEl = document.getElementById('modal-nota');
-  if (p.nota) {
-    notaEl.textContent = "💡 " + p.nota;
-    notaEl.classList.add('visible');
-  } else {
-    notaEl.textContent = "";
-    notaEl.classList.remove('visible');
-  }
+function cp(t){if(navigator.clipboard)navigator.clipboard.writeText(t);else{const x=document.createElement('textarea');x.value=t;x.style.position='fixed';x.style.opacity='0';document.body.appendChild(x);x.select();document.execCommand('copy');document.body.removeChild(x);}}
+function showToast(){const t=document.getElementById('toast');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
 
-  const copyBtn = document.getElementById('modal-copy-btn');
-  copyBtn.classList.remove('copied');
-  copyBtn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto`;
-
-  currentModalText = p.texto;
-  document.getElementById('modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+function qcp(btn,txt){
+  cp(txt);
+  btn.classList.add('ok');
+  btn.innerHTML=`<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>¡Listo!`;
+  setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML=`<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar`;},2000);
+  showToast();
+}
+function copyModal(){
+  cp(curTxt);
+  const b=document.getElementById('mcp');
+  b.classList.add('ok');
+  b.innerHTML=`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado!`;
+  setTimeout(()=>{b.classList.remove('ok');b.innerHTML=`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto`;},2000);
+  showToast();
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal')) closeModal();
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
-
-/* ──────────────────────────────────────────────────────────
-   COPIAR
-   ────────────────────────────────────────────────────────── */
-function copyToClipboard(text) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text);
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function copyCard(btn, text) {
-  copyToClipboard(text);
-  btn.classList.add('copied');
-  btn.innerHTML = `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado!`;
-  setTimeout(() => {
-    btn.classList.remove('copied');
-    btn.innerHTML = `<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar`;
-  }, 2000);
-  showToast("Plantilla copiada al portapapeles");
-}
-
-function copyModalText() {
-  copyToClipboard(currentModalText);
-  const btn = document.getElementById('modal-copy-btn');
-  btn.classList.add('copied');
-  btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado!`;
-  setTimeout(() => {
-    btn.classList.remove('copied');
-    btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar texto`;
-  }, 2000);
-  showToast("Plantilla copiada al portapapeles");
-}
-
-/* ──────────────────────────────────────────────────────────
-   LOGO DESDE IMAGEN SUBIDA (si se coloca en el mismo directorio)
-   ────────────────────────────────────────────────────────── */
-// Si el logo está disponible como archivo, descomentar:
-// document.getElementById('logo-img').src = 'sekunet-logo.png';
-// document.getElementById('logo-img').style.display = 'block';
-// document.getElementById('logo-svg').style.display = 'none';
-
-/* ──────────────────────────────────────────────────────────
-   INICIALIZAR
-   ────────────────────────────────────────────────────────── */
-renderCards();
+render();
 </script>
 </body>
 </html>
