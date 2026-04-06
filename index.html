@@ -220,7 +220,7 @@ textarea#chat-input::placeholder{color:var(--muted)}
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span>Agregar Doc</span>
     </button>
-    <span class="hbadge">Gemini · Gratis</span>
+    <span class="hbadge">Gemini 1.5 Flash · Gratis</span>
   </div>
 </header>
 
@@ -357,10 +357,10 @@ textarea#chat-input::placeholder{color:var(--muted)}
 <div class="modal-ov" id="key-modal" onclick="closeOut(event,'key-modal')">
   <div class="modal-box">
     <div class="modal-title">Configurar API Key de Gemini</div>
-    <div class="modal-sub">La clave se guarda solo en su navegador y nunca sale del dispositivo. Gemini es <strong>100% gratis</strong> para uso personal.</div>
+    <div class="modal-sub">La clave se guarda solo en su navegador y nunca sale del dispositivo. Gemini 1.5 Flash es <strong>100% gratis</strong> para uso personal.</div>
     <div class="modal-label">API Key de Google Gemini (GRATIS)</div>
     <input class="modal-input" type="password" id="key-input" placeholder="AIza…" autocomplete="off">
-    <div class="modal-note">💡 Gratis sin tarjeta: entrá a <strong>aistudio.google.com</strong> → "Get API key" → "Create API key". Solo necesitás cuenta de Google. Hasta 1,000 consultas/día gratis.</div>
+    <div class="modal-note">💡 Gratis sin tarjeta: entrá a <strong>aistudio.google.com</strong> → "Get API key" → "Create API key". Solo necesitás cuenta de Google. Hasta 1,500 consultas/día gratis con Gemini 1.5 Flash.</div>
     <div class="modal-btns">
       <button class="mbtn-p" onclick="saveKey()">Guardar y activar</button>
       <button class="mbtn-s" onclick="closeModal('key-modal')">Cancelar</button>
@@ -442,7 +442,7 @@ textarea#chat-input::placeholder{color:var(--muted)}
 
 <script>
 /* ══════════════════════════════════════════════
-   PLANTILLAS (del proyecto original)
+   PLANTILLAS
 ══════════════════════════════════════════════ */
 const PLANTILLAS=[
   {id:1,cat:"apertura",nombre:"Saludo inicial",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?"},
@@ -558,7 +558,6 @@ function loadCase(id){
   if(!c)return;
   curCaseId=id;chatHistory=c.history||[];
   clearChat();
-  // Reproducir mensajes del caso
   chatHistory.forEach(m=>{
     if(m.role==='user')appendUserMsg(m.content);
     else if(m.role==='assistant')appendRawIAMsg(m.content);
@@ -724,7 +723,7 @@ function useTip(btn){
 /* ══════════════════════════════════════════════
    MEDIA — IMAGEN Y AUDIO
 ══════════════════════════════════════════════ */
-let attachedImage=null; // {base64, mimeType, preview}
+let attachedImage=null;
 let mediaRecorder=null, audioChunks=[], isRecording=false, attachedAudio=null;
 
 function handleImageAttach(e){
@@ -806,24 +805,17 @@ async function sendMessage(){
   if(!apiKey){openKeyModal();return}
   inp.value='';
   hideEmpty();
-  // Mostrar mensaje usuario con indicador de adjunto
   const displayMsg=msg+(attachedImage?' 📷 [imagen adjunta]':'')+(attachedAudio?' 🎤 [audio adjunto]':'');
   appendUserMsg(displayMsg);
   chatHistory.push({role:'user',content:msg||'[Solo adjunto multimedia]'});
   const typEl=showTyping();
   document.getElementById('send-btn').disabled=true;
-  // Capturar y limpiar adjuntos
   const imgToSend=attachedImage;
   const audToSend=attachedAudio;
   attachedImage=null;attachedAudio=null;showAttachPreview();
 
-  // Construir contexto de entrenamiento
   const trainCtx=trainData.length?`\n\nCONOCIMIENTOS APRENDIDOS DE CASOS REALES:\n${trainData.slice(0,10).map(t=>`[${t.cat}] P: ${t.q}\nR: ${t.a}`).join('\n\n')}`:'';
-
-  // Contexto de documentos
   const docsCtx=docs.length?`\n\nDOCUMENTOS TÉCNICOS DISPONIBLES:\n${docs.slice(0,3).map(d=>`=== ${d.name} ===\n${d.content.substring(0,1500)}`).join('\n\n')}`:'';
-
-  // Plantillas de la etapa
   const ptls=PLANTILLAS.filter(p=>p.cat===curStage).map(p=>`- "${p.nombre}": ${p.texto}`).join('\n');
 
   const systemPrompts={
@@ -882,15 +874,11 @@ VARIACIONES: (casos similares)`
   };
 
   try{
-    // Convertir historial al formato Gemini (role: user/model)
     const geminiHistory=chatHistory.slice(0,-1).map(m=>({
       role: m.role==='assistant'?'model':m.role,
       parts:[{text:m.content}]
     }));
-    // Último mensaje del usuario
     const lastMsg=chatHistory[chatHistory.length-1].content;
-
-    // Construir parts del último mensaje (texto + media opcional)
     const lastParts=[];
     if(imgToSend){
       lastParts.push({inline_data:{mime_type:imgToSend.mimeType,data:imgToSend.base64}});
@@ -902,7 +890,11 @@ VARIACIONES: (casos similares)`
       lastParts.push({text:lastMsg});
     }
 
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{
+    /* ─────────────────────────────────────────────────────────────
+       CAMBIO 1: gemini-2.0-flash  →  gemini-1.5-flash
+       CAMBIO 2: maxOutputTokens 1400 → 800
+    ───────────────────────────────────────────────────────────── */
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
@@ -911,13 +903,13 @@ VARIACIONES: (casos similares)`
           ...geminiHistory,
           {role:"user",parts:lastParts}
         ],
-        generationConfig:{maxOutputTokens:1400,temperature:0.7}
+        generationConfig:{maxOutputTokens:800,temperature:0.7}
       })
     });
     const data=await res.json();
     typEl.remove();
     if(data.error){
-      appendErrorMsg('Error API: '+data.error.message+' ('+data.error.status+')');
+      appendErrorMsg('Error API: '+data.error.message);
       chatHistory.pop();
     } else {
       const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sin respuesta';
@@ -1038,7 +1030,6 @@ function appendErrorMsg(msg){
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 
-let typingInterval=null;
 function showTyping(){
   const c=document.getElementById('msgs-area');
   const d=document.createElement('div');d.className='msg-group';
