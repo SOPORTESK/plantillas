@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sekunet — Agente IA Técnico</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -504,23 +505,44 @@ const stageNames={
 };
 
 /* ══════════════════════════════════════════════
+   SUPABASE
+══════════════════════════════════════════════ */
+const SB_URL='https://kzcyxeracvfxynddyjld.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Y3l4ZXJhY3ZmeHluZGR5amxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTE5NTQsImV4cCI6MjA5MTA4Nzk1NH0.DvEnK-g5rMxzFec4Fl3rJ5VDYVJ7-ua9ssqf3s-QKtU';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ══════════════════════════════════════════════
    ESTADO
 ══════════════════════════════════════════════ */
 let apiKey='AIzaSyB9m9UWCKDBiQFhAujoh87oprFuvnjKntU', curMode='cliente', curStage='apertura';
 let cases=[], trainData=[], docs=[], curCaseId=null;
 let chatHistory=[];
 
-function init(){
-  apiKey=localStorage.getItem('sk_gemini_sekunet')||'AIzaSyB9m9UWCKDBiQFhAujoh87oprFuvnjKntU';
-  cases=JSON.parse(localStorage.getItem('sek_cases')||'[]');
-  trainData=JSON.parse(localStorage.getItem('sek_train')||'[]');
-  docs=JSON.parse(localStorage.getItem('sek_docs')||'[]');
+async function init(){
+  apiKey='AIzaSyB9m9UWCKDBiQFhAujoh87oprFuvnjKntU';
   updateKeyUI();
+  updateModelLabel();
+  showToast('Cargando datos…',1500);
+  try{
+    const [rc,rt,rd]=await Promise.all([
+      sb.from('sek_cases').select('*').order('created_at',{ascending:false}),
+      sb.from('sek_train').select('*').order('created_at',{ascending:false}),
+      sb.from('sek_docs').select('*').order('created_at',{ascending:false})
+    ]);
+    cases=rc.data||[];
+    trainData=rt.data||[];
+    docs=rd.data||[];
+  }catch(e){
+    // fallback a localStorage si no hay conexión
+    cases=JSON.parse(localStorage.getItem('sek_cases')||'[]');
+    trainData=JSON.parse(localStorage.getItem('sek_train')||'[]');
+    docs=JSON.parse(localStorage.getItem('sek_docs')||'[]');
+    showToast('Sin conexión — usando datos locales',3000);
+  }
   renderCasesList();
   renderTrainList();
   renderDocsList();
   updateStatusBar();
-  updateModelLabel();
 }
 
 /* ══════════════════════════════════════════════
@@ -581,19 +603,24 @@ async function saveKey(){
    CASOS
 ══════════════════════════════════════════════ */
 function newCase(){document.getElementById('case-title').value='';document.getElementById('case-modal').classList.add('open')}
-function createCase(){
+async function createCase(){
   const title=document.getElementById('case-title').value.trim();
   const cat=document.getElementById('case-cat').value;
   if(!title){showToast('Ingrese un título');return}
   if(curCaseId){const cur=cases.find(c=>c.id===curCaseId);if(cur)cur.history=chatHistory;saveCases()}
   const id='case_'+Date.now();
   const c={id,title,cat,date:new Date().toLocaleDateString('es-CR'),history:[]};
-  cases.unshift(c);saveCases();curCaseId=id;chatHistory=[];
+  cases.unshift(c);
+  await sb.from('sek_cases').insert(c);
+  curCaseId=id;chatHistory=[];
   clearChat();closeModal('case-modal');renderCasesList();updateStatusBar();
   showToast('Caso creado: '+title);
 }
-function loadCase(id){
-  if(curCaseId){const cur=cases.find(c=>c.id===curCaseId);if(cur)cur.history=chatHistory;saveCases()}
+async function loadCase(id){
+  if(curCaseId){
+    const cur=cases.find(c=>c.id===curCaseId);
+    if(cur){cur.history=chatHistory;await sb.from('sek_cases').update({history:chatHistory}).eq('id',curCaseId);}
+  }
   const c=cases.find(x=>x.id===id);if(!c)return;
   curCaseId=id;chatHistory=c.history||[];
   clearChat();
@@ -603,13 +630,16 @@ function loadCase(id){
   });
   renderCasesList();
 }
-function deleteCase(id,e){
+async function deleteCase(id,e){
   e.stopPropagation();
   cases=cases.filter(c=>c.id!==id);
   if(curCaseId===id){curCaseId=null;chatHistory=[];clearChat()}
-  saveCases();renderCasesList();updateStatusBar();showToast('Caso eliminado');
+  await sb.from('sek_cases').delete().eq('id',id);
+  renderCasesList();updateStatusBar();showToast('Caso eliminado');
 }
-function saveCases(){localStorage.setItem('sek_cases',JSON.stringify(cases))}
+async function saveCases(){
+  localStorage.setItem('sek_cases',JSON.stringify(cases));
+}
 
 const CAT_CASE_COLORS={alarma:{bg:'#FFEBEE',c:'#B71C1C'},incendio:{bg:'#FFF8E1',c:'#E65100'},cctv:{bg:'#E0F2F1',c:'#00695C'},acceso:{bg:'#E3F2FD',c:'#0D47A1'},otro:{bg:'#EDE7F6',c:'#4527A0'}};
 
@@ -634,18 +664,19 @@ function openTrainModal(){
   document.getElementById('train-q').value='';document.getElementById('train-a').value='';
   document.getElementById('train-modal').classList.add('open');
 }
-function saveTrain(){
+async function saveTrain(){
   const q=document.getElementById('train-q').value.trim();
   const a=document.getElementById('train-a').value.trim();
   const cat=document.getElementById('train-cat').value;
   if(!q||!a){showToast('Complete ambos campos');return}
-  trainData.unshift({id:'t'+Date.now(),q,a,cat,date:new Date().toLocaleDateString('es-CR')});
-  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  const tr={id:'t'+Date.now(),q,a,cat,date:new Date().toLocaleDateString('es-CR')};
+  trainData.unshift(tr);
+  await sb.from('sek_train').insert(tr);
   renderTrainList();updateStatusBar();closeModal('train-modal');showToast('Conocimiento guardado');
 }
-function deleteTrain(id){
+async function deleteTrain(id){
   trainData=trainData.filter(t=>t.id!==id);
-  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  await sb.from('sek_train').delete().eq('id',id);
   renderTrainList();updateStatusBar();
 }
 function renderTrainList(){
@@ -679,16 +710,18 @@ function handleDocFile(e){
   };
   reader.readAsText(file);e.target.value='';
 }
-function saveDoc(){
+async function saveDoc(){
   const name=document.getElementById('doc-name').value.trim();
   const content=document.getElementById('doc-content').value.trim();
   if(!name||!content){showToast('Complete nombre y contenido');return}
-  docs.unshift({id:'d'+Date.now(),name,content:content.substring(0,8000),date:new Date().toLocaleDateString('es-CR'),size:content.length});
-  localStorage.setItem('sek_docs',JSON.stringify(docs));
+  const doc={id:'d'+Date.now(),name,content:content.substring(0,8000),date:new Date().toLocaleDateString('es-CR'),size:content.length};
+  docs.unshift(doc);
+  await sb.from('sek_docs').insert(doc);
   renderDocsList();updateStatusBar();closeModal('doc-modal');showToast('Documento guardado');
 }
-function deleteDoc(id){
-  docs=docs.filter(d=>d.id!==id);localStorage.setItem('sek_docs',JSON.stringify(docs));
+async function deleteDoc(id){
+  docs=docs.filter(d=>d.id!==id);
+  await sb.from('sek_docs').delete().eq('id',id);
   renderDocsList();updateStatusBar();
 }
 function renderDocsList(){
@@ -963,19 +996,20 @@ VARIACIONES: (casos similares)`
     }
     const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sin respuesta';
     chatHistory.push({role:'assistant',content:text});
-    if(curCaseId){const c=cases.find(x=>x.id===curCaseId);if(c){c.history=chatHistory;saveCases()}}
+    if(curCaseId){const c=cases.find(x=>x.id===curCaseId);if(c){c.history=chatHistory;await sb.from('sek_cases').update({history:chatHistory}).eq('id',curCaseId);}}
     if(curMode==='correccion'){autoSaveCorrection(msg,text)}
     parseAndRender(text);
   }
   document.getElementById('send-btn').disabled=false;
 }
 
-function autoSaveCorrection(original,correction){
+async function autoSaveCorrection(original,correction){
   const match=correction.match(/CORRECCIÓN:\s*([\s\S]+?)(?=APRENDIZAJE:|$)/);
   const learn=correction.match(/APRENDIZAJE:\s*(.+)/);
   if(match&&learn){
-    trainData.unshift({id:'t'+Date.now(),q:'CORRECCIÓN: '+original.substring(0,100),a:match[1].trim().substring(0,500),cat:'procedimiento',date:new Date().toLocaleDateString('es-CR')});
-    localStorage.setItem('sek_train',JSON.stringify(trainData));
+    const tr={id:'t'+Date.now(),q:'CORRECCIÓN: '+original.substring(0,100),a:match[1].trim().substring(0,500),cat:'procedimiento',date:new Date().toLocaleDateString('es-CR')};
+    trainData.unshift(tr);
+    await sb.from('sek_train').insert(tr);
     renderTrainList();updateStatusBar();showToast('Corrección guardada en entrenamiento');
   }
 }
@@ -1069,12 +1103,13 @@ function startCorrection(btn){
     <button class="correction-save" onclick="saveManualCorrection(this,'${esc(text)}')">Guardar corrección</button>`;
   sug.appendChild(div);div.querySelector('textarea').focus();
 }
-function saveManualCorrection(btn,original){
+async function saveManualCorrection(btn,original){
   const textarea=btn.previousElementSibling;
   const corrected=textarea.value.trim();
   if(!corrected){showToast('Escribí la corrección');return}
-  trainData.unshift({id:'t'+Date.now(),q:'CORRECCIÓN MANUAL: '+original.substring(0,100),a:corrected.substring(0,600),cat:'procedimiento',date:new Date().toLocaleDateString('es-CR')});
-  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  const tr={id:'t'+Date.now(),q:'CORRECCIÓN MANUAL: '+original.substring(0,100),a:corrected.substring(0,600),cat:'procedimiento',date:new Date().toLocaleDateString('es-CR')};
+  trainData.unshift(tr);
+  await sb.from('sek_train').insert(tr);
   renderTrainList();updateStatusBar();btn.closest('.correction-area').remove();
   showToast('Corrección guardada — el agente aprenderá de esto');
 }
