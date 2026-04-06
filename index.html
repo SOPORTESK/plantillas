@@ -3,211 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sekunet — Plantillas + Asistente IA</title>
+<title>Sekunet — Agente IA Técnico (Gemini Gratis)</title>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --A:  #1B5AA8;
-  --Av: #2472CC;
-  --R:  #0E8A5F;
-  --G:  #B87200;
-  --Re: #C03A10;
-  --C:  #5030A0;
-  --N:  #F5A820;
-  --ND: #C07800;
-
-  --fA:  #E8F1FF; --bA: #9ABDE8;
-  --fR:  #E3F7EF; --bR: #7ACFAD;
-  --fG:  #FFF5DC; --bG: #E8C060;
-  --fRe: #FFF0E8; --bRe:#F09070;
-  --fC:  #F0EBFF; --bC: #A888E8;
-
-  --bg:    #F2F4F8;
-  --white: #FFFFFF;
-  --bord:  #DDE3EE;
-  --nero:  #0D1520;
-  --muted: #7A8EAA;
-
-  --fd:'Exo 2',sans-serif;
-  --fr:'Rajdhani',sans-serif;
-  --r:10px; --rl:16px;
+  --A:#1B5AA8;--Av:#2472CC;--R:#0E8A5F;--G:#B87200;--Re:#C03A10;--C:#5030A0;--N:#F5A820;
+  --fA:#E8F1FF;--bA:#9ABDE8;--fR:#E3F7EF;--bR:#7ACFAD;--fG:#FFF5DC;--bG:#E8C060;
+  --fRe:#FFF0E8;--bRe:#F09070;--fC:#F0EBFF;--bC:#A888E8;
+  --bg:#F2F4F8;--white:#FFFFFF;--bord:#DDE3EE;--nero:#0D1520;--muted:#7A8EAA;
+  --fd:'Exo 2',sans-serif;--fr:'Rajdhani',sans-serif;
+  --r:10px;--rl:16px;
   --sh:0 2px 10px rgba(13,21,32,.07),0 6px 24px rgba(13,21,32,.04);
-  --shh:0 8px 32px rgba(27,90,168,.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fd);background:var(--white);color:var(--nero);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+body{font-family:var(--fd);background:var(--bg);color:var(--nero);height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
-/* ── HEADER ── */
+/* HEADER */
 header{background:var(--white);border-bottom:1.5px solid var(--bord);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 14px rgba(13,21,32,.06);z-index:100}
 .lw{display:flex;align-items:center;gap:12px}
-.lname{font-family:var(--fd);font-size:20px;font-weight:900;letter-spacing:0.06em;background:linear-gradient(90deg,var(--A) 0%,var(--Av) 45%,var(--N) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.lname{font-family:var(--fd);font-size:20px;font-weight:900;letter-spacing:0.06em;background:linear-gradient(90deg,var(--A) 0%,var(--Av) 45%,var(--N) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .lsub{font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--A);opacity:.6;margin-top:2px}
-.hbadge{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;background:var(--fA);color:var(--A);border:1px solid var(--bA)}
 .hright{display:flex;align-items:center;gap:10px}
-/* Botón API key */
-.apikey-btn{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:20px;background:none;border:1.5px solid var(--bord);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .15s,color .15s}
+.hbadge{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;background:var(--fA);color:var(--A);border:1px solid var(--bA)}
+.apikey-btn{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:20px;background:none;border:1.5px solid var(--bord);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s}
 .apikey-btn:hover{border-color:var(--Av);color:var(--Av)}
 .apikey-btn.set{border-color:var(--R);color:var(--R);background:var(--fR)}
 
-/* ── MAIN LAYOUT (3 columnas) ── */
+/* LAYOUT */
 .layout{display:flex;flex:1;overflow:hidden}
 
-/* ── SIDEBAR IZQUIERDO — categorías ── */
-.sb-left{width:220px;flex-shrink:0;background:var(--white);border-right:1.5px solid var(--bord);padding:20px 0 24px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
-.sbl{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--A);opacity:.45;padding:0 18px 10px}
-.nb{display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;border:none;background:none;cursor:pointer;border-left:3px solid transparent;transition:background .15s;text-align:left}
-.nb:hover{background:var(--bg)}
-.ni{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform .14s}
-.nb:hover .ni{transform:scale(1.1)}
-.nf{flex:1;min-width:0}
-.nm{font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.01em;display:block;line-height:1.15}
-.ns{font-family:var(--fr);font-size:11px;font-weight:500;letter-spacing:.03em;display:block;margin-top:1px;opacity:.6}
-.nc{font-family:var(--fd);font-size:12px;font-weight:700;min-width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nb[data-cat="todas"] .nm,.nb[data-cat="todas"] .nc,.nb[data-cat="todas"] .ns{color:var(--Av)}
-.nb[data-cat="apertura"] .nm,.nb[data-cat="apertura"] .nc,.nb[data-cat="apertura"] .ns{color:var(--A)}
-.nb[data-cat="relevamiento"] .nm,.nb[data-cat="relevamiento"] .nc,.nb[data-cat="relevamiento"] .ns{color:var(--R)}
-.nb[data-cat="gestion"] .nm,.nb[data-cat="gestion"] .nc,.nb[data-cat="gestion"] .ns{color:var(--G)}
-.nb[data-cat="resolucion"] .nm,.nb[data-cat="resolucion"] .nc,.nb[data-cat="resolucion"] .ns{color:var(--Re)}
-.nb[data-cat="cierre"] .nm,.nb[data-cat="cierre"] .nc,.nb[data-cat="cierre"] .ns{color:var(--C)}
-.nb[data-cat="todas"] .ni{background:var(--fA)} .nb[data-cat="apertura"] .ni{background:var(--fA)} .nb[data-cat="relevamiento"] .ni{background:var(--fR)} .nb[data-cat="gestion"] .ni{background:var(--fG)} .nb[data-cat="resolucion"] .ni{background:var(--fRe)} .nb[data-cat="cierre"] .ni{background:var(--fC)}
-.nb[data-cat="todas"] .nc{background:var(--fA);color:var(--Av)} .nb[data-cat="apertura"] .nc{background:var(--fA);color:var(--A)} .nb[data-cat="relevamiento"] .nc{background:var(--fR);color:var(--R)} .nb[data-cat="gestion"] .nc{background:var(--fG);color:var(--G)} .nb[data-cat="resolucion"] .nc{background:var(--fRe);color:var(--Re)} .nb[data-cat="cierre"] .nc{background:var(--fC);color:var(--C)}
-.nb[data-cat="todas"].active{background:var(--fA);border-left-color:var(--Av)} .nb[data-cat="apertura"].active{background:var(--fA);border-left-color:var(--A)} .nb[data-cat="relevamiento"].active{background:var(--fR);border-left-color:var(--R)} .nb[data-cat="gestion"].active{background:var(--fG);border-left-color:var(--G)} .nb[data-cat="resolucion"].active{background:var(--fRe);border-left-color:var(--Re)} .nb[data-cat="cierre"].active{background:var(--fC);border-left-color:var(--C)}
-.sep{height:1px;background:var(--bord);margin:8px 18px}
+/* SIDEBAR */
+.sidebar{width:220px;flex-shrink:0;background:var(--white);border-right:1.5px solid var(--bord);display:flex;flex-direction:column;overflow:hidden}
+.sb-tabs{display:flex;border-bottom:1.5px solid var(--bord);flex-shrink:0}
+.sb-tab{flex:1;padding:12px 8px;font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sb-tab.active{color:var(--Av);border-bottom-color:var(--Av);background:var(--fA)}
+.sb-tab svg{opacity:.6}
+.sb-tab.active svg{opacity:1}
+.sb-panel{flex:1;overflow-y:auto;padding:14px}
+.sb-panel.hidden{display:none}
 
-/* ── CENTRO — plantillas ── */
-.ct{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-.ct-head{padding:18px 22px 14px;background:var(--white);border-bottom:1px solid var(--bord);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.cey{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:6px}
-.cey::before{content:'';display:inline-block;width:14px;height:2px;border-radius:2px;background:currentColor}
-.ctit{font-family:var(--fd);font-size:22px;font-weight:900;letter-spacing:-.01em;line-height:1.1}
-.sw{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--bord);border-radius:30px;padding:7px 14px;gap:7px;min-width:180px;transition:border-color .15s}
-.sw:focus-within{border-color:var(--Av)}
-.sw input{border:none;background:none;outline:none;font-family:var(--fd);font-size:12px;font-weight:600;color:var(--A);flex:1}
-.sw input::placeholder{color:var(--A);opacity:.35;font-weight:400}
-.sw svg{color:var(--A);opacity:.4;flex-shrink:0}
+/* Casos en sidebar */
+.case-item{border:1.5px solid var(--bord);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s;background:var(--white)}
+.case-item:hover{border-color:var(--Av);background:var(--fA)}
+.case-item.active{border-color:var(--Av);background:var(--fA)}
+.ci-date{font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.ci-title{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--A);line-height:1.2;margin-bottom:3px}
+.ci-cat{font-family:var(--fr);font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-block}
+.ci-del{float:right;background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:0 2px;transition:color .14s}
+.ci-del:hover{color:var(--Re)}
 
-.cards-scroll{flex:1;overflow-y:auto;padding:18px 22px}
-.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+/* Docs */
+.doc-item{border:1.5px solid var(--bord);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--white)}
+.doc-name{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--A);margin-bottom:2px}
+.doc-size{font-family:var(--fr);font-size:10px;color:var(--muted)}
+.doc-del{float:right;background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;transition:color .14s}
+.doc-del:hover{color:var(--Re)}
 
-/* Card plantilla */
-.card{background:var(--white);border:1.5px solid var(--bord);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;flex-direction:column;box-shadow:var(--sh);animation:fu .2s ease both}
-.card:hover{transform:translateY(-2px);box-shadow:var(--shh)}
-@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.cbar{height:4px;flex-shrink:0}
-.cbody{padding:14px 16px 11px;flex:1;display:flex;flex-direction:column}
-.ctag{display:inline-flex;align-items:center;gap:4px;font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:8px;width:fit-content}
-.cnm{font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.01em;line-height:1.2;margin-bottom:6px}
-.cpv{font-family:var(--fr);font-size:12px;font-weight:400;line-height:1.58;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;opacity:.6}
-.cfoot{padding:9px 16px;border-top:1px solid var(--bord);display:flex;align-items:center;justify-content:space-between}
-.cet{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.ccp{display:inline-flex;align-items:center;gap:3px;font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:background .14s,color .14s}
+/* add-btn */
+.add-btn{width:100%;padding:9px;border:1.5px dashed var(--bord);border-radius:10px;background:none;cursor:pointer;font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:8px}
+.add-btn:hover{border-color:var(--Av);color:var(--Av);background:var(--fA)}
 
-.empty{grid-column:1/-1;text-align:center;padding:40px 20px}
-.empty p{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--A);opacity:.4}
+/* Base conocimiento */
+.kb-section{margin-bottom:14px}
+.kb-section-title{font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--A);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.kb-tag{font-family:var(--fr);font-size:10px;padding:3px 8px;border-radius:8px;background:var(--fA);color:var(--A);border:1px solid var(--bA);cursor:pointer;transition:all .14s;margin:2px}
+.kb-tag:hover,.kb-tag.active{background:var(--Av);color:#fff;border-color:var(--Av)}
 
-/* ── PANEL IA — derecho ── */
-.ia-panel{width:360px;flex-shrink:0;background:var(--white);border-left:1.5px solid var(--bord);display:flex;flex-direction:column;overflow:hidden}
+/* MAIN CHAT */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-toolbar{padding:12px 20px;background:var(--white);border-bottom:1px solid var(--bord);display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
+.toolbar-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mode-pill{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 13px;border-radius:20px;border:1.5px solid var(--bord);background:none;cursor:pointer;color:var(--muted);transition:all .14s}
+.mode-pill.active{background:var(--Av);color:#fff;border-color:var(--Av)}
+.mode-pill[data-mode="cliente"].active{background:var(--A);border-color:var(--A)}
+.mode-pill[data-mode="tecnico"].active{background:var(--R);border-color:var(--R)}
+.mode-pill[data-mode="correccion"].active{background:var(--G);border-color:var(--G)}
+.mode-pill[data-mode="entrenamiento"].active{background:var(--C);border-color:var(--C)}
+.stage-sep{width:1px;height:22px;background:var(--bord)}
+.sp2{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1.5px solid var(--bord);background:none;cursor:pointer;color:var(--muted);transition:all .14s}
+.sp2[data-s="apertura"].active{background:var(--A);border-color:var(--A);color:#fff}
+.sp2[data-s="relevamiento"].active{background:var(--R);border-color:var(--R);color:#fff}
+.sp2[data-s="gestion"].active{background:var(--G);border-color:var(--G);color:#fff}
+.sp2[data-s="resolucion"].active{background:var(--Re);border-color:var(--Re);color:#fff}
+.sp2[data-s="cierre"].active{background:var(--C);border-color:var(--C);color:#fff}
 
-/* Header del panel IA */
-.ia-head{padding:16px 18px 14px;border-bottom:1.5px solid var(--bord);flex-shrink:0}
-.ia-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.ia-title{font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:.01em}
-/* Indicador online/offline */
-.ia-status{display:flex;align-items:center;gap:5px;font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
-.status-dot.on{background:var(--R);box-shadow:0 0 0 3px rgba(14,138,95,.2)}
+/* STATUS BAR */
+.status-bar{padding:6px 20px;background:linear-gradient(90deg,#0D1520 0%,#1a2a4a 100%);display:flex;align-items:center;gap:16px;flex-shrink:0}
+.sb-item{display:flex;align-items:center;gap:5px;font-family:var(--fr);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.sb-dot.on{background:#2ecc8a;box-shadow:0 0 0 3px rgba(46,204,138,.2)}
+.sb-dot.warn{background:var(--N);box-shadow:0 0 0 3px rgba(245,168,32,.2)}
 
-/* Selector de etapa */
-.ia-stage-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--A);opacity:.5;margin-bottom:5px}
-.stage-pills{display:flex;flex-wrap:wrap;gap:5px}
-.sp{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1.5px solid var(--bord);background:none;cursor:pointer;color:var(--muted);transition:all .14s}
-.sp:hover{border-color:currentColor;opacity:.8}
-.sp.active{color:#fff}
-.sp[data-s="apertura"].active{background:var(--A);border-color:var(--A)}
-.sp[data-s="relevamiento"].active{background:var(--R);border-color:var(--R)}
-.sp[data-s="gestion"].active{background:var(--G);border-color:var(--G)}
-.sp[data-s="resolucion"].active{background:var(--Re);border-color:var(--Re)}
-.sp[data-s="cierre"].active{background:var(--C);border-color:var(--C)}
+/* MENSAJES */
+.msgs-area{flex:1;overflow-y:auto;padding:20px}
+.msg-group{margin-bottom:16px;animation:fadeUp .2s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bubble-user{background:var(--Av);color:#fff;border-radius:16px 16px 3px 16px;padding:12px 16px;font-family:var(--fr);font-size:13px;line-height:1.65;display:inline-block;max-width:80%;margin-left:auto}
+.msg-user{text-align:right}
+.bubble-ia{background:var(--white);border:1.5px solid var(--bord);border-radius:3px 16px 16px 16px;padding:14px 16px;font-family:var(--fr);font-size:13px;line-height:1.7;color:var(--nero);max-width:96%}
+.ia-section-title{font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--bord)}
 
-/* Mensajes */
-.ia-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+/* Sugerencias */
+.suggestions{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.sug{background:var(--bg);border:1.5px solid var(--bord);border-radius:12px;padding:11px 14px;cursor:pointer;transition:all .14s;position:relative}
+.sug:hover{border-color:var(--Av);background:var(--fA)}
+.sug-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.sug-num{font-family:var(--fd);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.sug-actions{display:flex;gap:5px;opacity:0;transition:opacity .14s}
+.sug:hover .sug-actions{opacity:1}
+.sug-btn{font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:8px;border:1px solid var(--bord);background:var(--white);color:var(--muted);cursor:pointer;transition:all .14s}
+.sug-btn:hover{background:var(--Av);color:#fff;border-color:var(--Av)}
+.sug-btn.corregir:hover{background:var(--G);border-color:var(--G)}
+.sug-text{font-family:var(--fr);font-size:12.5px;line-height:1.6;color:var(--nero)}
 
-/* Mensaje del agente (usuario) */
-.msg-user{align-self:flex-end;max-width:88%}
-.msg-user .bubble{background:var(--Av);color:#fff;border-radius:14px 14px 3px 14px;padding:10px 14px;font-family:var(--fr);font-size:13px;font-weight:400;line-height:1.6;letter-spacing:.01em}
-.msg-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.45;margin-bottom:3px;color:var(--A)}
-.msg-user .msg-label{text-align:right}
+/* Análisis técnico */
+.tech-analysis{background:var(--fR);border:1.5px solid var(--bR);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-family:var(--fr);font-size:12px;line-height:1.6;color:var(--R)}
+.tech-analysis strong{font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px;color:var(--R)}
 
-/* Mensaje IA */
-.msg-ia{align-self:flex-start;max-width:96%;width:100%}
-.msg-ia .bubble{background:var(--bg);border:1.5px solid var(--bord);border-radius:3px 14px 14px 14px;padding:12px 14px;font-family:var(--fr);font-size:13px;font-weight:400;line-height:1.65;letter-spacing:.01em;color:var(--nero)}
+/* Modo corrección */
+.correction-area{background:var(--fG);border:1.5px solid var(--bG);border-radius:12px;padding:14px;margin-top:10px}
+.correction-area textarea{width:100%;border:1.5px solid var(--bG);border-radius:8px;padding:9px 12px;font-family:var(--fr);font-size:12px;color:var(--nero);background:var(--white);outline:none;resize:vertical;min-height:70px;transition:border-color .15s}
+.correction-area textarea:focus{border-color:var(--G)}
+.correction-save{margin-top:7px;padding:7px 16px;background:var(--G);color:#fff;border:none;border-radius:20px;font-family:var(--fd);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .14s}
+.correction-save:hover{background:#8a5500}
 
-/* Sugerencias de respuesta */
-.suggestions{display:flex;flex-direction:column;gap:7px;margin-top:10px}
-.sug{background:var(--white);border:1.5px solid var(--bord);border-radius:10px;padding:10px 13px;cursor:pointer;transition:border-color .14s,box-shadow .14s;position:relative}
-.sug:hover{border-color:var(--Av);box-shadow:0 2px 10px rgba(36,114,204,.12)}
-.sug-num{font-family:var(--fd);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.sug-text{font-family:var(--fr);font-size:12px;font-weight:400;line-height:1.55;color:var(--nero);letter-spacing:.01em}
-.sug-copy{position:absolute;top:8px;right:10px;font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid var(--bord);background:var(--white);color:var(--muted);cursor:pointer;opacity:0;transition:opacity .14s}
-.sug:hover .sug-copy{opacity:1}
-.sug-copy:hover{background:var(--Av);color:#fff;border-color:var(--Av)}
+/* Plantillas relacionadas */
+.rel-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.rel-pill{font-family:var(--fr);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:all .14s}
 
-/* Plantillas sugeridas */
-.related-label{font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:8px;margin-bottom:6px;padding:0 2px}
-.rel-pills{display:flex;flex-wrap:wrap;gap:5px}
-.rel-pill{font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:background .14s,color .14s;text-align:left}
-
-/* Typing indicator */
-.typing{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--bg);border:1.5px solid var(--bord);border-radius:3px 14px 14px 14px;width:fit-content}
-.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
+/* Typing */
+.typing-wrap{display:flex;align-items:center;gap:5px;padding:10px 14px;background:var(--bg);border:1.5px solid var(--bord);border-radius:3px 14px 14px 14px;width:fit-content}
+.typing-wrap span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing-wrap span:nth-child(2){animation-delay:.2s}
+.typing-wrap span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
 
-/* Estado vacío panel IA */
-.ia-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:12px;opacity:.5}
-.ia-empty svg{opacity:.3}
-.ia-empty-title{font-family:var(--fd);font-size:14px;font-weight:800;color:var(--A)}
-.ia-empty-sub{font-family:var(--fr);font-size:12px;font-weight:500;color:var(--A);line-height:1.55}
+/* Empty state */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;gap:14px}
+.empty-icon{width:56px;height:56px;border-radius:16px;background:var(--fA);display:flex;align-items:center;justify-content:center;font-size:26px}
+.empty-title{font-family:var(--fd);font-size:16px;font-weight:900;color:var(--A)}
+.empty-sub{font-family:var(--fr);font-size:13px;color:var(--muted);line-height:1.6;max-width:340px}
+.empty-tips{display:flex;flex-direction:column;gap:8px;width:100%;max-width:380px;margin-top:6px}
+.tip-btn{text-align:left;padding:11px 14px;border:1.5px solid var(--bord);border-radius:12px;background:var(--white);cursor:pointer;transition:all .14s;font-family:var(--fr);font-size:12px;color:var(--A);font-weight:500}
+.tip-btn:hover{border-color:var(--Av);background:var(--fA)}
+.tip-btn strong{font-family:var(--fd);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px;color:var(--Av)}
 
-/* Input del chat */
-.ia-input-area{padding:14px 16px;border-top:1.5px solid var(--bord);flex-shrink:0;background:var(--white)}
-.ia-input-wrap{display:flex;gap:8px;align-items:flex-end;background:var(--bg);border:1.5px solid var(--bord);border-radius:14px;padding:10px 14px;transition:border-color .15s}
-.ia-input-wrap:focus-within{border-color:var(--Av);background:var(--white)}
-textarea#chat-input{flex:1;border:none;background:transparent;outline:none;font-family:var(--fr);font-size:13px;font-weight:400;color:var(--nero);resize:none;min-height:40px;max-height:120px;line-height:1.55;letter-spacing:.01em}
-textarea#chat-input::placeholder{color:var(--muted);font-weight:400}
-.send-btn{width:36px;height:36px;border-radius:10px;background:var(--Av);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .14s,transform .12s;align-self:flex-end}
+/* INPUT */
+.input-area{padding:14px 18px;border-top:1.5px solid var(--bord);background:var(--white);flex-shrink:0}
+.input-wrap{display:flex;gap:8px;align-items:flex-end;background:var(--bg);border:1.5px solid var(--bord);border-radius:14px;padding:10px 14px;transition:all .15s}
+.input-wrap:focus-within{border-color:var(--Av);background:var(--white)}
+textarea#chat-input{flex:1;border:none;background:transparent;outline:none;font-family:var(--fr);font-size:13px;color:var(--nero);resize:none;min-height:40px;max-height:120px;line-height:1.55}
+textarea#chat-input::placeholder{color:var(--muted)}
+.send-btn{width:38px;height:38px;border-radius:11px;background:var(--Av);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s;align-self:flex-end}
 .send-btn:hover{background:var(--A);transform:scale(1.06)}
 .send-btn:disabled{background:var(--bord);cursor:not-allowed;transform:none}
-.send-btn svg{color:#fff}
-.ia-hint{font-family:var(--fr);font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:6px;text-align:center}
+.input-hint{font-family:var(--fr);font-size:10px;color:var(--muted);text-align:center;margin-top:5px}
 
-/* Modal API key */
-.modal-ov{position:fixed;inset:0;background:rgba(8,14,30,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;backdrop-filter:blur(4px)}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(8,14,30,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all .2s;backdrop-filter:blur(4px)}
 .modal-ov.open{opacity:1;visibility:visible}
-.modal-box{background:var(--white);border-radius:18px;max-width:440px;width:100%;padding:28px;box-shadow:0 24px 64px rgba(8,14,30,.24);transform:translateY(16px) scale(.97);transition:transform .2s}
+.modal-box{background:var(--white);border-radius:18px;max-width:460px;width:100%;padding:28px;box-shadow:0 24px 64px rgba(8,14,30,.24);transform:translateY(14px) scale(.97);transition:transform .2s}
 .modal-ov.open .modal-box{transform:none}
-.modal-title{font-family:var(--fd);font-size:20px;font-weight:900;color:var(--A);margin-bottom:6px;letter-spacing:.01em}
-.modal-sub{font-family:var(--fr);font-size:13px;font-weight:500;color:var(--muted);line-height:1.55;margin-bottom:20px}
-.modal-label{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--A);margin-bottom:7px}
-.modal-input{width:100%;border:1.5px solid var(--bord);border-radius:10px;padding:11px 14px;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--nero);outline:none;transition:border-color .15s;letter-spacing:.02em;background:var(--bg)}
+.modal-title{font-family:var(--fd);font-size:18px;font-weight:900;color:var(--A);margin-bottom:5px}
+.modal-sub{font-family:var(--fr);font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:18px}
+.modal-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--A);margin-bottom:6px}
+.modal-input{width:100%;border:1.5px solid var(--bord);border-radius:10px;padding:10px 13px;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--nero);outline:none;transition:border-color .15s;background:var(--bg)}
 .modal-input:focus{border-color:var(--Av);background:var(--white)}
-.modal-note{background:var(--fG);border:1px solid var(--bG);border-radius:8px;padding:10px 13px;font-family:var(--fr);font-size:12px;color:var(--G);line-height:1.55;margin:14px 0 20px;font-weight:500}
-.modal-btns{display:flex;gap:10px}
-.mbtn-p{flex:1;padding:11px;background:var(--Av);color:#fff;border:none;border-radius:30px;font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .14s}
+.modal-textarea{width:100%;border:1.5px solid var(--bord);border-radius:10px;padding:10px 13px;font-family:var(--fr);font-size:12px;color:var(--nero);outline:none;transition:border-color .15s;background:var(--bg);resize:vertical;min-height:100px;line-height:1.6}
+.modal-textarea:focus{border-color:var(--Av);background:var(--white)}
+.modal-note{background:var(--fG);border:1px solid var(--bG);border-radius:8px;padding:10px 12px;font-family:var(--fr);font-size:11px;color:var(--G);line-height:1.55;margin:12px 0 18px;font-weight:500}
+.modal-btns{display:flex;gap:8px;margin-top:18px}
+.mbtn-p{flex:1;padding:10px;background:var(--Av);color:#fff;border:none;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .14s}
 .mbtn-p:hover{background:var(--A)}
-.mbtn-s{padding:11px 18px;background:none;border:1.5px solid var(--bord);border-radius:30px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .14s}
+.mbtn-s{padding:10px 16px;background:none;border:1.5px solid var(--bord);border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .14s}
 .mbtn-s:hover{background:var(--bg)}
 
-/* Toast */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--nero);color:#fff;padding:11px 18px;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 8px 28px rgba(8,14,30,.22);z-index:300;display:flex;align-items:center;gap:7px;transform:translateY(56px);opacity:0;transition:transform .26s,opacity .26s}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--nero);color:#fff;padding:10px 18px;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 8px 28px rgba(8,14,30,.22);z-index:300;display:flex;align-items:center;gap:7px;transform:translateY(56px);opacity:0;transition:all .26s}
 .toast.on{transform:translateY(0);opacity:1}
+
+/* Entrenamiento panel */
+.train-entry{border:1.5px solid var(--bord);border-radius:10px;padding:11px 13px;margin-bottom:8px;background:var(--white)}
+.train-q{font-family:var(--fr);font-size:11px;font-weight:600;color:var(--nero);margin-bottom:4px;line-height:1.4}
+.train-a{font-family:var(--fr);font-size:11px;color:var(--muted);line-height:1.4;font-style:italic}
+.train-meta{font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px;display:flex;align-items:center;justify-content:space-between}
+.train-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;padding:0;transition:color .14s}
+.train-del:hover{color:var(--Re)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bord);border-radius:4px}
+
+.section-divider{height:1px;background:var(--bord);margin:10px 0}
+.sb-empty{font-family:var(--fr);font-size:11px;color:var(--muted);text-align:center;padding:20px 10px;line-height:1.5}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="lw">
     <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
@@ -215,117 +208,216 @@ textarea#chat-input::placeholder{color:var(--muted);font-weight:400}
       <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="none" stroke="#2472CC" stroke-width="1.4"/>
       <polygon points="22,10 33,22 22,34 11,22" fill="#F5A820" opacity="0.94"/>
       <polygon points="22,15 28,22 22,29 16,22" fill="#1B5AA8"/>
-      <path d="M12 7 Q22 1 32 7" stroke="#F5A820" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".5"/>
     </svg>
-    <div><div class="lname">SEKUNET</div><div class="lsub">Servicio &amp; Soporte</div></div>
+    <div><div class="lname">SEKUNET</div><div class="lsub">Agente Técnico IA</div></div>
   </div>
   <div class="hright">
     <button class="apikey-btn" id="apikey-btn" onclick="openKeyModal()">
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-      <span id="apikey-label">Configurar API Key</span>
+      <span id="apikey-label">Configurar Gemini (Gratis)</span>
     </button>
-    <span class="hbadge">Plantillas v1.0</span>
+    <button class="apikey-btn" onclick="openDocModal()" style="margin-left:4px">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Agregar Doc</span>
+    </button>
+    <span class="hbadge">Gemini · Gratis</span>
   </div>
 </header>
 
-<!-- LAYOUT -->
 <div class="layout">
 
-  <!-- SIDEBAR IZQ -->
-  <aside class="sb-left">
-    <div class="sbl">Etapas</div>
-    <button class="nb active" data-cat="todas" onclick="setCat('todas',this)">
-      <div class="ni">⊞</div><div class="nf"><span class="nm">Todas</span><span class="ns">Vista completa</span></div><span class="nc">22</span>
-    </button>
-    <div class="sep"></div>
-    <button class="nb" data-cat="apertura" onclick="setCat('apertura',this)">
-      <div class="ni">👋</div><div class="nf"><span class="nm">Apertura</span><span class="ns">Inicio de contacto</span></div><span class="nc">2</span>
-    </button>
-    <button class="nb" data-cat="relevamiento" onclick="setCat('relevamiento',this)">
-      <div class="ni">🔍</div><div class="nf"><span class="nm">Relevamiento</span><span class="ns">Diagnóstico y datos</span></div><span class="nc">4</span>
-    </button>
-    <button class="nb" data-cat="gestion" onclick="setCat('gestion',this)">
-      <div class="ni">⚙️</div><div class="nf"><span class="nm">Gestión</span><span class="ns">Proceso en taller</span></div><span class="nc">7</span>
-    </button>
-    <button class="nb" data-cat="resolucion" onclick="setCat('resolucion',this)">
-      <div class="ni">✅</div><div class="nf"><span class="nm">Resolución</span><span class="ns">Entrega y resultado</span></div><span class="nc">6</span>
-    </button>
-    <button class="nb" data-cat="cierre" onclick="setCat('cierre',this)">
-      <div class="ni">🔒</div><div class="nf"><span class="nm">Cierre</span><span class="ns">Fin de conversación</span></div><span class="nc">3</span>
-    </button>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-tabs">
+      <button class="sb-tab active" onclick="setSbTab('casos',this)" title="Historial de casos">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Casos
+      </button>
+      <button class="sb-tab" onclick="setSbTab('entrenamiento',this)" title="Base de entrenamiento">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Entreno
+      </button>
+      <button class="sb-tab" onclick="setSbTab('docs',this)" title="Documentos técnicos">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Docs
+      </button>
+    </div>
+
+    <div class="sb-panel" id="panel-casos">
+      <button class="add-btn" onclick="newCase()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo caso
+      </button>
+      <div id="cases-list"></div>
+    </div>
+
+    <div class="sb-panel hidden" id="panel-entrenamiento">
+      <button class="add-btn" onclick="openTrainModal()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar conocimiento
+      </button>
+      <div id="train-list"></div>
+    </div>
+
+    <div class="sb-panel hidden" id="panel-docs">
+      <button class="add-btn" onclick="openDocModal()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Subir documento
+      </button>
+      <input type="file" id="doc-file-input" accept=".txt,.md,.csv" style="display:none" onchange="handleDocFile(event)">
+      <div id="docs-list"></div>
+    </div>
   </aside>
 
-  <!-- CENTRO: plantillas -->
-  <div class="ct">
-    <div class="ct-head">
-      <div>
-        <div class="cey" id="ey" style="color:var(--Av)">Vista general</div>
-        <div class="ctit" id="ctit" style="color:var(--Av)">Todas las plantillas</div>
-      </div>
-      <div class="sw">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="si" placeholder="Buscar…" oninput="renderCards()">
-      </div>
+  <!-- MAIN -->
+  <div class="main">
+    <!-- Toolbar -->
+    <div class="chat-toolbar">
+      <span class="toolbar-label">Modo:</span>
+      <button class="mode-pill active" data-mode="cliente" onclick="setMode('cliente',this)">🎧 Atención cliente</button>
+      <button class="mode-pill" data-mode="tecnico" onclick="setMode('tecnico',this)">🔧 Consulta técnica</button>
+      <button class="mode-pill" data-mode="correccion" onclick="setMode('correccion',this)">✏️ Corrección</button>
+      <button class="mode-pill" data-mode="entrenamiento" onclick="setMode('entrenamiento',this)">🧠 Entrenamiento</button>
+      <div class="stage-sep"></div>
+      <span class="toolbar-label">Etapa:</span>
+      <button class="sp2 active" data-s="apertura" onclick="setStage('apertura',this)">Apertura</button>
+      <button class="sp2" data-s="relevamiento" onclick="setStage('relevamiento',this)">Relevamiento</button>
+      <button class="sp2" data-s="gestion" onclick="setStage('gestion',this)">Gestión</button>
+      <button class="sp2" data-s="resolucion" onclick="setStage('resolucion',this)">Resolución</button>
+      <button class="sp2" data-s="cierre" onclick="setStage('cierre',this)">Cierre</button>
     </div>
-    <div class="cards-scroll">
-      <div class="gr" id="gr"></div>
-    </div>
-  </div>
 
-  <!-- PANEL IA -->
-  <div class="ia-panel">
-    <div class="ia-head">
-      <div class="ia-title-row">
-        <!-- Título IA: degradado dinámico -->
-        <div class="ia-title" id="ia-title" style="background:linear-gradient(90deg,var(--A),var(--Av));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Asistente IA</div>
-        <div class="ia-status"><div class="status-dot" id="sdot"></div><span id="slabel" style="color:var(--muted)">Sin clave</span></div>
+    <!-- Status bar -->
+    <div class="status-bar">
+      <div class="sb-item"><div class="sb-dot" id="sdot"></div><span id="slabel">Sin clave API</span></div>
+      <div class="sb-item" id="sb-memory">
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <span id="memory-label">0 casos · 0 conocimientos</span>
       </div>
-      <div class="ia-stage-label">Contexto de etapa</div>
-      <div class="stage-pills">
-        <button class="sp active" data-s="apertura" onclick="setStage('apertura',this)">Apertura</button>
-        <button class="sp" data-s="relevamiento" onclick="setStage('relevamiento',this)">Relevamiento</button>
-        <button class="sp" data-s="gestion" onclick="setStage('gestion',this)">Gestión</button>
-        <button class="sp" data-s="resolucion" onclick="setStage('resolucion',this)">Resolución</button>
-        <button class="sp" data-s="cierre" onclick="setStage('cierre',this)">Cierre</button>
+      <div class="sb-item" id="sb-docs-status">
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/></svg>
+        <span id="docs-label">0 docs cargados</span>
+      </div>
+      <div class="sb-item" style="margin-left:auto">
+        <span id="mode-display" style="color:rgba(255,255,255,.7)">Modo: Atención cliente</span>
       </div>
     </div>
 
     <!-- Mensajes -->
-    <div class="ia-msgs" id="ia-msgs">
-      <div class="ia-empty" id="ia-empty">
-        <svg width="40" height="40" fill="none" stroke="var(--A)" stroke-width="1.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <div class="ia-empty-title">Pegue el mensaje del cliente</div>
-        <div class="ia-empty-sub">La IA analizará el mensaje, sugerirá 3 respuestas y le indicará qué plantillas aplicar según la etapa seleccionada.</div>
+    <div class="msgs-area" id="msgs-area">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">🤖</div>
+        <div class="empty-title">Agente Sekunet listo</div>
+        <div class="empty-sub">Especialista en alarmas, CCTV, incendio y control de acceso. Pegá un mensaje del cliente o hacé una consulta técnica.</div>
+        <div class="empty-tips">
+          <button class="tip-btn" onclick="useTip(this)">
+            <strong>Atención cliente</strong>
+            Cliente: "Mi alarma suena sola de noche pero no hay intrusión, ya revisé puertas y ventanas"
+          </button>
+          <button class="tip-btn" onclick="useTip(this)">
+            <strong>Consulta técnica</strong>
+            ¿Cuáles son las causas más comunes de falsa alarma en detectores PIR?
+          </button>
+          <button class="tip-btn" onclick="useTip(this)">
+            <strong>Diagnóstico</strong>
+            Panel DSC Power 832: código de zona 3 activo constantemente aunque no hay movimiento
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Input -->
-    <div class="ia-input-area">
-      <div class="ia-input-wrap">
-        <textarea id="chat-input" placeholder="Pegue aquí el mensaje del cliente…" rows="2" onkeydown="handleKey(event)"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Enviar (Ctrl+Enter)">
+    <div class="input-area">
+      <div class="input-wrap">
+        <textarea id="chat-input" placeholder="Pegá el mensaje del cliente o hacé una consulta técnica…" rows="2" onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div class="ia-hint">Ctrl + Enter para enviar</div>
+      <div class="input-hint">Ctrl+Enter para enviar · Modo actual: <span id="hint-mode">Atención cliente</span></div>
     </div>
   </div>
 </div>
 
-<!-- MODAL API KEY -->
-<div class="modal-ov" id="key-modal" onclick="closeKeyOut(event)">
+<!-- MODALES -->
+
+<!-- API Key -->
+<div class="modal-ov" id="key-modal" onclick="closeOut(event,'key-modal')">
   <div class="modal-box">
-    <div class="modal-title">Configurar API Key</div>
-    <div class="modal-sub">Ingrese su clave de Anthropic para activar el asistente IA. La clave se guarda solo en su navegador (localStorage) y nunca sale de su dispositivo.</div>
-    <div class="modal-label">API Key de Anthropic</div>
-    <input class="modal-input" type="password" id="key-input" placeholder="sk-ant-api03-…" autocomplete="off">
-    <div class="modal-note">
-      💡 Obtenga su clave en <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
-      El plan gratuito incluye créditos de inicio sin costo.
-    </div>
+    <div class="modal-title">Configurar API Key de Gemini</div>
+    <div class="modal-sub">La clave se guarda solo en su navegador y nunca sale del dispositivo. Gemini es <strong>100% gratis</strong> para uso personal.</div>
+    <div class="modal-label">API Key de Google Gemini (GRATIS)</div>
+    <input class="modal-input" type="password" id="key-input" placeholder="AIza…" autocomplete="off">
+    <div class="modal-note">💡 Gratis sin tarjeta: entrá a <strong>aistudio.google.com</strong> → "Get API key" → "Create API key". Solo necesitás cuenta de Google. Hasta 1,000 consultas/día gratis.</div>
     <div class="modal-btns">
       <button class="mbtn-p" onclick="saveKey()">Guardar y activar</button>
-      <button class="mbtn-s" onclick="closeKeyModal()">Cancelar</button>
+      <button class="mbtn-s" onclick="closeModal('key-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar conocimiento -->
+<div class="modal-ov" id="train-modal" onclick="closeOut(event,'train-modal')">
+  <div class="modal-box">
+    <div class="modal-title">Agregar conocimiento</div>
+    <div class="modal-sub">Enseñale al agente un caso real o un dato técnico específico de su operación.</div>
+    <div class="modal-label">Situación / Pregunta</div>
+    <input class="modal-input" type="text" id="train-q" placeholder="Ej: Cliente con DSC Power 832 zona 3 activa…" style="margin-bottom:12px">
+    <div class="modal-label">Respuesta / Solución correcta</div>
+    <textarea class="modal-textarea" id="train-a" placeholder="Ej: Verificar resistencia EOL de la zona, revisar cableado en bornera 3, medir voltaje..."></textarea>
+    <div class="modal-label" style="margin-top:12px">Categoría</div>
+    <select class="modal-input" id="train-cat" style="margin-bottom:0">
+      <option value="alarma">Alarmas intrusión</option>
+      <option value="incendio">Detección incendio</option>
+      <option value="cctv">CCTV / Video</option>
+      <option value="acceso">Control de acceso</option>
+      <option value="procedimiento">Procedimiento interno</option>
+      <option value="producto">Producto específico</option>
+    </select>
+    <div class="modal-btns">
+      <button class="mbtn-p" onclick="saveTrain()">Guardar conocimiento</button>
+      <button class="mbtn-s" onclick="closeModal('train-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar doc -->
+<div class="modal-ov" id="doc-modal" onclick="closeOut(event,'doc-modal')">
+  <div class="modal-box">
+    <div class="modal-title">Cargar documento técnico</div>
+    <div class="modal-sub">Cargue manuales, listas de precios, procedimientos en formato .txt o pegue el contenido directamente.</div>
+    <div class="modal-label">Nombre del documento</div>
+    <input class="modal-input" type="text" id="doc-name" placeholder="Ej: Manual DSC Power 832" style="margin-bottom:12px">
+    <div class="modal-label">Contenido (texto)</div>
+    <textarea class="modal-textarea" id="doc-content" placeholder="Pegue aquí el contenido del documento o use el botón de archivo…" style="min-height:130px"></textarea>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="mbtn-s" style="font-size:11px" onclick="document.getElementById('doc-file-input').click()">📁 Desde archivo .txt</button>
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn-p" onclick="saveDoc()">Guardar documento</button>
+      <button class="mbtn-s" onclick="closeModal('doc-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nuevo caso -->
+<div class="modal-ov" id="case-modal" onclick="closeOut(event,'case-modal')">
+  <div class="modal-box">
+    <div class="modal-title">Nuevo caso</div>
+    <div class="modal-sub">Inicie un nuevo caso de soporte. El historial actual se guarda automáticamente.</div>
+    <div class="modal-label">Título del caso</div>
+    <input class="modal-input" type="text" id="case-title" placeholder="Ej: Falsa alarma cliente Jiménez" style="margin-bottom:12px">
+    <div class="modal-label">Categoría</div>
+    <select class="modal-input" id="case-cat">
+      <option value="alarma">Alarma intrusión</option>
+      <option value="incendio">Incendio</option>
+      <option value="cctv">CCTV</option>
+      <option value="acceso">Control de acceso</option>
+      <option value="otro">Otro</option>
+    </select>
+    <div class="modal-btns">
+      <button class="mbtn-p" onclick="createCase()">Crear caso</button>
+      <button class="mbtn-s" onclick="closeModal('case-modal')">Cancelar</button>
     </div>
   </div>
 </div>
@@ -333,196 +425,288 @@ textarea#chat-input::placeholder{color:var(--muted);font-weight:400}
 <!-- TOAST -->
 <div class="toast" id="toast">
   <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toast-msg">¡Copiado!</span>
+  <span id="toast-msg">¡Listo!</span>
 </div>
 
 <script>
 /* ══════════════════════════════════════════════
-   DATOS
+   PLANTILLAS (del proyecto original)
 ══════════════════════════════════════════════ */
 const PLANTILLAS=[
-  {id:1,cat:"apertura",nombre:"Saludo inicial",tipo:"Existente",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?",nota:null},
-  {id:2,cat:"apertura",nombre:"Alerta activa / urgencia",tipo:"Nueva — alta prioridad",texto:"Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?",nota:"Usar cuando el cliente mencione alarma sonando, humo o activación de sensores."},
-  {id:3,cat:"relevamiento",nombre:"Pedir más detalle",tipo:"Existente",texto:"Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?",nota:null},
-  {id:4,cat:"relevamiento",nombre:"Diagnóstico remoto inicial",tipo:"Nueva — alta prioridad",texto:"Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar si el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde?",nota:"Permite decidir si requiere visita técnica, envío al taller o solución remota."},
-  {id:5,cat:"relevamiento",nombre:"Solicitar número de serie o modelo",tipo:"Nueva — alta prioridad",texto:"Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Suele encontrarse en la etiqueta posterior del equipo.",nota:null},
-  {id:6,cat:"relevamiento",nombre:"Coordinar visita técnica",tipo:"Nueva — prioridad media",texto:"Para este tipo de equipo, lo más conveniente es una visita técnica en sitio. ¿Nos podría indicar su dirección y disponibilidad horaria?",nota:"Aplicar para equipos de instalación fija."},
-  {id:7,cat:"gestion",nombre:"Confirmación de recepción",tipo:"Nueva — alta prioridad",texto:"Le confirmamos que hemos recibido su equipo en buen estado. Le asignamos el número de orden [#ORDEN]. Le informaremos el diagnóstico a la brevedad.",nota:"Enviar en las primeras 2 horas tras recibir el equipo."},
-  {id:8,cat:"gestion",nombre:"Actualización de estado",tipo:"Existente",texto:"Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades, le avisamos de inmediato.",nota:null},
-  {id:9,cat:"gestion",nombre:"Presupuesto / autorización",tipo:"Nueva — alta prioridad",texto:"Tras el diagnóstico de su equipo [MODELO], el costo estimado es de [MONTO], incluyendo [DESCRIPCIÓN]. Para continuar, necesitamos su autorización. ¿Nos confirma?",nota:"Detallar qué incluye el costo."},
-  {id:10,cat:"gestion",nombre:"Falta de repuesto",tipo:"Nueva — prioridad media",texto:"El repuesto requerido no está disponible en stock. El tiempo estimado de llegada es de [PLAZO]. ¿Desea que procedamos con el pedido o prefiere explorar otra opción?",nota:"Ofrecer siempre una alternativa si existe."},
-  {id:11,cat:"gestion",nombre:"Seguimiento proactivo",tipo:"Nueva — prioridad media",texto:"Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto? Quedamos atentos.",nota:"Usar 48-72h después del presupuesto sin respuesta."},
-  {id:12,cat:"gestion",nombre:"Agradecimiento por espera",tipo:"Existente",texto:"Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
-  {id:13,cat:"gestion",nombre:"Agradecimiento con enlace",tipo:"Existente",texto:"Gracias por su paciencia. Aquí le dejo el enlace con lo que solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
-  {id:14,cat:"resolucion",nombre:"Confirmar garantía",tipo:"Existente",texto:"Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, si se trata de un defecto de fábrica, quedará cubierto por la garantía.",nota:null},
-  {id:15,cat:"resolucion",nombre:"Garantía no aplica",tipo:"Nueva — prioridad media",texto:"La revisión determinó que el daño corresponde a [CAUSA], lo cual no está cubierto por la garantía. Con gusto le detallamos las opciones de reparación con costo.",nota:"Tono empático. Siempre ofrecer alternativa."},
-  {id:16,cat:"resolucion",nombre:"Equipo listo para retiro",tipo:"Nueva — alta prioridad",texto:"¡Buenas noticias! Su equipo [MODELO / N° ORDEN] ya está listo. Puede retirarlo en [DIRECCIÓN] en horario [HORARIO], o coordinamos el envío. ¿Cómo le queda mejor?",nota:null},
-  {id:17,cat:"resolucion",nombre:"Equipo irreparable",tipo:"Nueva — prioridad media",texto:"Lamentablemente el equipo presenta un daño que no permite una reparación viable. Con gusto le asesoramos sobre opciones de reposición disponibles.",nota:"Tono cálido. Ofrecer alternativa concreta."},
-  {id:18,cat:"resolucion",nombre:"Certificado técnico",tipo:"Nueva — prioridad baja",texto:"Con gusto le emitimos el certificado técnico de la reparación. ¿Necesita algún formato específico, o es para garantía, auditoría o aseguradora?",nota:null},
-  {id:19,cat:"resolucion",nombre:"Transferencia a técnico",tipo:"Nueva — prioridad baja",texto:"Esta consulta requiere atención de nuestro técnico especializado. Le ponemos en contacto con [NOMBRE / ÁREA]. Un momento, por favor.",nota:null},
-  {id:20,cat:"cierre",nombre:"Cierre estándar",tipo:"Existente",texto:"Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!",nota:null},
-  {id:21,cat:"cierre",nombre:"Cierre con confirmación",tipo:"Existente",texto:"Ha sido un placer atenderle. Si no tiene más consultas, cerramos por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!",nota:null},
-  {id:22,cat:"cierre",nombre:"Cierre por inactividad",tipo:"Existente",texto:"Debido a que no hemos recibido respuesta, cerramos esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!",nota:null},
+  {id:1,cat:"apertura",nombre:"Saludo inicial",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?"},
+  {id:2,cat:"apertura",nombre:"Alerta activa / urgencia",texto:"Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?"},
+  {id:3,cat:"relevamiento",nombre:"Pedir más detalle",texto:"Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?"},
+  {id:4,cat:"relevamiento",nombre:"Diagnóstico remoto inicial",texto:"Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar si el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde?"},
+  {id:5,cat:"relevamiento",nombre:"Solicitar número de serie o modelo",texto:"Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Suele encontrarse en la etiqueta posterior del equipo."},
+  {id:6,cat:"relevamiento",nombre:"Coordinar visita técnica",texto:"Para este tipo de equipo, lo más conveniente es una visita técnica en sitio. ¿Nos podría indicar su dirección y disponibilidad horaria?"},
+  {id:7,cat:"gestion",nombre:"Confirmación de recepción",texto:"Le confirmamos que hemos recibido su equipo en buen estado. Le asignamos el número de orden [#ORDEN]. Le informaremos el diagnóstico a la brevedad."},
+  {id:8,cat:"gestion",nombre:"Actualización de estado",texto:"Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades, le avisamos de inmediato."},
+  {id:9,cat:"gestion",nombre:"Presupuesto / autorización",texto:"Tras el diagnóstico de su equipo [MODELO], el costo estimado es de [MONTO], incluyendo [DESCRIPCIÓN]. Para continuar, necesitamos su autorización. ¿Nos confirma?"},
+  {id:10,cat:"gestion",nombre:"Falta de repuesto",texto:"El repuesto requerido no está disponible en stock. El tiempo estimado de llegada es de [PLAZO]. ¿Desea que procedamos con el pedido o prefiere explorar otra opción?"},
+  {id:11,cat:"gestion",nombre:"Seguimiento proactivo",texto:"Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto? Quedamos atentos."},
+  {id:12,cat:"gestion",nombre:"Agradecimiento por espera",texto:"Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?"},
+  {id:13,cat:"gestion",nombre:"Agradecimiento con enlace",texto:"Gracias por su paciencia. Aquí le dejo el enlace con lo que solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?"},
+  {id:14,cat:"resolucion",nombre:"Confirmar garantía",texto:"Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, si se trata de un defecto de fábrica, quedará cubierto por la garantía."},
+  {id:15,cat:"resolucion",nombre:"Garantía no aplica",texto:"La revisión determinó que el daño corresponde a [CAUSA], lo cual no está cubierto por la garantía. Con gusto le detallamos las opciones de reparación con costo."},
+  {id:16,cat:"resolucion",nombre:"Equipo listo para retiro",texto:"¡Buenas noticias! Su equipo [MODELO / N° ORDEN] ya está listo. Puede retirarlo en [DIRECCIÓN] en horario [HORARIO], o coordinamos el envío. ¿Cómo le queda mejor?"},
+  {id:17,cat:"resolucion",nombre:"Equipo irreparable",texto:"Lamentablemente el equipo presenta un daño que no permite una reparación viable. Con gusto le asesoramos sobre opciones de reposición disponibles."},
+  {id:18,cat:"resolucion",nombre:"Certificado técnico",texto:"Con gusto le emitimos el certificado técnico de la reparación. ¿Necesita algún formato específico, o es para garantía, auditoría o aseguradora?"},
+  {id:19,cat:"resolucion",nombre:"Transferencia a técnico",texto:"Esta consulta requiere atención de nuestro técnico especializado. Le ponemos en contacto con [NOMBRE / ÁREA]. Un momento, por favor."},
+  {id:20,cat:"cierre",nombre:"Cierre estándar",texto:"Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!"},
+  {id:21,cat:"cierre",nombre:"Cierre con confirmación",texto:"Ha sido un placer atenderle. Si no tiene más consultas, cerramos por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!"},
+  {id:22,cat:"cierre",nombre:"Cierre por inactividad",texto:"Debido a que no hemos recibido respuesta, cerramos esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!"},
 ];
 
-const CAT={
-  todas:        {ey:"Vista general",           tit:"Todas las plantillas",   color:"var(--Av)", bar:"#2472CC"},
-  apertura:     {ey:"Etapa 1 — Apertura",      tit:"Apertura",               color:"var(--A)",  bar:"#1B5AA8"},
-  relevamiento: {ey:"Etapa 2 — Relevamiento",  tit:"Relevamiento",           color:"var(--R)",  bar:"#0E8A5F"},
-  gestion:      {ey:"Etapa 3 — Gestión",       tit:"Gestión en taller",      color:"var(--G)",  bar:"#B87200"},
-  resolucion:   {ey:"Etapa 4 — Resolución",    tit:"Resolución",             color:"var(--Re)", bar:"#C03A10"},
-  cierre:       {ey:"Etapa 5 — Cierre",        tit:"Cierre",                 color:"var(--C)",  bar:"#5030A0"},
-};
-const TIPO={
-  "Existente":               {bg:"#E3F7EF",color:"#0B6040",border:"#7ACFAD",dot:"#0E8A5F"},
-  "Nueva — alta prioridad":  {bg:"#FFF0E8",color:"#7A2000",border:"#F09070",dot:"#C03A10"},
-  "Nueva — prioridad media": {bg:"#FFF5DC",color:"#6B4400",border:"#E8C060",dot:"#B87200"},
-  "Nueva — prioridad baja":  {bg:"#E8F1FF",color:"#1A3A7A",border:"#9ABDE8",dot:"#1B5AA8"},
+const CAT_COLORS={apertura:'#1B5AA8',relevamiento:'#0E8A5F',gestion:'#B87200',resolucion:'#C03A10',cierre:'#5030A0'};
+const stageNames={
+  apertura:'APERTURA — primer contacto',
+  relevamiento:'RELEVAMIENTO — diagnóstico y recopilación de datos',
+  gestion:'GESTIÓN EN TALLER — proceso y seguimiento',
+  resolucion:'RESOLUCIÓN — entrega y garantía',
+  cierre:'CIERRE — finalización'
 };
 
 /* ══════════════════════════════════════════════
    ESTADO
 ══════════════════════════════════════════════ */
-let curCat="todas", curStage="apertura", apiKey="", chatHistory=[];
+let apiKey='', curMode='cliente', curStage='apertura';
+let cases=[], trainData=[], docs=[], curCaseId=null;
+let chatHistory=[];
 
-/* Nombres de etapa para el prompt */
-const stageNames={
-  apertura:"APERTURA — primer contacto con el cliente",
-  relevamiento:"RELEVAMIENTO — recopilación de datos técnicos y diagnóstico remoto",
-  gestion:"GESTIÓN EN TALLER — recepción, presupuesto, seguimiento del proceso de reparación",
-  resolucion:"RESOLUCIÓN — entrega, garantía, casos especiales",
-  cierre:"CIERRE — finalización de la conversación"
-};
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+function init(){
+  apiKey=localStorage.getItem('sk_gemini_sekunet')||'';
+  cases=JSON.parse(localStorage.getItem('sek_cases')||'[]');
+  trainData=JSON.parse(localStorage.getItem('sek_train')||'[]');
+  docs=JSON.parse(localStorage.getItem('sek_docs')||'[]');
+  updateKeyUI();
+  renderCasesList();
+  renderTrainList();
+  renderDocsList();
+  updateStatusBar();
+}
 
 /* ══════════════════════════════════════════════
    API KEY
 ══════════════════════════════════════════════ */
-function loadKey(){
-  apiKey=localStorage.getItem('sk_sekunet')||'';
-  updateKeyUI();
-}
 function updateKeyUI(){
   const btn=document.getElementById('apikey-btn');
   const lbl=document.getElementById('apikey-label');
   const dot=document.getElementById('sdot');
   const sl=document.getElementById('slabel');
   if(apiKey){
-    btn.classList.add('set');
-    lbl.textContent='API Key activa';
-    dot.classList.add('on');
-    sl.style.color='var(--R)';sl.textContent='Activo';
+    btn.classList.add('set');lbl.textContent='Gemini activo ✓';
+    dot.classList.add('on');sl.textContent='API activa';sl.style.color='rgba(46,204,138,.9)';
   } else {
-    btn.classList.remove('set');
-    lbl.textContent='Configurar API Key';
-    dot.classList.remove('on');
-    sl.style.color='var(--muted)';sl.textContent='Sin clave';
+    btn.classList.remove('set');lbl.textContent='Configurar Gemini (Gratis)';
+    dot.classList.remove('on');sl.textContent='Sin clave API';sl.style.color='rgba(255,255,255,.5)';
   }
 }
-function openKeyModal(){
-  document.getElementById('key-input').value=apiKey?'sk-ant-api03-••••••••••••••':'';
-  document.getElementById('key-modal').classList.add('open');
-}
-function closeKeyModal(){document.getElementById('key-modal').classList.remove('open')}
-function closeKeyOut(e){if(e.target===document.getElementById('key-modal'))closeKeyModal()}
+function openKeyModal(){document.getElementById('key-input').value=apiKey?'••••••••••••••':'';document.getElementById('key-modal').classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closeOut(e,id){if(e.target===document.getElementById(id))closeModal(id)}
 function saveKey(){
   const v=document.getElementById('key-input').value.trim();
   if(!v){showToast('Ingrese una clave válida');return}
-  apiKey=v;
-  localStorage.setItem('sk_sekunet',v);
-  updateKeyUI();
-  closeKeyModal();
-  showToast('API Key guardada — asistente activo');
+  if(!v.startsWith('AIza')){showToast('La clave Gemini comienza con "AIza"');return}
+  apiKey=v;localStorage.setItem('sk_gemini_sekunet',v);
+  updateKeyUI();closeModal('key-modal');showToast('API Key de Gemini guardada — agente activo');
 }
 
 /* ══════════════════════════════════════════════
-   PLANTILLAS — render
+   CASOS
 ══════════════════════════════════════════════ */
-function setCat(cat,btn){
-  curCat=cat;
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const cc=CAT[cat];
-  document.getElementById('ey').textContent=cc.ey;
-  document.getElementById('ey').style.color=cc.color;
-  document.getElementById('ctit').textContent=cc.tit;
-  document.getElementById('ctit').style.color=cc.color;
-  document.getElementById('si').value='';
-  renderCards();
+function newCase(){document.getElementById('case-title').value='';document.getElementById('case-modal').classList.add('open')}
+function createCase(){
+  const title=document.getElementById('case-title').value.trim();
+  const cat=document.getElementById('case-cat').value;
+  if(!title){showToast('Ingrese un título');return}
+  if(curCaseId){
+    const cur=cases.find(c=>c.id===curCaseId);
+    if(cur)cur.history=chatHistory;
+    saveCases();
+  }
+  const id='case_'+Date.now();
+  const c={id,title,cat,date:new Date().toLocaleDateString('es-CR'),history:[]};
+  cases.unshift(c);
+  saveCases();curCaseId=id;chatHistory=[];
+  clearChat();closeModal('case-modal');
+  renderCasesList();updateStatusBar();
+  showToast('Caso creado: '+title);
 }
-
-function renderCards(){
-  const q=document.getElementById('si').value.toLowerCase().trim();
-  const g=document.getElementById('gr');g.innerHTML='';
-  let list=curCat==='todas'?PLANTILLAS:PLANTILLAS.filter(p=>p.cat===curCat);
-  if(q)list=list.filter(p=>p.nombre.toLowerCase().includes(q)||p.texto.toLowerCase().includes(q));
-  if(!list.length){g.innerHTML='<div class="empty"><p>Sin resultados.</p></div>';return}
-  list.forEach((p,i)=>{
-    const cc=CAT[p.cat],tc=TIPO[p.tipo]||TIPO["Existente"];
-    const d=document.createElement('div');
-    d.className='card';d.style.animationDelay=(i*.035)+'s';
-    d.onclick=()=>openCardModal(p);
-    d.addEventListener('mouseenter',()=>d.style.borderColor=cc.bar);
-    d.addEventListener('mouseleave',()=>d.style.borderColor='');
-    d.innerHTML=`<div class="cbar" style="background:${cc.bar}"></div>
-      <div class="cbody">
-        <span class="ctag" style="background:${tc.bg};color:${tc.color};border:1.5px solid ${tc.border}">
-          <span style="width:5px;height:5px;border-radius:50%;background:${tc.dot};display:inline-block;flex-shrink:0"></span>${p.tipo}
-        </span>
-        <div class="cnm" style="color:${cc.bar}">${p.nombre}</div>
-        <div class="cpv" style="color:${cc.bar}">${p.texto}</div>
-      </div>
-      <div class="cfoot" style="background:${cc.bar}0D">
-        <span class="cet" style="color:${cc.bar}">${cc.ey}</span>
-        <button class="ccp" style="color:${cc.bar};border-color:${cc.bar}40"
-          onclick="event.stopPropagation();quickCopy(this,\`${esc(p.texto)}\`,\`${cc.bar}\`)">
-          <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar
-        </button>
-      </div>`;
-    g.appendChild(d);
+function loadCase(id){
+  if(curCaseId){
+    const cur=cases.find(c=>c.id===curCaseId);
+    if(cur)cur.history=chatHistory;
+    saveCases();
+  }
+  const c=cases.find(x=>x.id===id);
+  if(!c)return;
+  curCaseId=id;chatHistory=c.history||[];
+  clearChat();
+  // Reproducir mensajes del caso
+  chatHistory.forEach(m=>{
+    if(m.role==='user')appendUserMsg(m.content);
+    else if(m.role==='assistant')appendRawIAMsg(m.content);
   });
+  renderCasesList();
 }
+function deleteCase(id,e){
+  e.stopPropagation();
+  cases=cases.filter(c=>c.id!==id);
+  if(curCaseId===id){curCaseId=null;chatHistory=[];clearChat()}
+  saveCases();renderCasesList();updateStatusBar();showToast('Caso eliminado');
+}
+function saveCases(){localStorage.setItem('sek_cases',JSON.stringify(cases))}
 
-function esc(s){return s.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$')}
+const CAT_CASE_COLORS={alarma:{bg:'#FFF0E8',c:'#C03A10'},incendio:{bg:'#FFF5DC',c:'#B87200'},cctv:{bg:'#E3F7EF',c:'#0E8A5F'},acceso:{bg:'#E8F1FF',c:'#1B5AA8'},otro:{bg:'#F0EBFF',c:'#5030A0'}};
 
-/* mini-modal rápido al hacer click en card */
-let activeCardModal=null;
-function openCardModal(p){
-  if(activeCardModal){activeCardModal.remove();activeCardModal=null}
-  const cc=CAT[p.cat],tc=TIPO[p.tipo]||TIPO["Existente"];
-  const el=document.createElement('div');
-  el.style.cssText=`position:fixed;inset:0;background:rgba(8,14,30,.45);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)`;
-  el.innerHTML=`<div style="background:#fff;border-radius:18px;max-width:500px;width:100%;padding:24px;box-shadow:0 24px 64px rgba(8,14,30,.22)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <span style="font-family:var(--fd);font-size:16px;font-weight:900;color:${cc.bar}">${p.nombre}</span>
-      <button onclick="activeCardModal.remove();activeCardModal=null" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
-    </div>
-    <div style="background:var(--bg);border:1.5px solid var(--bord);border-radius:10px;padding:14px;font-family:var(--fr);font-size:13px;line-height:1.7;color:var(--nero);margin-bottom:14px;white-space:pre-wrap">${p.texto}</div>
-    ${p.nota?`<div style="background:${tc.bg};border:1.5px solid ${tc.border};border-radius:8px;padding:10px 12px;font-family:var(--fd);font-size:11px;color:${tc.color};margin-bottom:14px">💡 ${p.nota}</div>`:''}
-    <div style="display:flex;gap:8px">
-      <button onclick="quickCopy(this,\`${esc(p.texto)}\`,\`${cc.bar}\`)" style="flex:1;padding:10px;background:${cc.bar};color:#fff;border:none;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer">Copiar texto</button>
-      <button onclick="activeCardModal.remove();activeCardModal=null" style="padding:10px 18px;background:none;border:1.5px solid var(--bord);border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;color:var(--muted)">Cerrar</button>
-    </div>
-  </div>`;
-  el.addEventListener('click',e=>{if(e.target===el){el.remove();activeCardModal=null}});
-  document.body.appendChild(el);
-  activeCardModal=el;
+function renderCasesList(){
+  const el=document.getElementById('cases-list');
+  if(!cases.length){el.innerHTML='<div class="sb-empty">Sin casos aún.<br>Creá uno para empezar.</div>';return}
+  el.innerHTML=cases.map(c=>{
+    const cc=CAT_CASE_COLORS[c.cat]||CAT_CASE_COLORS.otro;
+    return `<div class="case-item${curCaseId===c.id?' active':''}" onclick="loadCase('${c.id}')">
+      <button class="ci-del" onclick="deleteCase('${c.id}',event)">✕</button>
+      <div class="ci-date">${c.date}</div>
+      <div class="ci-title">${escHtml(c.title)}</div>
+      <span class="ci-cat" style="background:${cc.bg};color:${cc.c}">${c.cat}</span>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════════════
-   CHAT IA
+   ENTRENAMIENTO
 ══════════════════════════════════════════════ */
+function openTrainModal(){
+  document.getElementById('train-q').value='';
+  document.getElementById('train-a').value='';
+  document.getElementById('train-modal').classList.add('open');
+}
+function saveTrain(){
+  const q=document.getElementById('train-q').value.trim();
+  const a=document.getElementById('train-a').value.trim();
+  const cat=document.getElementById('train-cat').value;
+  if(!q||!a){showToast('Complete ambos campos');return}
+  trainData.unshift({id:'t'+Date.now(),q,a,cat,date:new Date().toLocaleDateString('es-CR')});
+  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  renderTrainList();updateStatusBar();closeModal('train-modal');showToast('Conocimiento guardado');
+}
+function deleteTrain(id){
+  trainData=trainData.filter(t=>t.id!==id);
+  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  renderTrainList();updateStatusBar();
+}
+function renderTrainList(){
+  const el=document.getElementById('train-list');
+  if(!trainData.length){el.innerHTML='<div class="sb-empty">Sin conocimientos guardados.<br>Agregá casos reales para mejorar las respuestas.</div>';return}
+  el.innerHTML=trainData.map(t=>`
+    <div class="train-entry">
+      <div class="train-q">${escHtml(t.q)}</div>
+      <div class="train-a">${escHtml(t.a.substring(0,80))}${t.a.length>80?'…':''}</div>
+      <div class="train-meta">
+        <span>${t.cat} · ${t.date}</span>
+        <button class="train-del" onclick="deleteTrain('${t.id}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════
+   DOCUMENTOS
+══════════════════════════════════════════════ */
+function openDocModal(){
+  document.getElementById('doc-name').value='';
+  document.getElementById('doc-content').value='';
+  document.getElementById('doc-modal').classList.add('open');
+}
+function handleDocFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById('doc-name').value=file.name.replace(/\.[^.]+$/,'');
+    document.getElementById('doc-content').value=ev.target.result;
+    document.getElementById('doc-modal').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+function saveDoc(){
+  const name=document.getElementById('doc-name').value.trim();
+  const content=document.getElementById('doc-content').value.trim();
+  if(!name||!content){showToast('Complete nombre y contenido');return}
+  docs.unshift({id:'d'+Date.now(),name,content:content.substring(0,8000),date:new Date().toLocaleDateString('es-CR'),size:content.length});
+  localStorage.setItem('sek_docs',JSON.stringify(docs));
+  renderDocsList();updateStatusBar();closeModal('doc-modal');showToast('Documento guardado');
+}
+function deleteDoc(id){
+  docs=docs.filter(d=>d.id!==id);
+  localStorage.setItem('sek_docs',JSON.stringify(docs));
+  renderDocsList();updateStatusBar();
+}
+function renderDocsList(){
+  const el=document.getElementById('docs-list');
+  if(!docs.length){el.innerHTML='<div class="sb-empty">Sin documentos.<br>Cargá manuales o procedimientos en .txt</div>';return}
+  el.innerHTML=docs.map(d=>`
+    <div class="doc-item">
+      <button class="doc-del" onclick="deleteDoc('${d.id}')">✕</button>
+      <div class="doc-name">${escHtml(d.name)}</div>
+      <div class="doc-size">${Math.round(d.size/100)/10} KB · ${d.date}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════
+   MODO Y ETAPA
+══════════════════════════════════════════════ */
+function setMode(m,btn){
+  curMode=m;
+  document.querySelectorAll('.mode-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const names={cliente:'Atención cliente',tecnico:'Consulta técnica',correccion:'Corrección de respuestas',entrenamiento:'Entrenamiento'};
+  document.getElementById('mode-display').textContent='Modo: '+names[m];
+  document.getElementById('hint-mode').textContent=names[m];
+  const ph={
+    cliente:'Pegá el mensaje del cliente…',
+    tecnico:'Hacé tu consulta técnica (equipos, fallas, protocolos)…',
+    correccion:'Pegá una respuesta que el agente dio mal para corregirla…',
+    entrenamiento:'Describí un caso para entrenar al agente…'
+  };
+  document.getElementById('chat-input').placeholder=ph[m];
+}
 function setStage(s,btn){
   curStage=s;
-  document.querySelectorAll('.sp').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sp2').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const colors={apertura:'var(--A)',relevamiento:'var(--R)',gestion:'var(--G)',resolucion:'var(--Re)',cierre:'var(--C)'};
-  const bars={apertura:'#1B5AA8',relevamiento:'#0E8A5F',gestion:'#B87200',resolucion:'#C03A10',cierre:'#5030A0'};
-  const c=colors[s],b=bars[s];
-  document.getElementById('ia-title').style.background=`linear-gradient(90deg,${b},${b}99)`;
 }
 
-function handleKey(e){
-  if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendMessage()}
+/* ══════════════════════════════════════════════
+   SIDEBAR TABS
+══════════════════════════════════════════════ */
+function setSbTab(tab,btn){
+  document.querySelectorAll('.sb-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-casos').classList.toggle('hidden',tab!=='casos');
+  document.getElementById('panel-entrenamiento').classList.toggle('hidden',tab!=='entrenamiento');
+  document.getElementById('panel-docs').classList.toggle('hidden',tab!=='docs');
+}
+
+/* ══════════════════════════════════════════════
+   STATUS BAR
+══════════════════════════════════════════════ */
+function updateStatusBar(){
+  document.getElementById('memory-label').textContent=`${cases.length} casos · ${trainData.length} conocimientos`;
+  document.getElementById('docs-label').textContent=`${docs.length} docs cargados`;
+}
+
+/* ══════════════════════════════════════════════
+   CHAT
+══════════════════════════════════════════════ */
+function handleKey(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendMessage()}}
+
+function useTip(btn){
+  const text=btn.querySelector('strong').nextSibling.textContent.trim();
+  document.getElementById('chat-input').value=text;
+  document.getElementById('chat-input').focus();
 }
 
 async function sendMessage(){
@@ -531,174 +715,290 @@ async function sendMessage(){
   if(!msg)return;
   if(!apiKey){openKeyModal();return}
   inp.value='';
-  addMsg('user',msg);
   hideEmpty();
-  showTyping();
+  appendUserMsg(msg);
+  chatHistory.push({role:'user',content:msg});
+  const typEl=showTyping();
   document.getElementById('send-btn').disabled=true;
 
-  // Plantillas de la etapa actual para el contexto
-  const ptlsEtapa=PLANTILLAS.filter(p=>p.cat===curStage).map(p=>`- "${p.nombre}": ${p.texto}`).join('\n');
+  // Construir contexto de entrenamiento
+  const trainCtx=trainData.length?`\n\nCONOCIMIENTOS APRENDIDOS DE CASOS REALES:\n${trainData.slice(0,10).map(t=>`[${t.cat}] P: ${t.q}\nR: ${t.a}`).join('\n\n')}`:'';
 
-  const systemPrompt=`Eres el asistente de atención al cliente de SEKUNET, un taller de servicio, soporte y reparación de equipos de seguridad (alarmas, detección de incendios, CCTV, control de acceso, etc.).
+  // Contexto de documentos
+  const docsCtx=docs.length?`\n\nDOCUMENTOS TÉCNICOS DISPONIBLES:\n${docs.slice(0,3).map(d=>`=== ${d.name} ===\n${d.content.substring(0,1500)}`).join('\n\n')}`:'';
 
-Contexto actual: la conversación está en la etapa de ${stageNames[curStage]}.
+  // Plantillas de la etapa
+  const ptls=PLANTILLAS.filter(p=>p.cat===curStage).map(p=>`- "${p.nombre}": ${p.texto}`).join('\n');
+
+  const systemPrompts={
+    cliente:`Sos el agente de soporte técnico de SEKUNET, empresa especializada en sistemas de seguridad electrónica (alarmas de intrusión DSC/Paradox/Bosch, detección de incendios Hochiki/Notifier, CCTV Dahua/Hikvision, control de acceso ZKTeco/HID).
+
+Contexto: etapa de ${stageNames[curStage]}.
 
 Plantillas disponibles para esta etapa:
-${ptlsEtapa}
+${ptls}
+${trainCtx}${docsCtx}
 
-Cuando el agente te pegue un mensaje del cliente, debes:
-1. Analizar brevemente el mensaje (1-2 líneas máximo).
-2. Proporcionar EXACTAMENTE 3 respuestas sugeridas listas para enviar al cliente, numeradas como [R1], [R2], [R3]. Cada respuesta debe ser completa, profesional, en español de Costa Rica, con tono cálido y técnico.
-3. Al final, en una línea separada que empiece con [PLANTILLAS], menciona los nombres exactos de 1 a 3 plantillas del repositorio que sean más relevantes para este mensaje, separadas por "|".
+Cuando recibas un mensaje de cliente:
+1. Analiza brevemente qué necesita (1-2 líneas).
+2. Da EXACTAMENTE 3 respuestas sugeridas listas para copiar y pegar, numeradas [R1], [R2], [R3]. Cada respuesta debe ser completa, profesional, en español de Costa Rica, tono cálido y técnico cuando corresponda.
+3. Al final en línea separada [PLANTILLAS]: indica 1-3 nombres exactos de plantillas relevantes separadas por |.
+4. Si detectas una falla técnica, en línea separada [TECNICO]: una nota breve para el técnico interno (no para el cliente) sobre el posible diagnóstico.
 
-Formato de respuesta OBLIGATORIO:
-ANÁLISIS: (análisis breve)
+Formato OBLIGATORIO:
+ANÁLISIS: (breve análisis)
 
-[R1] (primera respuesta completa)
+[R1] (respuesta completa)
 
-[R2] (segunda respuesta completa)
+[R2] (respuesta completa)
 
-[R3] (tercera respuesta completa)
+[R3] (respuesta completa)
 
-[PLANTILLAS] Nombre plantilla 1 | Nombre plantilla 2
+[PLANTILLAS] nombre1 | nombre2
 
-Sé directo, práctico y técnico. Las respuestas deben poder copiarse y pegarse directamente al cliente.`;
+[TECNICO] nota interna (opcional)`,
 
-  chatHistory.push({role:"user",content:msg});
+    tecnico:`Sos un técnico experto senior de SEKUNET en sistemas de seguridad electrónica. Tenés más de 15 años de experiencia con alarmas DSC Power/Neo/Alexor, Paradox SP/MG/EVO, Bosch D-series; detección de incendios Hochiki, Notifier, EST; CCTV Dahua, Hikvision, Axis; control de acceso ZKTeco, HID, Lenel.
+${trainCtx}${docsCtx}
 
-  try {
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
+Respondé como técnico experto: incluí código de programación si aplica, pasos de diagnóstico, valores típicos de resistencia, voltaje, configuraciones. Sé directo y técnico. En español de Costa Rica.`,
+
+    correccion:`Sos el supervisor de calidad de SEKUNET. Cuando recibas una respuesta incorrecta o mejorable del agente, analizala e indicá:
+1. Por qué estaba mal o qué mejorar.
+2. La versión corregida completa lista para usar.
+3. Un resumen del aprendizaje para no repetir el error.
+${trainCtx}
+
+Formato:
+PROBLEMA: (qué estaba mal)
+CORRECCIÓN: (respuesta corregida completa)
+APRENDIZAJE: (regla a recordar)`,
+
+    entrenamiento:`Sos el sistema de entrenamiento de SEKUNET. El usuario te va a describir un caso o situación. Tu tarea es:
+1. Identificar el aprendizaje clave.
+2. Generar una entrada de conocimiento estructurada lista para agregar a la base de datos.
+3. Sugerir 2-3 variaciones del caso para entrenar mejor.
+
+Formato:
+APRENDIZAJE: (qué debe saber el agente)
+ENTRADA: (caso + solución en formato Q/A)
+VARIACIONES: (casos similares)`
+  };
+
+  try{
+    // Convertir historial al formato Gemini (role: user/model)
+    const geminiHistory=chatHistory.slice(0,-1).map(m=>({
+      role: m.role==='assistant'?'model':m.role,
+      parts:[{text:m.content}]
+    }));
+    // Último mensaje del usuario
+    const lastMsg=chatHistory[chatHistory.length-1].content;
+
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{
       method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01"},
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
-        model:"claude-opus-4-5",
-        max_tokens:1200,
-        system:systemPrompt,
-        messages:chatHistory
+        system_instruction:{parts:[{text:systemPrompts[curMode]}]},
+        contents:[
+          ...geminiHistory,
+          {role:"user",parts:[{text:lastMsg}]}
+        ],
+        generationConfig:{maxOutputTokens:1400,temperature:0.7}
       })
     });
     const data=await res.json();
-    hideTyping();
+    typEl.remove();
     if(data.error){
-      addMsg('ia',null,null,`Error: ${data.error.message}`);
+      appendErrorMsg('Error API: '+data.error.message+' ('+data.error.status+')');
       chatHistory.pop();
     } else {
-      const text=data.content[0].text;
-      chatHistory.push({role:"assistant",content:text});
-      parseAndRenderIA(text);
+      const text=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sin respuesta';
+      chatHistory.push({role:'assistant',content:text});
+      if(curCaseId){const c=cases.find(x=>x.id===curCaseId);if(c){c.history=chatHistory;saveCases()}}
+      parseAndRender(text);
+      if(curMode==='correccion'){autoSaveCorrection(msg,text)}
     }
   } catch(err){
-    hideTyping();
-    addMsg('ia',null,null,`Error de conexión: ${err.message}`);
+    typEl.remove();
+    appendErrorMsg('Error de conexión: '+err.message);
     chatHistory.pop();
   }
   document.getElementById('send-btn').disabled=false;
 }
 
-function parseAndRenderIA(text){
-  // Extraer análisis
-  const analisisMatch=text.match(/ANÁLISIS:\s*(.+?)(?=\[R1\])/s);
-  const analisis=analisisMatch?analisisMatch[1].trim():'';
-
-  // Extraer respuestas
-  const r1=text.match(/\[R1\]\s*([\s\S]+?)(?=\[R2\])/)?.[1]?.trim()||'';
-  const r2=text.match(/\[R2\]\s*([\s\S]+?)(?=\[R3\])/)?.[1]?.trim()||'';
-  const r3=text.match(/\[R3\]\s*([\s\S]+?)(?=\[PLANTILLAS\]|\n\n|$)/)?.[1]?.trim()||'';
-
-  // Extraer plantillas sugeridas
-  const ptMatch=text.match(/\[PLANTILLAS\]\s*(.+)/);
-  const ptNames=ptMatch?ptMatch[1].split('|').map(s=>s.trim()).filter(Boolean):[];
-
-  addMsg('ia',analisis,[r1,r2,r3].filter(Boolean),null,ptNames);
+function autoSaveCorrection(original,correction){
+  const match=correction.match(/CORRECCIÓN:\s*([\s\S]+?)(?=APRENDIZAJE:|$)/);
+  const learn=correction.match(/APRENDIZAJE:\s*(.+)/);
+  if(match&&learn){
+    trainData.unshift({
+      id:'t'+Date.now(),
+      q:'CORRECCIÓN: '+original.substring(0,100),
+      a:match[1].trim().substring(0,500),
+      cat:'procedimiento',
+      date:new Date().toLocaleDateString('es-CR')
+    });
+    localStorage.setItem('sek_train',JSON.stringify(trainData));
+    renderTrainList();updateStatusBar();
+    showToast('Corrección guardada en entrenamiento');
+  }
 }
 
-function addMsg(role,analisis,sugerencias,errorText,ptNames){
-  const container=document.getElementById('ia-msgs');
-  const bar=({apertura:'#1B5AA8',relevamiento:'#0E8A5F',gestion:'#B87200',resolucion:'#C03A10',cierre:'#5030A0'})[curStage];
-
-  if(role==='user'){
-    const d=document.createElement('div');
-    d.className='msg-user';
-    d.innerHTML=`<div class="msg-label">Cliente</div><div class="bubble">${escHtml(analisis)}</div>`;
-    container.appendChild(d);
-  } else {
-    const d=document.createElement('div');
-    d.className='msg-ia';
-    let inner=`<div class="msg-label" style="color:${bar}">Asistente Sekunet</div>`;
-    inner+=`<div class="bubble">`;
-    if(errorText){
-      inner+=`<span style="color:var(--Re)">${escHtml(errorText)}</span>`;
-    } else {
-      if(analisis) inner+=`<div style="font-family:var(--fd);font-size:11px;font-weight:700;color:${bar};letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Análisis: <span style="font-weight:400;font-family:var(--fr);text-transform:none;letter-spacing:0">${escHtml(analisis)}</span></div>`;
-      if(sugerencias&&sugerencias.length){
-        inner+=`<div class="suggestions">`;
-        sugerencias.forEach((s,i)=>{
-          inner+=`<div class="sug" onclick="copySug(this)">
-            <div class="sug-num" style="color:${bar}">Respuesta ${i+1}</div>
-            <div class="sug-text">${escHtml(s)}</div>
-            <button class="sug-copy" onclick="event.stopPropagation();copySug(this.closest('.sug'))">Copiar</button>
-          </div>`;
-        });
-        inner+=`</div>`;
-      }
-      // Plantillas relacionadas
-      if(ptNames&&ptNames.length){
-        const matched=ptNames.map(n=>PLANTILLAS.find(p=>p.nombre.toLowerCase().includes(n.toLowerCase())||n.toLowerCase().includes(p.nombre.toLowerCase()))).filter(Boolean);
-        if(matched.length){
-          inner+=`<div class="related-label" style="color:${bar}">Plantillas sugeridas</div><div class="rel-pills">`;
-          matched.forEach(p=>{
-            const cc=CAT[p.cat];
-            inner+=`<button class="rel-pill" style="color:${cc.bar};border-color:${cc.bar}40" onclick="openCardModal(PLANTILLAS.find(x=>x.id==${p.id}))">${p.nombre}</button>`;
-          });
-          inner+=`</div>`;
-        }
-      }
-    }
-    inner+=`</div>`;
-    d.innerHTML=inner;
-    container.appendChild(d);
+function parseAndRender(text){
+  if(curMode!=='cliente'){
+    appendRawIAMsg(text);return;
   }
+  const analisis=(text.match(/ANÁLISIS:\s*(.+?)(?=\[R1\])/s)||[])[1]?.trim()||'';
+  const r1=(text.match(/\[R1\]\s*([\s\S]+?)(?=\[R2\])/)||[])[1]?.trim()||'';
+  const r2=(text.match(/\[R2\]\s*([\s\S]+?)(?=\[R3\])/)||[])[1]?.trim()||'';
+  const r3=(text.match(/\[R3\]\s*([\s\S]+?)(?=\[PLANTILLAS\]|\[TECNICO\]|$)/)||[])[1]?.trim()||'';
+  const ptMatch=text.match(/\[PLANTILLAS\]\s*(.+)/);
+  const ptNames=ptMatch?ptMatch[1].split('|').map(s=>s.trim()).filter(Boolean):[];
+  const techNote=(text.match(/\[TECNICO\]\s*(.+)/)||[])[1]?.trim()||'';
+
+  const container=document.getElementById('msgs-area');
+  const d=document.createElement('div');d.className='msg-group';
+  const bar=CAT_COLORS[curStage]||'#1B5AA8';
+  let html=`<div class="msg-label" style="color:${bar}">Agente Sekunet</div><div class="bubble-ia">`;
+
+  if(analisis){
+    html+=`<div class="ia-section-title" style="color:${bar}">Análisis</div>
+      <div style="font-family:var(--fr);font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">${escHtml(analisis)}</div>`;
+  }
+
+  if(r1||r2||r3){
+    html+=`<div class="ia-section-title" style="color:${bar}">Respuestas sugeridas</div>
+      <div class="suggestions">`;
+    [r1,r2,r3].filter(Boolean).forEach((s,i)=>{
+      html+=`<div class="sug">
+        <div class="sug-header">
+          <span class="sug-num" style="color:${bar}">Opción ${i+1}</span>
+          <div class="sug-actions">
+            <button class="sug-btn corregir" onclick="startCorrection(this)">✏️ Corregir</button>
+            <button class="sug-btn" onclick="copySug(this.closest('.sug'))">Copiar</button>
+          </div>
+        </div>
+        <div class="sug-text">${escHtml(s)}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  if(techNote){
+    html+=`<div class="tech-analysis" style="margin-top:12px"><strong>🔧 Nota técnica interna</strong>${escHtml(techNote)}</div>`;
+  }
+
+  if(ptNames.length){
+    const matched=ptNames.map(n=>PLANTILLAS.find(p=>p.nombre.toLowerCase().includes(n.toLowerCase())||n.toLowerCase().includes(p.nombre.toLowerCase()))).filter(Boolean);
+    if(matched.length){
+      html+=`<div class="ia-section-title" style="color:${bar};margin-top:12px">Plantillas sugeridas</div>
+        <div class="rel-pills">`;
+      matched.forEach(p=>{
+        const c=CAT_COLORS[p.cat]||'#1B5AA8';
+        html+=`<button class="rel-pill" style="color:${c};border-color:${c}40" onclick="quickCopyPlantilla(\`${esc(p.texto)}\`)">${p.nombre}</button>`;
+      });
+      html+=`</div>`;
+    }
+  }
+
+  html+=`</div>`;
+  d.innerHTML=html;
+  container.appendChild(d);
   container.scrollTop=container.scrollHeight;
 }
 
-let typingEl=null;
-function showTyping(){
-  const c=document.getElementById('ia-msgs');
-  typingEl=document.createElement('div');
-  typingEl.className='msg-ia';
-  typingEl.innerHTML=`<div class="msg-label">Analizando…</div><div class="typing"><span></span><span></span><span></span></div>`;
-  c.appendChild(typingEl);c.scrollTop=c.scrollHeight;
+function appendUserMsg(msg){
+  hideEmpty();
+  const c=document.getElementById('msgs-area');
+  const d=document.createElement('div');d.className='msg-group msg-user';
+  d.innerHTML=`<div class="msg-label">Vos</div><div class="bubble-user">${escHtml(msg)}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
-function hideTyping(){if(typingEl){typingEl.remove();typingEl=null}}
-function hideEmpty(){const e=document.getElementById('ia-empty');if(e)e.remove()}
 
-function copySug(el){
-  const txt=el.querySelector('.sug-text').textContent;
-  cp(txt);
-  showToast('Respuesta copiada');
-  el.style.borderColor='var(--R)';
-  setTimeout(()=>el.style.borderColor='',1800);
+function appendRawIAMsg(text){
+  const c=document.getElementById('msgs-area');
+  const d=document.createElement('div');d.className='msg-group';
+  const bar=CAT_COLORS[curStage]||'#1B5AA8';
+  d.innerHTML=`<div class="msg-label" style="color:${bar}">Agente Sekunet</div>
+    <div class="bubble-ia" style="white-space:pre-wrap;font-size:13px">${escHtml(text)}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
+
+function appendErrorMsg(msg){
+  const c=document.getElementById('msgs-area');
+  const d=document.createElement('div');d.className='msg-group';
+  d.innerHTML=`<div class="bubble-ia"><span style="color:var(--Re)">${escHtml(msg)}</span></div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+
+let typingInterval=null;
+function showTyping(){
+  const c=document.getElementById('msgs-area');
+  const d=document.createElement('div');d.className='msg-group';
+  d.innerHTML=`<div class="msg-label">Procesando…</div>
+    <div class="typing-wrap"><span></span><span></span><span></span></div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+  return d;
+}
+
+function startCorrection(btn){
+  const sug=btn.closest('.sug');
+  const text=sug.querySelector('.sug-text').textContent;
+  if(sug.querySelector('.correction-area'))return;
+  const div=document.createElement('div');div.className='correction-area';
+  div.innerHTML=`<div style="font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--G);margin-bottom:7px">✏️ Corrección</div>
+    <textarea placeholder="Escribí cómo debería ser la respuesta correcta…">${text}</textarea>
+    <button class="correction-save" onclick="saveManualCorrection(this,'${esc(text)}')">Guardar corrección</button>`;
+  sug.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+function saveManualCorrection(btn,original){
+  const textarea=btn.previousElementSibling;
+  const corrected=textarea.value.trim();
+  if(!corrected){showToast('Escribí la corrección');return}
+  trainData.unshift({
+    id:'t'+Date.now(),
+    q:'CORRECCIÓN MANUAL: '+original.substring(0,100),
+    a:corrected.substring(0,600),
+    cat:'procedimiento',
+    date:new Date().toLocaleDateString('es-CR')
+  });
+  localStorage.setItem('sek_train',JSON.stringify(trainData));
+  renderTrainList();updateStatusBar();
+  btn.closest('.correction-area').remove();
+  showToast('Corrección guardada — el agente aprenderá de esto');
+}
+
+function clearChat(){
+  const a=document.getElementById('msgs-area');
+  a.innerHTML=`<div class="empty-state" id="empty-state">
+    <div class="empty-icon">🤖</div>
+    <div class="empty-title">Caso listo</div>
+    <div class="empty-sub">Pegá el mensaje del cliente o hacé tu consulta técnica.</div>
+  </div>`;
+}
+function hideEmpty(){const e=document.getElementById('empty-state');if(e)e.remove()}
 
 /* ══════════════════════════════════════════════
    UTILS
 ══════════════════════════════════════════════ */
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+function esc(s){return s.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$')}
 function cp(t){if(navigator.clipboard)navigator.clipboard.writeText(t);else{const x=document.createElement('textarea');x.value=t;x.style.cssText='position:fixed;opacity:0';document.body.appendChild(x);x.select();document.execCommand('copy');document.body.removeChild(x)}}
-function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)}
-function quickCopy(btn,txt,color){
-  cp(txt);showToast('Plantilla copiada');
-  const prev=btn.innerHTML;
-  btn.style.background=color;btn.style.color='#fff';btn.style.borderColor=color;
-  btn.innerHTML=`<svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>¡Listo!`;
-  setTimeout(()=>{btn.style.background='';btn.style.color=color;btn.style.borderColor=color+'40';btn.innerHTML=prev},2000);
+function showToast(msg,dur=2400){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),dur);
 }
+function copySug(el){
+  const txt=el.querySelector('.sug-text').textContent;
+  cp(txt);showToast('Respuesta copiada');
+  el.style.borderColor='var(--R)';
+  setTimeout(()=>el.style.borderColor='',1800);
+}
+function quickCopyPlantilla(txt){cp(txt);showToast('Plantilla copiada')}
 
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
-loadKey();
-renderCards();
+init();
 </script>
 </body>
 </html>
