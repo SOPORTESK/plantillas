@@ -3,212 +3,206 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sekunet — Repositorio de Plantillas</title>
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<title>Sekunet — Plantillas + Asistente IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --A:  #1B5AA8; --fA: #EEF4FF; --bA: #9ABDE8;
-  --R:  #0E7A52; --fR: #E8F8F2; --bR: #6FCFAA;
-  --G:  #A06800; --fG: #FFF5DC; --bG: #E0B84A;
-  --Re: #B83010; --fRe:#FFF0EA; --bRe:#F09878;
-  --C:  #5030A0; --fC: #F0EBFF; --bC: #A888E8;
-  --azulv:#2472CC; --naranja:#F5A820; --naranjad:#C07800;
-  --white:#FFFFFF; --bg:#F2F4F8; --border:#DDE3EE;
-  --dark:#0D1520; --mid:#556080; --light:#8899BB;
-  --fd:'Exo 2',sans-serif; --fr:'Rajdhani',sans-serif;
+  --A:  #1B5AA8;
+  --Av: #2472CC;
+  --R:  #0E8A5F;
+  --G:  #B87200;
+  --Re: #C03A10;
+  --C:  #5030A0;
+  --N:  #F5A820;
+  --ND: #C07800;
+
+  --fA:  #E8F1FF; --bA: #9ABDE8;
+  --fR:  #E3F7EF; --bR: #7ACFAD;
+  --fG:  #FFF5DC; --bG: #E8C060;
+  --fRe: #FFF0E8; --bRe:#F09070;
+  --fC:  #F0EBFF; --bC: #A888E8;
+
+  --bg:    #F2F4F8;
+  --white: #FFFFFF;
+  --bord:  #DDE3EE;
+  --nero:  #0D1520;
+  --muted: #7A8EAA;
+
+  --fd:'Exo 2',sans-serif;
+  --fr:'Rajdhani',sans-serif;
   --r:10px; --rl:16px;
-  --sh:0 2px 10px rgba(13,21,32,.07),0 4px 20px rgba(13,21,32,.04);
-  --shh:0 8px 32px rgba(27,90,168,.17);
+  --sh:0 2px 10px rgba(13,21,32,.07),0 6px 24px rgba(13,21,32,.04);
+  --shh:0 8px 32px rgba(27,90,168,.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fd);background:var(--white);color:var(--dark);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fd);background:var(--white);color:var(--nero);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
-/* ─ HEADER ─ */
-header{background:var(--white);border-bottom:1.5px solid var(--border);height:66px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 14px rgba(13,21,32,.06)}
-.lw{display:flex;align-items:center;gap:14px}
-.lname{font-family:var(--fd);font-size:22px;font-weight:900;letter-spacing:.06em;background:linear-gradient(90deg,var(--A) 0%,var(--azulv) 45%,var(--naranja) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
-.lsub{font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--A);opacity:.6;line-height:1;margin-top:2px}
-.hbadge{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 13px;border-radius:20px;background:var(--fA);color:var(--A);border:1px solid var(--bA)}
+/* ── HEADER ── */
+header{background:var(--white);border-bottom:1.5px solid var(--bord);height:62px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 14px rgba(13,21,32,.06);z-index:100}
+.lw{display:flex;align-items:center;gap:12px}
+.lname{font-family:var(--fd);font-size:20px;font-weight:900;letter-spacing:0.06em;background:linear-gradient(90deg,var(--A) 0%,var(--Av) 45%,var(--N) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.lsub{font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--A);opacity:.6;margin-top:2px}
+.hbadge{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;background:var(--fA);color:var(--A);border:1px solid var(--bA)}
+.hright{display:flex;align-items:center;gap:10px}
+/* Botón API key */
+.apikey-btn{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:20px;background:none;border:1.5px solid var(--bord);color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .15s,color .15s}
+.apikey-btn:hover{border-color:var(--Av);color:var(--Av)}
+.apikey-btn.set{border-color:var(--R);color:var(--R);background:var(--fR)}
 
-/* ─ HERO ─ */
-.hero{padding:48px 32px 40px;border-bottom:1.5px solid var(--border);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 90% 15%,rgba(245,168,32,.1) 0%,transparent 48%),radial-gradient(circle at 8% 85%,rgba(27,90,168,.08) 0%,transparent 48%);pointer-events:none}
-.hew{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;font-family:var(--fr);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--naranjad)}
-.hew::before{content:'';display:inline-block;width:20px;height:2.5px;background:var(--naranja);border-radius:2px}
-.hero h1{font-family:var(--fd);font-size:42px;font-weight:900;letter-spacing:-.01em;line-height:1.08;margin-bottom:14px;max-width:620px;position:relative}
-.hl1{display:block;color:var(--A)}
-.hl2{display:block;background:linear-gradient(90deg,var(--naranjad) 0%,var(--naranja) 60%,#FFD060 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero p{font-family:var(--fr);font-size:15px;font-weight:500;color:var(--mid);line-height:1.65;max-width:480px;position:relative}
+/* ── MAIN LAYOUT (3 columnas) ── */
+.layout{display:flex;flex:1;overflow:hidden}
 
-/* ─ STATS ─ */
-.sbar{display:flex;background:var(--bg);border-bottom:1.5px solid var(--border);padding:0 32px}
-.st{display:flex;align-items:center;gap:10px;padding:14px 26px 14px 0;margin-right:26px;border-right:1px solid var(--border)}
-.st:last-child{border-right:none}
-.snum{font-family:var(--fd);font-size:27px;font-weight:900;letter-spacing:-.03em;line-height:1}
-.stxt{font-family:var(--fr);font-size:12px;font-weight:600;letter-spacing:.04em;line-height:1.3}
-
-/* ─ LAYOUT ─ */
-.lay{display:flex;min-height:calc(100vh - 66px)}
-
-/* ─ SIDEBAR ─ */
-.sb{width:246px;flex-shrink:0;background:var(--white);border-right:1.5px solid var(--border);padding:20px 0 30px;position:sticky;top:66px;height:calc(100vh - 66px);overflow-y:auto}
-.sbl{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--light);padding:0 18px 10px}
+/* ── SIDEBAR IZQUIERDO — categorías ── */
+.sb-left{width:220px;flex-shrink:0;background:var(--white);border-right:1.5px solid var(--bord);padding:20px 0 24px;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.sbl{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--A);opacity:.45;padding:0 18px 10px}
 .nb{display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;border:none;background:none;cursor:pointer;border-left:3px solid transparent;transition:background .15s;text-align:left}
 .nb:hover{background:var(--bg)}
-.ni{width:33px;height:33px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:transform .14s}
-.nb:hover .ni{transform:scale(1.08)}
+.ni{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform .14s}
+.nb:hover .ni{transform:scale(1.1)}
 .nf{flex:1;min-width:0}
-.nm{font-family:var(--fd);font-size:14px;font-weight:800;display:block;line-height:1.2;letter-spacing:.01em}
-.ns{font-family:var(--fr);font-size:11px;font-weight:500;letter-spacing:.04em;display:block;margin-top:1px;opacity:.6}
+.nm{font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.01em;display:block;line-height:1.15}
+.ns{font-family:var(--fr);font-size:11px;font-weight:500;letter-spacing:.03em;display:block;margin-top:1px;opacity:.6}
 .nc{font-family:var(--fd);font-size:12px;font-weight:700;min-width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-/* colores sidebar */
-.nb[data-cat="todas"]        .nm,.nb[data-cat="todas"]        .nc{color:var(--azulv)} .nb[data-cat="todas"] .ni{background:var(--fA)} .nb[data-cat="todas"] .nc{background:var(--fA)}
-.nb[data-cat="apertura"]     .nm,.nb[data-cat="apertura"]     .nc{color:var(--A)}  .nb[data-cat="apertura"] .ni{background:var(--fA)} .nb[data-cat="apertura") .nc{background:var(--fA)}
-.nb[data-cat="relevamiento"] .nm,.nb[data-cat="relevamiento"] .nc{color:var(--R)}  .nb[data-cat="relevamiento"] .ni{background:var(--fR)}
-.nb[data-cat="gestion"]      .nm,.nb[data-cat="gestion"]      .nc{color:var(--G)}  .nb[data-cat="gestion"] .ni{background:var(--fG)}
-.nb[data-cat="resolucion"]   .nm,.nb[data-cat="resolucion"]   .nc{color:var(--Re)} .nb[data-cat="resolucion"] .ni{background:var(--fRe)}
-.nb[data-cat="cierre"]       .nm,.nb[data-cat="cierre"]       .nc{color:var(--C)}  .nb[data-cat="cierre"] .ni{background:var(--fC)}
-.nb[data-cat="apertura"]     .nc{background:var(--fA)}
-.nb[data-cat="relevamiento"] .nc{background:var(--fR)}
-.nb[data-cat="gestion"]      .nc{background:var(--fG)}
-.nb[data-cat="resolucion"]   .nc{background:var(--fRe)}
-.nb[data-cat="cierre"]       .nc{background:var(--fC)}
-.nb[data-cat="todas"].active        {background:var(--fA);border-left-color:var(--azulv)}
-.nb[data-cat="apertura"].active     {background:var(--fA);border-left-color:var(--A)}
-.nb[data-cat="relevamiento"].active {background:var(--fR);border-left-color:var(--R)}
-.nb[data-cat="gestion"].active      {background:var(--fG);border-left-color:var(--G)}
-.nb[data-cat="resolucion"].active   {background:var(--fRe);border-left-color:var(--Re)}
-.nb[data-cat="cierre"].active       {background:var(--fC);border-left-color:var(--C)}
-.sep{height:1px;background:var(--border);margin:8px 18px}
+.nb[data-cat="todas"] .nm,.nb[data-cat="todas"] .nc,.nb[data-cat="todas"] .ns{color:var(--Av)}
+.nb[data-cat="apertura"] .nm,.nb[data-cat="apertura"] .nc,.nb[data-cat="apertura"] .ns{color:var(--A)}
+.nb[data-cat="relevamiento"] .nm,.nb[data-cat="relevamiento"] .nc,.nb[data-cat="relevamiento"] .ns{color:var(--R)}
+.nb[data-cat="gestion"] .nm,.nb[data-cat="gestion"] .nc,.nb[data-cat="gestion"] .ns{color:var(--G)}
+.nb[data-cat="resolucion"] .nm,.nb[data-cat="resolucion"] .nc,.nb[data-cat="resolucion"] .ns{color:var(--Re)}
+.nb[data-cat="cierre"] .nm,.nb[data-cat="cierre"] .nc,.nb[data-cat="cierre"] .ns{color:var(--C)}
+.nb[data-cat="todas"] .ni{background:var(--fA)} .nb[data-cat="apertura"] .ni{background:var(--fA)} .nb[data-cat="relevamiento"] .ni{background:var(--fR)} .nb[data-cat="gestion"] .ni{background:var(--fG)} .nb[data-cat="resolucion"] .ni{background:var(--fRe)} .nb[data-cat="cierre"] .ni{background:var(--fC)}
+.nb[data-cat="todas"] .nc{background:var(--fA);color:var(--Av)} .nb[data-cat="apertura"] .nc{background:var(--fA);color:var(--A)} .nb[data-cat="relevamiento"] .nc{background:var(--fR);color:var(--R)} .nb[data-cat="gestion"] .nc{background:var(--fG);color:var(--G)} .nb[data-cat="resolucion"] .nc{background:var(--fRe);color:var(--Re)} .nb[data-cat="cierre"] .nc{background:var(--fC);color:var(--C)}
+.nb[data-cat="todas"].active{background:var(--fA);border-left-color:var(--Av)} .nb[data-cat="apertura"].active{background:var(--fA);border-left-color:var(--A)} .nb[data-cat="relevamiento"].active{background:var(--fR);border-left-color:var(--R)} .nb[data-cat="gestion"].active{background:var(--fG);border-left-color:var(--G)} .nb[data-cat="resolucion"].active{background:var(--fRe);border-left-color:var(--Re)} .nb[data-cat="cierre"].active{background:var(--fC);border-left-color:var(--C)}
+.sep{height:1px;background:var(--bord);margin:8px 18px}
 
-/* ─ CONTENT ─ */
-.ct{flex:1;padding:28px 32px;background:var(--bg)}
-.ch{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
-.cey{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-.cey::before{content:'';display:inline-block;width:16px;height:2.5px;border-radius:2px;background:currentColor}
-.ctit{font-family:var(--fd);font-size:26px;font-weight:900;letter-spacing:-.01em;line-height:1.1}
-.cdesc{font-family:var(--fr);font-size:14px;font-weight:500;color:var(--mid);margin-top:4px;line-height:1.55;max-width:420px}
-/* Botón nueva plantilla */
-.btn-new{display:inline-flex;align-items:center;gap:7px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.03em;padding:10px 18px;border-radius:40px;border:none;cursor:pointer;transition:opacity .15s,transform .12s;white-space:nowrap}
-.btn-new:hover{opacity:.87;transform:translateY(-1px)}
-.search-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sw{display:flex;align-items:center;background:var(--white);border:1.5px solid var(--border);border-radius:40px;padding:8px 15px;gap:7px;min-width:200px;transition:border-color .15s,box-shadow .15s}
-.sw:focus-within{box-shadow:0 0 0 3px rgba(36,114,204,.12)}
-.sw input{border:none;background:none;outline:none;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--dark);flex:1}
-.sw input::placeholder{color:var(--light);font-weight:400}
-.sw svg{color:var(--light);flex-shrink:0}
+/* ── CENTRO — plantillas ── */
+.ct{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.ct-head{padding:18px 22px 14px;background:var(--white);border-bottom:1px solid var(--bord);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cey{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.cey::before{content:'';display:inline-block;width:14px;height:2px;border-radius:2px;background:currentColor}
+.ctit{font-family:var(--fd);font-size:22px;font-weight:900;letter-spacing:-.01em;line-height:1.1}
+.sw{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--bord);border-radius:30px;padding:7px 14px;gap:7px;min-width:180px;transition:border-color .15s}
+.sw:focus-within{border-color:var(--Av)}
+.sw input{border:none;background:none;outline:none;font-family:var(--fd);font-size:12px;font-weight:600;color:var(--A);flex:1}
+.sw input::placeholder{color:var(--A);opacity:.35;font-weight:400}
+.sw svg{color:var(--A);opacity:.4;flex-shrink:0}
 
-/* ─ GRID ─ */
-.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.cards-scroll{flex:1;overflow-y:auto;padding:18px 22px}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
 
-/* ─ CARD ─ */
-.card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--rl);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh);animation:fu .22s ease both;transition:transform .2s,box-shadow .2s,border-color .2s}
+/* Card plantilla */
+.card{background:var(--white);border:1.5px solid var(--bord);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;flex-direction:column;box-shadow:var(--sh);animation:fu .2s ease both}
 .card:hover{transform:translateY(-2px);box-shadow:var(--shh)}
-@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.cbar{height:5px;flex-shrink:0}
-.cbody{padding:16px 18px 12px;flex:1;display:flex;flex-direction:column;gap:8px}
-.ctag{display:inline-flex;align-items:center;gap:5px;font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;width:fit-content}
-/* NOMBRE: grande, oscuro, siempre legible */
-.cnm{font-family:var(--fd);font-size:16px;font-weight:800;line-height:1.25;letter-spacing:.01em;color:var(--dark)}
-/* PREVIEW: tamaño legible, color oscuro fuerte */
-.cpv{font-family:var(--fr);font-size:14px;font-weight:500;line-height:1.65;color:var(--mid);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-/* FOOTER card */
-.cfoot{padding:10px 18px;border-top:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.cet{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-/* Acciones de card */
-.cacts{display:flex;align-items:center;gap:6px}
-.cact{display:inline-flex;align-items:center;gap:4px;font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:background .13s,color .13s}
-.cact-copy:hover{color:#fff}
-.cact-edit{border-color:var(--border);color:var(--mid)}
-.cact-edit:hover{background:var(--bg);border-color:var(--mid);color:var(--dark)}
-.cact-del{border-color:var(--border);color:var(--mid)}
-.cact-del:hover{background:#FFF0EA;border-color:#F09878;color:#B83010}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cbar{height:4px;flex-shrink:0}
+.cbody{padding:14px 16px 11px;flex:1;display:flex;flex-direction:column}
+.ctag{display:inline-flex;align-items:center;gap:4px;font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:8px;width:fit-content}
+.cnm{font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.01em;line-height:1.2;margin-bottom:6px}
+.cpv{font-family:var(--fr);font-size:12px;font-weight:400;line-height:1.58;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;opacity:.6}
+.cfoot{padding:9px 16px;border-top:1px solid var(--bord);display:flex;align-items:center;justify-content:space-between}
+.cet{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.ccp{display:inline-flex;align-items:center;gap:3px;font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:background .14s,color .14s}
 
-/* ─ VACÍO ─ */
-.empty{grid-column:1/-1;text-align:center;padding:60px 20px}
-.empty svg{opacity:.2;margin-bottom:14px}
-.empty p{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--light)}
+.empty{grid-column:1/-1;text-align:center;padding:40px 20px}
+.empty p{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--A);opacity:.4}
 
-/* ─ MODAL BASE ─ */
-.ov{position:fixed;inset:0;background:rgba(8,14,30,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;backdrop-filter:blur(5px)}
-.ov.open{opacity:1;visibility:visible}
-.mo{background:var(--white);border-radius:20px;max-width:560px;width:100%;box-shadow:0 28px 72px rgba(8,14,30,.24);overflow:hidden;transform:translateY(20px) scale(.97);transition:transform .22s;max-height:90vh;display:flex;flex-direction:column}
-.ov.open .mo{transform:none}
-.mh{padding:20px 24px 16px;border-bottom:1.5px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0}
-.mey{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.mey::before{content:'';display:inline-block;width:14px;height:2px;border-radius:2px;background:currentColor}
-.mtt{font-family:var(--fd);font-size:22px;font-weight:900;letter-spacing:.01em;line-height:1.15}
-.mx{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--mid);transition:background .14s,color .14s}
-.mx:hover{background:var(--bg);color:var(--dark)}
-.mb{padding:20px 24px;overflow-y:auto;flex:1}
+/* ── PANEL IA — derecho ── */
+.ia-panel{width:360px;flex-shrink:0;background:var(--white);border-left:1.5px solid var(--bord);display:flex;flex-direction:column;overflow:hidden}
 
-/* ─ MODAL VER ─ */
-.fl{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
-/* Texto plantilla en modal: grande y oscuro */
-.ftext{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;font-family:var(--fr);font-size:15px;font-weight:500;line-height:1.75;color:var(--dark);white-space:pre-wrap;margin-bottom:14px}
-.fnota{display:none;background:var(--fG);border:1.5px solid var(--bG);border-radius:var(--r);padding:12px 14px;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--G);line-height:1.6;margin-bottom:18px}
-.fnota.on{display:block}
-.mbs{display:flex;gap:10px;flex-wrap:wrap}
-.bm{flex:1;min-width:130px;padding:11px 18px;border:none;border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .14s,transform .12s;color:#fff}
-.bm:hover{opacity:.87;transform:translateY(-1px)}
-.bs{padding:11px 18px;background:none;border:1.5px solid var(--border);border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:background .14s,color .14s}
-.bs:hover{background:var(--bg);color:var(--dark)}
+/* Header del panel IA */
+.ia-head{padding:16px 18px 14px;border-bottom:1.5px solid var(--bord);flex-shrink:0}
+.ia-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ia-title{font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:.01em}
+/* Indicador online/offline */
+.ia-status{display:flex;align-items:center;gap:5px;font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.status-dot.on{background:var(--R);box-shadow:0 0 0 3px rgba(14,138,95,.2)}
 
-/* ─ MODAL FORM (crear/editar) ─ */
-.form-field{margin-bottom:16px}
-.form-field label{display:block;font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);margin-bottom:6px}
-.form-field input,.form-field select,.form-field textarea{
-  width:100%;font-family:var(--fr);font-size:15px;font-weight:500;
-  color:var(--dark);background:var(--white);
-  border:1.5px solid var(--border);border-radius:var(--r);
-  padding:11px 14px;outline:none;
-  transition:border-color .15s,box-shadow .15s;
-  line-height:1.55;
-}
-.form-field textarea{resize:vertical;min-height:120px}
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--azulv);box-shadow:0 0 0 3px rgba(36,114,204,.1)}
-.form-field select{cursor:pointer}
-.form-field .hint{font-family:var(--fr);font-size:12px;font-weight:500;color:var(--light);margin-top:5px;font-style:italic}
-.tipo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tipo-opt{position:relative}
-.tipo-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0}
-.tipo-opt label{display:flex;align-items:center;gap:7px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;font-family:var(--fr);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--mid);transition:all .14s}
-.tipo-opt label:hover{border-color:var(--azulv);background:var(--fA)}
-.tipo-opt input:checked + label{border-color:var(--azulv);background:var(--fA);color:var(--A)}
-.tipo-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+/* Selector de etapa */
+.ia-stage-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--A);opacity:.5;margin-bottom:5px}
+.stage-pills{display:flex;flex-wrap:wrap;gap:5px}
+.sp{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1.5px solid var(--bord);background:none;cursor:pointer;color:var(--muted);transition:all .14s}
+.sp:hover{border-color:currentColor;opacity:.8}
+.sp.active{color:#fff}
+.sp[data-s="apertura"].active{background:var(--A);border-color:var(--A)}
+.sp[data-s="relevamiento"].active{background:var(--R);border-color:var(--R)}
+.sp[data-s="gestion"].active{background:var(--G);border-color:var(--G)}
+.sp[data-s="resolucion"].active{background:var(--Re);border-color:var(--Re)}
+.sp[data-s="cierre"].active{background:var(--C);border-color:var(--C)}
 
-/* ─ MODAL CONFIRMAR BORRAR ─ */
-.del-warn{text-align:center;padding:8px 0 16px}
-.del-icon{font-size:40px;margin-bottom:12px}
-.del-msg{font-family:var(--fr);font-size:15px;font-weight:500;color:var(--mid);line-height:1.6}
-.del-name{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--dark);margin-top:4px}
-.btn-del{padding:11px 20px;background:#B83010;color:#fff;border:none;border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .14s}
-.btn-del:hover{opacity:.85}
+/* Mensajes */
+.ia-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
 
-/* ─ TOAST ─ */
-.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:40px;font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 8px 30px rgba(8,14,30,.2);z-index:300;display:flex;align-items:center;gap:7px;background:var(--dark);color:#fff;transform:translateY(60px);opacity:0;transition:transform .28s,opacity .28s}
+/* Mensaje del agente (usuario) */
+.msg-user{align-self:flex-end;max-width:88%}
+.msg-user .bubble{background:var(--Av);color:#fff;border-radius:14px 14px 3px 14px;padding:10px 14px;font-family:var(--fr);font-size:13px;font-weight:400;line-height:1.6;letter-spacing:.01em}
+.msg-label{font-family:var(--fr);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.45;margin-bottom:3px;color:var(--A)}
+.msg-user .msg-label{text-align:right}
+
+/* Mensaje IA */
+.msg-ia{align-self:flex-start;max-width:96%;width:100%}
+.msg-ia .bubble{background:var(--bg);border:1.5px solid var(--bord);border-radius:3px 14px 14px 14px;padding:12px 14px;font-family:var(--fr);font-size:13px;font-weight:400;line-height:1.65;letter-spacing:.01em;color:var(--nero)}
+
+/* Sugerencias de respuesta */
+.suggestions{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.sug{background:var(--white);border:1.5px solid var(--bord);border-radius:10px;padding:10px 13px;cursor:pointer;transition:border-color .14s,box-shadow .14s;position:relative}
+.sug:hover{border-color:var(--Av);box-shadow:0 2px 10px rgba(36,114,204,.12)}
+.sug-num{font-family:var(--fd);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.sug-text{font-family:var(--fr);font-size:12px;font-weight:400;line-height:1.55;color:var(--nero);letter-spacing:.01em}
+.sug-copy{position:absolute;top:8px;right:10px;font-family:var(--fr);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid var(--bord);background:var(--white);color:var(--muted);cursor:pointer;opacity:0;transition:opacity .14s}
+.sug:hover .sug-copy{opacity:1}
+.sug-copy:hover{background:var(--Av);color:#fff;border-color:var(--Av)}
+
+/* Plantillas sugeridas */
+.related-label{font-family:var(--fd);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:8px;margin-bottom:6px;padding:0 2px}
+.rel-pills{display:flex;flex-wrap:wrap;gap:5px}
+.rel-pill{font-family:var(--fr);font-size:11px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:20px;border:1.5px solid;background:none;cursor:pointer;transition:background .14s,color .14s;text-align:left}
+
+/* Typing indicator */
+.typing{display:flex;align-items:center;gap:4px;padding:10px 14px;background:var(--bg);border:1.5px solid var(--bord);border-radius:3px 14px 14px 14px;width:fit-content}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* Estado vacío panel IA */
+.ia-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:12px;opacity:.5}
+.ia-empty svg{opacity:.3}
+.ia-empty-title{font-family:var(--fd);font-size:14px;font-weight:800;color:var(--A)}
+.ia-empty-sub{font-family:var(--fr);font-size:12px;font-weight:500;color:var(--A);line-height:1.55}
+
+/* Input del chat */
+.ia-input-area{padding:14px 16px;border-top:1.5px solid var(--bord);flex-shrink:0;background:var(--white)}
+.ia-input-wrap{display:flex;gap:8px;align-items:flex-end;background:var(--bg);border:1.5px solid var(--bord);border-radius:14px;padding:10px 14px;transition:border-color .15s}
+.ia-input-wrap:focus-within{border-color:var(--Av);background:var(--white)}
+textarea#chat-input{flex:1;border:none;background:transparent;outline:none;font-family:var(--fr);font-size:13px;font-weight:400;color:var(--nero);resize:none;min-height:40px;max-height:120px;line-height:1.55;letter-spacing:.01em}
+textarea#chat-input::placeholder{color:var(--muted);font-weight:400}
+.send-btn{width:36px;height:36px;border-radius:10px;background:var(--Av);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .14s,transform .12s;align-self:flex-end}
+.send-btn:hover{background:var(--A);transform:scale(1.06)}
+.send-btn:disabled{background:var(--bord);cursor:not-allowed;transform:none}
+.send-btn svg{color:#fff}
+.ia-hint{font-family:var(--fr);font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:6px;text-align:center}
+
+/* Modal API key */
+.modal-ov{position:fixed;inset:0;background:rgba(8,14,30,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;backdrop-filter:blur(4px)}
+.modal-ov.open{opacity:1;visibility:visible}
+.modal-box{background:var(--white);border-radius:18px;max-width:440px;width:100%;padding:28px;box-shadow:0 24px 64px rgba(8,14,30,.24);transform:translateY(16px) scale(.97);transition:transform .2s}
+.modal-ov.open .modal-box{transform:none}
+.modal-title{font-family:var(--fd);font-size:20px;font-weight:900;color:var(--A);margin-bottom:6px;letter-spacing:.01em}
+.modal-sub{font-family:var(--fr);font-size:13px;font-weight:500;color:var(--muted);line-height:1.55;margin-bottom:20px}
+.modal-label{font-family:var(--fr);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--A);margin-bottom:7px}
+.modal-input{width:100%;border:1.5px solid var(--bord);border-radius:10px;padding:11px 14px;font-family:var(--fd);font-size:13px;font-weight:600;color:var(--nero);outline:none;transition:border-color .15s;letter-spacing:.02em;background:var(--bg)}
+.modal-input:focus{border-color:var(--Av);background:var(--white)}
+.modal-note{background:var(--fG);border:1px solid var(--bG);border-radius:8px;padding:10px 13px;font-family:var(--fr);font-size:12px;color:var(--G);line-height:1.55;margin:14px 0 20px;font-weight:500}
+.modal-btns{display:flex;gap:10px}
+.mbtn-p{flex:1;padding:11px;background:var(--Av);color:#fff;border:none;border-radius:30px;font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .14s}
+.mbtn-p:hover{background:var(--A)}
+.mbtn-s{padding:11px 18px;background:none;border:1.5px solid var(--bord);border-radius:30px;font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:background .14s}
+.mbtn-s:hover{background:var(--bg)}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--nero);color:#fff;padding:11px 18px;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 8px 28px rgba(8,14,30,.22);z-index:300;display:flex;align-items:center;gap:7px;transform:translateY(56px);opacity:0;transition:transform .26s,opacity .26s}
 .toast.on{transform:translateY(0);opacity:1}
-
-/* ─ RESPONSIVE ─ */
-@media(max-width:840px){
-  .lay{flex-direction:column}
-  .sb{width:100%;height:auto;position:static;border-right:none;border-bottom:1.5px solid var(--border);display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:10px 0}
-  .sbl,.sep{display:none}
-  .nb{flex-direction:column;gap:3px;padding:8px 13px;border-left:none;border-bottom:3px solid transparent;flex-shrink:0;align-items:center}
-  .nb[data-cat="apertura"].active{border-bottom-color:var(--A);border-left:none}
-  .nb[data-cat="relevamiento"].active{border-bottom-color:var(--R);border-left:none}
-  .nb[data-cat="gestion"].active{border-bottom-color:var(--G);border-left:none}
-  .nb[data-cat="resolucion"].active{border-bottom-color:var(--Re);border-left:none}
-  .nb[data-cat="cierre"].active{border-bottom-color:var(--C);border-left:none}
-  .nb[data-cat="todas"].active{border-bottom-color:var(--azulv);border-left:none}
-  .nf,.nc{display:none}
-  .ct,.hero,.sbar{padding-left:16px;padding-right:16px}
-  header{padding:0 16px}
-  .hero h1{font-size:32px}
-  .gr{grid-template-columns:1fr}
-  .tipo-row{grid-template-columns:1fr}
-}
 </style>
 </head>
 <body>
@@ -216,436 +210,495 @@ header{background:var(--white);border-bottom:1.5px solid var(--border);height:66
 <!-- HEADER -->
 <header>
   <div class="lw">
-    <svg width="42" height="42" viewBox="0 0 44 44" fill="none">
+    <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
       <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#1B5AA8" opacity="0.1"/>
       <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="none" stroke="#2472CC" stroke-width="1.4"/>
-      <polygon points="22,10 33,22 22,34 11,22" fill="#F5A820" opacity="0.93"/>
+      <polygon points="22,10 33,22 22,34 11,22" fill="#F5A820" opacity="0.94"/>
       <polygon points="22,15 28,22 22,29 16,22" fill="#1B5AA8"/>
       <path d="M12 7 Q22 1 32 7" stroke="#F5A820" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".5"/>
-      <path d="M9 10 Q22 2 35 10" stroke="#F5A820" stroke-width=".8" stroke-linecap="round" fill="none" opacity=".25"/>
     </svg>
     <div><div class="lname">SEKUNET</div><div class="lsub">Servicio &amp; Soporte</div></div>
   </div>
-  <span class="hbadge">Plantillas v 1.0</span>
+  <div class="hright">
+    <button class="apikey-btn" id="apikey-btn" onclick="openKeyModal()">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      <span id="apikey-label">Configurar API Key</span>
+    </button>
+    <span class="hbadge">Plantillas v1.0</span>
+  </div>
 </header>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hew">Taller de seguridad · Atención al cliente</div>
-  <h1><span class="hl1">Plantillas de atención</span><span class="hl2">listas para usar.</span></h1>
-  <p>Seleccione una etapa, busque una plantilla, o cree nuevas desde el botón <strong>+ Nueva</strong> en cada sección.</p>
-</div>
-
-<!-- STATS -->
-<div class="sbar">
-  <div class="st"><div><div class="snum" id="stat-total" style="color:var(--azulv)">0</div><div class="stxt" style="color:var(--azulv)">Plantillas<br>totales</div></div></div>
-  <div class="st"><div><div class="snum" id="stat-exist" style="color:var(--R)">0</div><div class="stxt" style="color:var(--R)">Existentes<br>en uso</div></div></div>
-  <div class="st"><div><div class="snum" id="stat-new" style="color:var(--Re)">0</div><div class="stxt" style="color:var(--Re)">Propuestas<br>nuevas</div></div></div>
-  <div class="st"><div><div class="snum" style="color:var(--G)">5</div><div class="stxt" style="color:var(--G)">Etapas de<br>conversación</div></div></div>
-</div>
-
 <!-- LAYOUT -->
-<div class="lay">
-  <aside class="sb">
+<div class="layout">
+
+  <!-- SIDEBAR IZQ -->
+  <aside class="sb-left">
     <div class="sbl">Etapas</div>
     <button class="nb active" data-cat="todas" onclick="setCat('todas',this)">
-      <div class="ni">⊞</div><div class="nf"><span class="nm">Todas</span><span class="ns">Vista completa</span></div><span class="nc" id="cnt-todas">0</span>
+      <div class="ni">⊞</div><div class="nf"><span class="nm">Todas</span><span class="ns">Vista completa</span></div><span class="nc">22</span>
     </button>
     <div class="sep"></div>
     <button class="nb" data-cat="apertura" onclick="setCat('apertura',this)">
-      <div class="ni">👋</div><div class="nf"><span class="nm">Apertura</span><span class="ns">Inicio de contacto</span></div><span class="nc" id="cnt-apertura">0</span>
+      <div class="ni">👋</div><div class="nf"><span class="nm">Apertura</span><span class="ns">Inicio de contacto</span></div><span class="nc">2</span>
     </button>
     <button class="nb" data-cat="relevamiento" onclick="setCat('relevamiento',this)">
-      <div class="ni">🔍</div><div class="nf"><span class="nm">Relevamiento</span><span class="ns">Diagnóstico y datos</span></div><span class="nc" id="cnt-relevamiento">0</span>
+      <div class="ni">🔍</div><div class="nf"><span class="nm">Relevamiento</span><span class="ns">Diagnóstico y datos</span></div><span class="nc">4</span>
     </button>
     <button class="nb" data-cat="gestion" onclick="setCat('gestion',this)">
-      <div class="ni">⚙️</div><div class="nf"><span class="nm">Gestión</span><span class="ns">Proceso en taller</span></div><span class="nc" id="cnt-gestion">0</span>
+      <div class="ni">⚙️</div><div class="nf"><span class="nm">Gestión</span><span class="ns">Proceso en taller</span></div><span class="nc">7</span>
     </button>
     <button class="nb" data-cat="resolucion" onclick="setCat('resolucion',this)">
-      <div class="ni">✅</div><div class="nf"><span class="nm">Resolución</span><span class="ns">Entrega y resultado</span></div><span class="nc" id="cnt-resolucion">0</span>
+      <div class="ni">✅</div><div class="nf"><span class="nm">Resolución</span><span class="ns">Entrega y resultado</span></div><span class="nc">6</span>
     </button>
     <button class="nb" data-cat="cierre" onclick="setCat('cierre',this)">
-      <div class="ni">🔒</div><div class="nf"><span class="nm">Cierre</span><span class="ns">Fin de conversación</span></div><span class="nc" id="cnt-cierre">0</span>
+      <div class="ni">🔒</div><div class="nf"><span class="nm">Cierre</span><span class="ns">Fin de conversación</span></div><span class="nc">3</span>
     </button>
   </aside>
 
-  <main class="ct">
-    <div class="ch">
+  <!-- CENTRO: plantillas -->
+  <div class="ct">
+    <div class="ct-head">
       <div>
-        <div class="cey" id="ey" style="color:var(--azulv)">Vista general</div>
-        <div class="ctit" id="ctit" style="color:var(--azulv)">Todas las plantillas</div>
-        <div class="cdesc" id="cdesc">Repositorio completo organizado por etapa de conversación.</div>
+        <div class="cey" id="ey" style="color:var(--Av)">Vista general</div>
+        <div class="ctit" id="ctit" style="color:var(--Av)">Todas las plantillas</div>
       </div>
-      <div class="search-row">
-        <div class="sw">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" id="si" placeholder="Buscar plantilla…" oninput="render()">
-        </div>
-        <button class="btn-new" id="btn-new" onclick="openCreate()" style="background:var(--azulv);color:#fff">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          Nueva plantilla
-        </button>
+      <div class="sw">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="si" placeholder="Buscar…" oninput="renderCards()">
       </div>
     </div>
-    <div class="gr" id="gr"></div>
-  </main>
-</div>
+    <div class="cards-scroll">
+      <div class="gr" id="gr"></div>
+    </div>
+  </div>
 
-<!-- MODAL VER -->
-<div class="ov" id="ov-ver" onclick="closeOut(event,'ov-ver')">
-  <div class="mo">
-    <div class="mh">
-      <div><div class="mey" id="ver-ey"></div><div class="mtt" id="ver-tt"></div></div>
-      <button class="mx" onclick="closeOv('ov-ver')">✕</button>
-    </div>
-    <div class="mb">
-      <div class="fl">Texto de la plantilla</div>
-      <div class="ftext" id="ver-txt"></div>
-      <div class="fnota" id="ver-nota"></div>
-      <div class="mbs">
-        <button class="bm" id="ver-copy" onclick="copyVer()">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copiar texto
-        </button>
-        <button class="bm" id="ver-edit" onclick="openEditFromVer()" style="background:var(--A)">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Editar
-        </button>
-        <button class="bs" onclick="closeOv('ov-ver')">Cerrar</button>
+  <!-- PANEL IA -->
+  <div class="ia-panel">
+    <div class="ia-head">
+      <div class="ia-title-row">
+        <!-- Título IA: degradado dinámico -->
+        <div class="ia-title" id="ia-title" style="background:linear-gradient(90deg,var(--A),var(--Av));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Asistente IA</div>
+        <div class="ia-status"><div class="status-dot" id="sdot"></div><span id="slabel" style="color:var(--muted)">Sin clave</span></div>
       </div>
+      <div class="ia-stage-label">Contexto de etapa</div>
+      <div class="stage-pills">
+        <button class="sp active" data-s="apertura" onclick="setStage('apertura',this)">Apertura</button>
+        <button class="sp" data-s="relevamiento" onclick="setStage('relevamiento',this)">Relevamiento</button>
+        <button class="sp" data-s="gestion" onclick="setStage('gestion',this)">Gestión</button>
+        <button class="sp" data-s="resolucion" onclick="setStage('resolucion',this)">Resolución</button>
+        <button class="sp" data-s="cierre" onclick="setStage('cierre',this)">Cierre</button>
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="ia-msgs" id="ia-msgs">
+      <div class="ia-empty" id="ia-empty">
+        <svg width="40" height="40" fill="none" stroke="var(--A)" stroke-width="1.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="ia-empty-title">Pegue el mensaje del cliente</div>
+        <div class="ia-empty-sub">La IA analizará el mensaje, sugerirá 3 respuestas y le indicará qué plantillas aplicar según la etapa seleccionada.</div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="ia-input-area">
+      <div class="ia-input-wrap">
+        <textarea id="chat-input" placeholder="Pegue aquí el mensaje del cliente…" rows="2" onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Enviar (Ctrl+Enter)">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="ia-hint">Ctrl + Enter para enviar</div>
     </div>
   </div>
 </div>
 
-<!-- MODAL CREAR / EDITAR -->
-<div class="ov" id="ov-form" onclick="closeOut(event,'ov-form')">
-  <div class="mo">
-    <div class="mh">
-      <div><div class="mey" id="form-ey" style="color:var(--azulv)">Nueva plantilla</div><div class="mtt" id="form-tt" style="color:var(--azulv)">Crear plantilla</div></div>
-      <button class="mx" onclick="closeOv('ov-form')">✕</button>
+<!-- MODAL API KEY -->
+<div class="modal-ov" id="key-modal" onclick="closeKeyOut(event)">
+  <div class="modal-box">
+    <div class="modal-title">Configurar API Key</div>
+    <div class="modal-sub">Ingrese su clave de Anthropic para activar el asistente IA. La clave se guarda solo en su navegador (localStorage) y nunca sale de su dispositivo.</div>
+    <div class="modal-label">API Key de Anthropic</div>
+    <input class="modal-input" type="password" id="key-input" placeholder="sk-ant-api03-…" autocomplete="off">
+    <div class="modal-note">
+      💡 Obtenga su clave en <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
+      El plan gratuito incluye créditos de inicio sin costo.
     </div>
-    <div class="mb">
-      <div class="form-field">
-        <label>Nombre de la plantilla</label>
-        <input type="text" id="f-nombre" placeholder="Ej: Confirmación de diagnóstico">
-      </div>
-      <div class="form-field">
-        <label>Etapa</label>
-        <select id="f-cat">
-          <option value="apertura">👋 Apertura</option>
-          <option value="relevamiento">🔍 Relevamiento</option>
-          <option value="gestion">⚙️ Gestión en taller</option>
-          <option value="resolucion">✅ Resolución</option>
-          <option value="cierre">🔒 Cierre</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label>Texto de la plantilla</label>
-        <textarea id="f-texto" placeholder="Escriba el texto que el agente enviará al cliente. Use [VARIABLES] en mayúscula para los campos a completar."></textarea>
-        <div class="hint">Use [CORCHETES] para indicar campos que deben completarse antes de enviar.</div>
-      </div>
-      <div class="form-field">
-        <label>Tipo de plantilla</label>
-        <div class="tipo-row">
-          <div class="tipo-opt"><input type="radio" name="f-tipo" id="t1" value="Existente" checked><label for="t1"><span class="tipo-dot" style="background:#0E7A52"></span>Existente</label></div>
-          <div class="tipo-opt"><input type="radio" name="f-tipo" id="t2" value="Nueva — alta prioridad"><label for="t2"><span class="tipo-dot" style="background:#B83010"></span>Alta prioridad</label></div>
-          <div class="tipo-opt"><input type="radio" name="f-tipo" id="t3" value="Nueva — prioridad media"><label for="t3"><span class="tipo-dot" style="background:#A06800"></span>Prioridad media</label></div>
-          <div class="tipo-opt"><input type="radio" name="f-tipo" id="t4" value="Nueva — prioridad baja"><label for="t4"><span class="tipo-dot" style="background:#1B5AA8"></span>Prioridad baja</label></div>
-        </div>
-      </div>
-      <div class="form-field">
-        <label>Nota interna (opcional)</label>
-        <textarea id="f-nota" placeholder="Instrucción para el agente sobre cuándo usar esta plantilla…" style="min-height:72px"></textarea>
-      </div>
-      <div class="form-field" id="f-error" style="display:none">
-        <div style="background:#FFF0EA;border:1.5px solid #F09878;border-radius:var(--r);padding:10px 14px;font-family:var(--fr);font-size:13px;font-weight:600;color:#B83010"></div>
-      </div>
-      <div class="mbs">
-        <button class="bm" id="form-save" onclick="saveForm()" style="background:var(--azulv)">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Guardar plantilla
-        </button>
-        <button class="bs" onclick="closeOv('ov-form')">Cancelar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR BORRAR -->
-<div class="ov" id="ov-del" onclick="closeOut(event,'ov-del')">
-  <div class="mo" style="max-width:420px">
-    <div class="mh">
-      <div><div class="mey" style="color:#B83010;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:14px;height:2px;border-radius:2px;background:#B83010"></span>Confirmar acción</div><div class="mtt" style="color:#B83010">Eliminar plantilla</div></div>
-      <button class="mx" onclick="closeOv('ov-del')">✕</button>
-    </div>
-    <div class="mb">
-      <div class="del-warn">
-        <div class="del-icon">⚠️</div>
-        <div class="del-msg">¿Está seguro de que desea eliminar esta plantilla?<br>Esta acción no se puede deshacer.</div>
-        <div class="del-name" id="del-name"></div>
-      </div>
-      <div class="mbs" style="margin-top:8px">
-        <button class="btn-del" onclick="confirmDel()">Sí, eliminar</button>
-        <button class="bs" onclick="closeOv('ov-del')">Cancelar</button>
-      </div>
+    <div class="modal-btns">
+      <button class="mbtn-p" onclick="saveKey()">Guardar y activar</button>
+      <button class="mbtn-s" onclick="closeKeyModal()">Cancelar</button>
     </div>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toast-msg">¡Listo!</span>
+  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">¡Copiado!</span>
 </div>
 
 <script>
-/* ── DATOS BASE ── */
-const BASE=[
-  {id:1,cat:"apertura",nombre:"Saludo inicial",tipo:"Existente",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?",nota:""},
-  {id:2,cat:"apertura",nombre:"Alerta activa / urgencia",tipo:"Nueva — alta prioridad",texto:"Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?",nota:"Usar cuando el cliente mencione alarma sonando, humo, activación de sensores u otra emergencia activa."},
-  {id:3,cat:"relevamiento",nombre:"Pedir más detalle",tipo:"Existente",texto:"Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?",nota:""},
-  {id:4,cat:"relevamiento",nombre:"Diagnóstico remoto inicial",tipo:"Nueva — alta prioridad",texto:"Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar si el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde? Cualquier detalle que nos comparta será de gran ayuda.",nota:"Permite decidir si el equipo requiere visita técnica, envío al taller o resolución remota."},
-  {id:5,cat:"relevamiento",nombre:"Solicitar número de serie o modelo",tipo:"Nueva — alta prioridad",texto:"Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Por lo general, este dato se encuentra en la etiqueta ubicada en la parte posterior o inferior del equipo.",nota:""},
-  {id:6,cat:"relevamiento",nombre:"Coordinar visita técnica a domicilio",tipo:"Nueva — prioridad media",texto:"Para este tipo de equipo, lo más conveniente es realizar una visita técnica directamente en el lugar de instalación. ¿Nos podría indicar su dirección y disponibilidad horaria para coordinar la visita con nuestro equipo técnico?",nota:"Aplicar cuando el equipo es de instalación fija: paneles de alarma, detectores de humo empotrados, sirenas cableadas, etc."},
-  {id:7,cat:"gestion",nombre:"Confirmación de recepción del equipo",tipo:"Nueva — alta prioridad",texto:"Le confirmamos que hemos recibido su equipo en buen estado. Le hemos asignado el número de orden [#ORDEN]. Nuestro equipo técnico procederá con la revisión y le informaremos los resultados del diagnóstico a la brevedad. ¿Tiene alguna observación adicional que debamos considerar?",nota:"Enviar máximo en las primeras 2 horas tras recibir el equipo."},
-  {id:8,cat:"gestion",nombre:"Actualización de estado del dispositivo",tipo:"Existente",texto:"Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades sobre el avance, le avisamos de inmediato. ¿Hay algo más en lo que podamos ayudarle?",nota:""},
-  {id:9,cat:"gestion",nombre:"Presupuesto de reparación / autorización",tipo:"Nueva — alta prioridad",texto:"Tras completar el diagnóstico de su equipo [MODELO], el costo estimado de la reparación es de [MONTO], el cual incluye [DESCRIPCIÓN DE TRABAJO Y REPUESTOS]. Para continuar con el proceso, necesitamos su autorización. ¿Nos confirma si desea proceder?",nota:"Siempre detallar qué incluye el costo. Indicar si el precio tiene vigencia limitada en caso de repuestos importados."},
-  {id:10,cat:"gestion",nombre:"Falta de repuesto — tiempo de espera",tipo:"Nueva — prioridad media",texto:"Le informamos que el repuesto requerido para la reparación de su equipo no se encuentra disponible en stock en este momento. El tiempo estimado de llegada es de aproximadamente [PLAZO]. ¿Desea que procedamos con el pedido del repuesto, o prefiere que exploremos alguna alternativa?",nota:"Frecuente en equipos de marcas específicas o modelos descontinuados."},
-  {id:11,cat:"gestion",nombre:"Seguimiento proactivo sin respuesta",tipo:"Nueva — prioridad media",texto:"Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° DE ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto que le enviamos? Quedamos a su disposición para aclarar cualquier duda y proceder cuando usted lo indique.",nota:"Usar 48–72 horas después de enviar el presupuesto sin recibir respuesta."},
-  {id:12,cat:"gestion",nombre:"Agradecimiento por espera",tipo:"Existente",texto:"Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?",nota:""},
-  {id:13,cat:"gestion",nombre:"Agradecimiento por espera con enlace",tipo:"Existente",texto:"Gracias por su paciencia. Aquí le dejo el enlace con lo que nos solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?",nota:""},
-  {id:14,cat:"resolucion",nombre:"Confirmar envío para garantía",tipo:"Existente",texto:"Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, lo revisaremos y, si se trata de un defecto de fábrica, quedará cubierto por la garantía.",nota:""},
-  {id:15,cat:"resolucion",nombre:"Garantía no aplica — explicación",tipo:"Nueva — prioridad media",texto:"Luego de realizar la revisión técnica del equipo, hemos determinado que el daño encontrado corresponde a [CAUSA]. Este tipo de situación no está cubierta por la garantía del fabricante. Con gusto le detallamos las opciones de reparación disponibles con su respectivo costo.",nota:"Usar tono empático. Evitar lenguaje acusatorio. Siempre ofrecer la alternativa de reparación con costo."},
-  {id:16,cat:"resolucion",nombre:"Equipo listo para retiro o entrega",tipo:"Nueva — alta prioridad",texto:"¡Buenas noticias! Su equipo [MODELO / N° DE ORDEN] ya se encuentra listo. Puede retirarlo en nuestra oficina ubicada en [DIRECCIÓN] en horario [HORARIO], o si lo prefiere, podemos coordinar el envío a su dirección. ¿Cómo le queda mejor?",nota:""},
-  {id:17,cat:"resolucion",nombre:"Equipo sin reparación posible",tipo:"Nueva — prioridad media",texto:"Lamentablemente, luego del diagnóstico técnico, hemos determinado que el equipo presenta un daño que no permite una reparación viable. Con gusto le asesoramos sobre las opciones de reposición disponibles.",nota:"Usar tono cálido y empático. Ofrecer siempre una alternativa concreta."},
-  {id:18,cat:"resolucion",nombre:"Solicitud de certificado técnico",tipo:"Nueva — prioridad baja",texto:"Con mucho gusto le emitimos el certificado técnico de la reparación realizada, con el detalle completo del trabajo efectuado y los repuestos utilizados. ¿Nos podría indicar si necesita algún formato específico, o si el certificado es para fines de garantía, auditoría o trámite con su aseguradora?",nota:""},
-  {id:19,cat:"resolucion",nombre:"Transferencia a técnico especializado",tipo:"Nueva — prioridad baja",texto:"Esta consulta requiere la atención de nuestro técnico especializado. Vamos a ponerle en contacto con [NOMBRE / ÁREA] para que pueda asistirle de la mejor manera. Un momento, por favor.",nota:""},
-  {id:20,cat:"cierre",nombre:"Cierre estándar",tipo:"Existente",texto:"Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!",nota:""},
-  {id:21,cat:"cierre",nombre:"Cierre con confirmación",tipo:"Existente",texto:"Ha sido un placer atenderle. Si no tiene ninguna otra consulta, cerramos la conversación por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!",nota:""},
-  {id:22,cat:"cierre",nombre:"Cierre por inactividad",tipo:"Existente",texto:"Debido a que no hemos recibido respuesta, vamos a cerrar esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!",nota:""},
+/* ══════════════════════════════════════════════
+   DATOS
+══════════════════════════════════════════════ */
+const PLANTILLAS=[
+  {id:1,cat:"apertura",nombre:"Saludo inicial",tipo:"Existente",texto:"Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?",nota:null},
+  {id:2,cat:"apertura",nombre:"Alerta activa / urgencia",tipo:"Nueva — alta prioridad",texto:"Entendemos que su sistema puede estar presentando una situación urgente. Si existe riesgo inmediato para personas o bienes, le recomendamos contactar primero a emergencias. Una vez que esté seguro/a, con mucho gusto le asistimos con el equipo. ¿Cómo le podemos ayudar?",nota:"Usar cuando el cliente mencione alarma sonando, humo o activación de sensores."},
+  {id:3,cat:"relevamiento",nombre:"Pedir más detalle",tipo:"Existente",texto:"Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?",nota:null},
+  {id:4,cat:"relevamiento",nombre:"Diagnóstico remoto inicial",tipo:"Nueva — alta prioridad",texto:"Para orientarle mejor antes de definir los próximos pasos, ¿nos podría indicar si el dispositivo presenta alguna señal de alerta activa, un sonido intermitente, o simplemente no responde?",nota:"Permite decidir si requiere visita técnica, envío al taller o solución remota."},
+  {id:5,cat:"relevamiento",nombre:"Solicitar número de serie o modelo",tipo:"Nueva — alta prioridad",texto:"Para poder revisar el historial del equipo y verificar la cobertura de garantía, ¿nos puede indicar el número de serie o el modelo del dispositivo? Suele encontrarse en la etiqueta posterior del equipo.",nota:null},
+  {id:6,cat:"relevamiento",nombre:"Coordinar visita técnica",tipo:"Nueva — prioridad media",texto:"Para este tipo de equipo, lo más conveniente es una visita técnica en sitio. ¿Nos podría indicar su dirección y disponibilidad horaria?",nota:"Aplicar para equipos de instalación fija."},
+  {id:7,cat:"gestion",nombre:"Confirmación de recepción",tipo:"Nueva — alta prioridad",texto:"Le confirmamos que hemos recibido su equipo en buen estado. Le asignamos el número de orden [#ORDEN]. Le informaremos el diagnóstico a la brevedad.",nota:"Enviar en las primeras 2 horas tras recibir el equipo."},
+  {id:8,cat:"gestion",nombre:"Actualización de estado",tipo:"Existente",texto:"Gracias por su paciencia. Al revisar el sistema, el dispositivo figura aún en [ESTADO]. En cuanto tengamos novedades, le avisamos de inmediato.",nota:null},
+  {id:9,cat:"gestion",nombre:"Presupuesto / autorización",tipo:"Nueva — alta prioridad",texto:"Tras el diagnóstico de su equipo [MODELO], el costo estimado es de [MONTO], incluyendo [DESCRIPCIÓN]. Para continuar, necesitamos su autorización. ¿Nos confirma?",nota:"Detallar qué incluye el costo."},
+  {id:10,cat:"gestion",nombre:"Falta de repuesto",tipo:"Nueva — prioridad media",texto:"El repuesto requerido no está disponible en stock. El tiempo estimado de llegada es de [PLAZO]. ¿Desea que procedamos con el pedido o prefiere explorar otra opción?",nota:"Ofrecer siempre una alternativa si existe."},
+  {id:11,cat:"gestion",nombre:"Seguimiento proactivo",tipo:"Nueva — prioridad media",texto:"Le escribimos para dar seguimiento a la consulta sobre su equipo [MODELO / N° ORDEN]. ¿Tuvo oportunidad de revisar el presupuesto? Quedamos atentos.",nota:"Usar 48-72h después del presupuesto sin respuesta."},
+  {id:12,cat:"gestion",nombre:"Agradecimiento por espera",tipo:"Existente",texto:"Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
+  {id:13,cat:"gestion",nombre:"Agradecimiento con enlace",tipo:"Existente",texto:"Gracias por su paciencia. Aquí le dejo el enlace con lo que solicitó: [ENLACE]. ¿Hay algo más en lo que podamos ayudarle?",nota:null},
+  {id:14,cat:"resolucion",nombre:"Confirmar garantía",tipo:"Existente",texto:"Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, si se trata de un defecto de fábrica, quedará cubierto por la garantía.",nota:null},
+  {id:15,cat:"resolucion",nombre:"Garantía no aplica",tipo:"Nueva — prioridad media",texto:"La revisión determinó que el daño corresponde a [CAUSA], lo cual no está cubierto por la garantía. Con gusto le detallamos las opciones de reparación con costo.",nota:"Tono empático. Siempre ofrecer alternativa."},
+  {id:16,cat:"resolucion",nombre:"Equipo listo para retiro",tipo:"Nueva — alta prioridad",texto:"¡Buenas noticias! Su equipo [MODELO / N° ORDEN] ya está listo. Puede retirarlo en [DIRECCIÓN] en horario [HORARIO], o coordinamos el envío. ¿Cómo le queda mejor?",nota:null},
+  {id:17,cat:"resolucion",nombre:"Equipo irreparable",tipo:"Nueva — prioridad media",texto:"Lamentablemente el equipo presenta un daño que no permite una reparación viable. Con gusto le asesoramos sobre opciones de reposición disponibles.",nota:"Tono cálido. Ofrecer alternativa concreta."},
+  {id:18,cat:"resolucion",nombre:"Certificado técnico",tipo:"Nueva — prioridad baja",texto:"Con gusto le emitimos el certificado técnico de la reparación. ¿Necesita algún formato específico, o es para garantía, auditoría o aseguradora?",nota:null},
+  {id:19,cat:"resolucion",nombre:"Transferencia a técnico",tipo:"Nueva — prioridad baja",texto:"Esta consulta requiere atención de nuestro técnico especializado. Le ponemos en contacto con [NOMBRE / ÁREA]. Un momento, por favor.",nota:null},
+  {id:20,cat:"cierre",nombre:"Cierre estándar",tipo:"Existente",texto:"Ha sido un placer atenderle. Quedamos a su disposición para cualquier consulta futura. ¡Que tenga un excelente día!",nota:null},
+  {id:21,cat:"cierre",nombre:"Cierre con confirmación",tipo:"Existente",texto:"Ha sido un placer atenderle. Si no tiene más consultas, cerramos por aquí. ¡Que tenga un excelente día, y no dude en escribirnos cuando lo necesite!",nota:null},
+  {id:22,cat:"cierre",nombre:"Cierre por inactividad",tipo:"Existente",texto:"Debido a que no hemos recibido respuesta, cerramos esta conversación. Si necesita ayuda en el futuro, con gusto le atendemos. ¡Que tenga un buen día!",nota:null},
 ];
 
-/* ── CONFIG ── */
 const CAT={
-  todas:        {ey:"Vista general",          tit:"Todas las plantillas",    desc:"Repositorio completo organizado por etapa de conversación.", color:"var(--azulv)", bar:"#2472CC"},
-  apertura:     {ey:"Etapa 1 — Apertura",     tit:"Apertura",                desc:"Primer contacto. Generar confianza y disponibilidad inmediata.", color:"var(--A)",  bar:"#1B5AA8"},
-  relevamiento: {ey:"Etapa 2 — Relevamiento", tit:"Relevamiento",            desc:"Diagnóstico remoto y recopilación de datos técnicos.",         color:"var(--R)",  bar:"#0E7A52"},
-  gestion:      {ey:"Etapa 3 — Gestión",      tit:"Gestión en taller",       desc:"Recepción, avances, presupuestos y seguimiento del proceso.",  color:"var(--G)",  bar:"#A06800"},
-  resolucion:   {ey:"Etapa 4 — Resolución",   tit:"Resolución",              desc:"Garantía, entrega, casos especiales y derivaciones.",          color:"var(--Re)", bar:"#B83010"},
-  cierre:       {ey:"Etapa 5 — Cierre",       tit:"Cierre de conversación",  desc:"Finalización adecuada según el tipo de caso.",                 color:"var(--C)",  bar:"#5030A0"},
+  todas:        {ey:"Vista general",           tit:"Todas las plantillas",   color:"var(--Av)", bar:"#2472CC"},
+  apertura:     {ey:"Etapa 1 — Apertura",      tit:"Apertura",               color:"var(--A)",  bar:"#1B5AA8"},
+  relevamiento: {ey:"Etapa 2 — Relevamiento",  tit:"Relevamiento",           color:"var(--R)",  bar:"#0E8A5F"},
+  gestion:      {ey:"Etapa 3 — Gestión",       tit:"Gestión en taller",      color:"var(--G)",  bar:"#B87200"},
+  resolucion:   {ey:"Etapa 4 — Resolución",    tit:"Resolución",             color:"var(--Re)", bar:"#C03A10"},
+  cierre:       {ey:"Etapa 5 — Cierre",        tit:"Cierre",                 color:"var(--C)",  bar:"#5030A0"},
 };
 const TIPO={
-  "Existente":               {bg:"#E8F8F2",color:"#0B6040",border:"#6FCFAA",dot:"#0E7A52"},
-  "Nueva — alta prioridad":  {bg:"#FFF0EA",color:"#8A2000",border:"#F09878",dot:"#B83010"},
-  "Nueva — prioridad media": {bg:"#FFF5DC",color:"#705000",border:"#E0B84A",dot:"#A06800"},
-  "Nueva — prioridad baja":  {bg:"#EEF4FF",color:"#1A3A7A",border:"#9ABDE8",dot:"#1B5AA8"},
+  "Existente":               {bg:"#E3F7EF",color:"#0B6040",border:"#7ACFAD",dot:"#0E8A5F"},
+  "Nueva — alta prioridad":  {bg:"#FFF0E8",color:"#7A2000",border:"#F09070",dot:"#C03A10"},
+  "Nueva — prioridad media": {bg:"#FFF5DC",color:"#6B4400",border:"#E8C060",dot:"#B87200"},
+  "Nueva — prioridad baja":  {bg:"#E8F1FF",color:"#1A3A7A",border:"#9ABDE8",dot:"#1B5AA8"},
 };
 
-/* ── ESTADO ── */
-let DATA=[], cur="todas", curTxt="", editId=null, delId=null, verId=null;
-const KEY="sekunet_plantillas_v1";
+/* ══════════════════════════════════════════════
+   ESTADO
+══════════════════════════════════════════════ */
+let curCat="todas", curStage="apertura", apiKey="", chatHistory=[];
 
-function load(){
-  try{const s=localStorage.getItem(KEY);DATA=s?JSON.parse(s):[...BASE.map(p=>({...p}))];}
-  catch{DATA=[...BASE.map(p=>({...p}))];}
+/* Nombres de etapa para el prompt */
+const stageNames={
+  apertura:"APERTURA — primer contacto con el cliente",
+  relevamiento:"RELEVAMIENTO — recopilación de datos técnicos y diagnóstico remoto",
+  gestion:"GESTIÓN EN TALLER — recepción, presupuesto, seguimiento del proceso de reparación",
+  resolucion:"RESOLUCIÓN — entrega, garantía, casos especiales",
+  cierre:"CIERRE — finalización de la conversación"
+};
+
+/* ══════════════════════════════════════════════
+   API KEY
+══════════════════════════════════════════════ */
+function loadKey(){
+  apiKey=localStorage.getItem('sk_sekunet')||'';
+  updateKeyUI();
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(DATA));}catch{}}
-function nextId(){return DATA.length?Math.max(...DATA.map(p=>p.id))+1:1;}
-
-/* ── STATS & CONTADORES ── */
-function updateStats(){
-  const total=DATA.length;
-  const exist=DATA.filter(p=>p.tipo==="Existente").length;
-  document.getElementById('stat-total').textContent=total;
-  document.getElementById('stat-exist').textContent=exist;
-  document.getElementById('stat-new').textContent=total-exist;
-  ['todas','apertura','relevamiento','gestion','resolucion','cierre'].forEach(c=>{
-    const el=document.getElementById('cnt-'+c);
-    if(el)el.textContent=c==='todas'?total:DATA.filter(p=>p.cat===c).length;
-  });
-}
-
-/* ── RENDER ── */
-function render(){
-  const q=document.getElementById('si').value.toLowerCase().trim();
-  const g=document.getElementById('gr'); g.innerHTML="";
-  let list=cur==="todas"?DATA:DATA.filter(p=>p.cat===cur);
-  if(q)list=list.filter(p=>p.nombre.toLowerCase().includes(q)||p.texto.toLowerCase().includes(q)||p.tipo.toLowerCase().includes(q));
-  if(!list.length){
-    g.innerHTML=`<div class="empty"><svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><p>Sin resultados para esa búsqueda.</p></div>`;
-    return;
+function updateKeyUI(){
+  const btn=document.getElementById('apikey-btn');
+  const lbl=document.getElementById('apikey-label');
+  const dot=document.getElementById('sdot');
+  const sl=document.getElementById('slabel');
+  if(apiKey){
+    btn.classList.add('set');
+    lbl.textContent='API Key activa';
+    dot.classList.add('on');
+    sl.style.color='var(--R)';sl.textContent='Activo';
+  } else {
+    btn.classList.remove('set');
+    lbl.textContent='Configurar API Key';
+    dot.classList.remove('on');
+    sl.style.color='var(--muted)';sl.textContent='Sin clave';
   }
+}
+function openKeyModal(){
+  document.getElementById('key-input').value=apiKey?'sk-ant-api03-••••••••••••••':'';
+  document.getElementById('key-modal').classList.add('open');
+}
+function closeKeyModal(){document.getElementById('key-modal').classList.remove('open')}
+function closeKeyOut(e){if(e.target===document.getElementById('key-modal'))closeKeyModal()}
+function saveKey(){
+  const v=document.getElementById('key-input').value.trim();
+  if(!v){showToast('Ingrese una clave válida');return}
+  apiKey=v;
+  localStorage.setItem('sk_sekunet',v);
+  updateKeyUI();
+  closeKeyModal();
+  showToast('API Key guardada — asistente activo');
+}
+
+/* ══════════════════════════════════════════════
+   PLANTILLAS — render
+══════════════════════════════════════════════ */
+function setCat(cat,btn){
+  curCat=cat;
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const cc=CAT[cat];
+  document.getElementById('ey').textContent=cc.ey;
+  document.getElementById('ey').style.color=cc.color;
+  document.getElementById('ctit').textContent=cc.tit;
+  document.getElementById('ctit').style.color=cc.color;
+  document.getElementById('si').value='';
+  renderCards();
+}
+
+function renderCards(){
+  const q=document.getElementById('si').value.toLowerCase().trim();
+  const g=document.getElementById('gr');g.innerHTML='';
+  let list=curCat==='todas'?PLANTILLAS:PLANTILLAS.filter(p=>p.cat===curCat);
+  if(q)list=list.filter(p=>p.nombre.toLowerCase().includes(q)||p.texto.toLowerCase().includes(q));
+  if(!list.length){g.innerHTML='<div class="empty"><p>Sin resultados.</p></div>';return}
   list.forEach((p,i)=>{
-    const cc=CAT[p.cat]||CAT.todas, tc=TIPO[p.tipo]||TIPO["Existente"];
-    const d=document.createElement('div'); d.className='card'; d.style.animationDelay=(i*.035)+'s';
+    const cc=CAT[p.cat],tc=TIPO[p.tipo]||TIPO["Existente"];
+    const d=document.createElement('div');
+    d.className='card';d.style.animationDelay=(i*.035)+'s';
+    d.onclick=()=>openCardModal(p);
     d.addEventListener('mouseenter',()=>d.style.borderColor=cc.bar);
     d.addEventListener('mouseleave',()=>d.style.borderColor='');
-    d.innerHTML=`
-      <div class="cbar" style="background:${cc.bar}"></div>
+    d.innerHTML=`<div class="cbar" style="background:${cc.bar}"></div>
       <div class="cbody">
         <span class="ctag" style="background:${tc.bg};color:${tc.color};border:1.5px solid ${tc.border}">
-          <span style="width:7px;height:7px;border-radius:50%;background:${tc.dot};display:inline-block;flex-shrink:0"></span>${p.tipo}
+          <span style="width:5px;height:5px;border-radius:50%;background:${tc.dot};display:inline-block;flex-shrink:0"></span>${p.tipo}
         </span>
-        <div class="cnm">${p.nombre}</div>
-        <div class="cpv">${p.texto}</div>
+        <div class="cnm" style="color:${cc.bar}">${p.nombre}</div>
+        <div class="cpv" style="color:${cc.bar}">${p.texto}</div>
       </div>
       <div class="cfoot" style="background:${cc.bar}0D">
         <span class="cet" style="color:${cc.bar}">${cc.ey}</span>
-        <div class="cacts">
-          <button class="cact cact-copy" style="color:${cc.bar};border-color:${cc.bar}50"
-            onclick="event.stopPropagation();quickCopy(this,'${esc(p.texto)}','${cc.bar}')">
-            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar
-          </button>
-          <button class="cact cact-edit"
-            onclick="event.stopPropagation();openEdit(${p.id})">
-            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar
-          </button>
-          <button class="cact cact-del"
-            onclick="event.stopPropagation();openDel(${p.id})">
-            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Borrar
-          </button>
-        </div>
+        <button class="ccp" style="color:${cc.bar};border-color:${cc.bar}40"
+          onclick="event.stopPropagation();quickCopy(this,\`${esc(p.texto)}\`,\`${cc.bar}\`)">
+          <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar
+        </button>
       </div>`;
-    d.querySelector('.cbody').addEventListener('click',()=>openVer(p.id));
     g.appendChild(d);
   });
 }
 
-function esc(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n')}
+function esc(s){return s.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$')}
 
-/* ── CATEGORÍA ── */
-function setCat(cat,btn){
-  cur=cat;
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-  const cc=CAT[cat];
-  ['ey','ctit'].forEach(id=>{document.getElementById(id).style.color=cc.color;});
-  document.getElementById('ey').textContent=cc.ey;
-  document.getElementById('ctit').textContent=cc.tit;
-  document.getElementById('cdesc').textContent=cc.desc;
-  // Botón nueva: color de etapa
-  const bn=document.getElementById('btn-new');
-  bn.style.background=cc.bar;
-  document.getElementById('si').value="";
-  render();
+/* mini-modal rápido al hacer click en card */
+let activeCardModal=null;
+function openCardModal(p){
+  if(activeCardModal){activeCardModal.remove();activeCardModal=null}
+  const cc=CAT[p.cat],tc=TIPO[p.tipo]||TIPO["Existente"];
+  const el=document.createElement('div');
+  el.style.cssText=`position:fixed;inset:0;background:rgba(8,14,30,.45);z-index:150;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)`;
+  el.innerHTML=`<div style="background:#fff;border-radius:18px;max-width:500px;width:100%;padding:24px;box-shadow:0 24px 64px rgba(8,14,30,.22)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <span style="font-family:var(--fd);font-size:16px;font-weight:900;color:${cc.bar}">${p.nombre}</span>
+      <button onclick="activeCardModal.remove();activeCardModal=null" style="border:none;background:none;font-size:18px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div style="background:var(--bg);border:1.5px solid var(--bord);border-radius:10px;padding:14px;font-family:var(--fr);font-size:13px;line-height:1.7;color:var(--nero);margin-bottom:14px;white-space:pre-wrap">${p.texto}</div>
+    ${p.nota?`<div style="background:${tc.bg};border:1.5px solid ${tc.border};border-radius:8px;padding:10px 12px;font-family:var(--fd);font-size:11px;color:${tc.color};margin-bottom:14px">💡 ${p.nota}</div>`:''}
+    <div style="display:flex;gap:8px">
+      <button onclick="quickCopy(this,\`${esc(p.texto)}\`,\`${cc.bar}\`)" style="flex:1;padding:10px;background:${cc.bar};color:#fff;border:none;border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer">Copiar texto</button>
+      <button onclick="activeCardModal.remove();activeCardModal=null" style="padding:10px 18px;background:none;border:1.5px solid var(--bord);border-radius:30px;font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;color:var(--muted)">Cerrar</button>
+    </div>
+  </div>`;
+  el.addEventListener('click',e=>{if(e.target===el){el.remove();activeCardModal=null}});
+  document.body.appendChild(el);
+  activeCardModal=el;
 }
 
-/* ── MODAL HELPERS ── */
-function openOv(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeOv(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
-function closeOut(e,id){if(e.target===document.getElementById(id))closeOv(id);}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){['ov-ver','ov-form','ov-del'].forEach(closeOv);}});
-
-/* ── MODAL VER ── */
-function openVer(id){
-  const p=DATA.find(x=>x.id===id); if(!p)return;
-  verId=id;
-  const cc=CAT[p.cat]||CAT.todas;
-  document.getElementById('ver-ey').textContent=cc.ey;
-  document.getElementById('ver-ey').style.color=cc.bar;
-  document.getElementById('ver-tt').textContent=p.nombre;
-  document.getElementById('ver-tt').style.color=cc.bar;
-  document.getElementById('ver-txt').textContent=p.texto;
-  const n=document.getElementById('ver-nota');
-  n.textContent=p.nota?"💡 "+p.nota:""; n.classList.toggle('on',!!p.nota);
-  document.getElementById('ver-copy').style.background=cc.bar;
-  curTxt=p.texto;
-  openOv('ov-ver');
+/* ══════════════════════════════════════════════
+   CHAT IA
+══════════════════════════════════════════════ */
+function setStage(s,btn){
+  curStage=s;
+  document.querySelectorAll('.sp').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const colors={apertura:'var(--A)',relevamiento:'var(--R)',gestion:'var(--G)',resolucion:'var(--Re)',cierre:'var(--C)'};
+  const bars={apertura:'#1B5AA8',relevamiento:'#0E8A5F',gestion:'#B87200',resolucion:'#C03A10',cierre:'#5030A0'};
+  const c=colors[s],b=bars[s];
+  document.getElementById('ia-title').style.background=`linear-gradient(90deg,${b},${b}99)`;
 }
-function openEditFromVer(){closeOv('ov-ver');openEdit(verId);}
 
-/* ── COPIAR ── */
-function cp(t){if(navigator.clipboard)navigator.clipboard.writeText(t);else{const x=document.createElement('textarea');x.value=t;x.style.cssText='position:fixed;opacity:0';document.body.appendChild(x);x.select();document.execCommand('copy');document.body.removeChild(x);}}
-function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
+function handleKey(e){
+  if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendMessage()}
+}
+
+async function sendMessage(){
+  const inp=document.getElementById('chat-input');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  if(!apiKey){openKeyModal();return}
+  inp.value='';
+  addMsg('user',msg);
+  hideEmpty();
+  showTyping();
+  document.getElementById('send-btn').disabled=true;
+
+  // Plantillas de la etapa actual para el contexto
+  const ptlsEtapa=PLANTILLAS.filter(p=>p.cat===curStage).map(p=>`- "${p.nombre}": ${p.texto}`).join('\n');
+
+  const systemPrompt=`Eres el asistente de atención al cliente de SEKUNET, un taller de servicio, soporte y reparación de equipos de seguridad (alarmas, detección de incendios, CCTV, control de acceso, etc.).
+
+Contexto actual: la conversación está en la etapa de ${stageNames[curStage]}.
+
+Plantillas disponibles para esta etapa:
+${ptlsEtapa}
+
+Cuando el agente te pegue un mensaje del cliente, debes:
+1. Analizar brevemente el mensaje (1-2 líneas máximo).
+2. Proporcionar EXACTAMENTE 3 respuestas sugeridas listas para enviar al cliente, numeradas como [R1], [R2], [R3]. Cada respuesta debe ser completa, profesional, en español de Costa Rica, con tono cálido y técnico.
+3. Al final, en una línea separada que empiece con [PLANTILLAS], menciona los nombres exactos de 1 a 3 plantillas del repositorio que sean más relevantes para este mensaje, separadas por "|".
+
+Formato de respuesta OBLIGATORIO:
+ANÁLISIS: (análisis breve)
+
+[R1] (primera respuesta completa)
+
+[R2] (segunda respuesta completa)
+
+[R3] (tercera respuesta completa)
+
+[PLANTILLAS] Nombre plantilla 1 | Nombre plantilla 2
+
+Sé directo, práctico y técnico. Las respuestas deben poder copiarse y pegarse directamente al cliente.`;
+
+  chatHistory.push({role:"user",content:msg});
+
+  try {
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01"},
+      body:JSON.stringify({
+        model:"claude-opus-4-5",
+        max_tokens:1200,
+        system:systemPrompt,
+        messages:chatHistory
+      })
+    });
+    const data=await res.json();
+    hideTyping();
+    if(data.error){
+      addMsg('ia',null,null,`Error: ${data.error.message}`);
+      chatHistory.pop();
+    } else {
+      const text=data.content[0].text;
+      chatHistory.push({role:"assistant",content:text});
+      parseAndRenderIA(text);
+    }
+  } catch(err){
+    hideTyping();
+    addMsg('ia',null,null,`Error de conexión: ${err.message}`);
+    chatHistory.pop();
+  }
+  document.getElementById('send-btn').disabled=false;
+}
+
+function parseAndRenderIA(text){
+  // Extraer análisis
+  const analisisMatch=text.match(/ANÁLISIS:\s*(.+?)(?=\[R1\])/s);
+  const analisis=analisisMatch?analisisMatch[1].trim():'';
+
+  // Extraer respuestas
+  const r1=text.match(/\[R1\]\s*([\s\S]+?)(?=\[R2\])/)?.[1]?.trim()||'';
+  const r2=text.match(/\[R2\]\s*([\s\S]+?)(?=\[R3\])/)?.[1]?.trim()||'';
+  const r3=text.match(/\[R3\]\s*([\s\S]+?)(?=\[PLANTILLAS\]|\n\n|$)/)?.[1]?.trim()||'';
+
+  // Extraer plantillas sugeridas
+  const ptMatch=text.match(/\[PLANTILLAS\]\s*(.+)/);
+  const ptNames=ptMatch?ptMatch[1].split('|').map(s=>s.trim()).filter(Boolean):[];
+
+  addMsg('ia',analisis,[r1,r2,r3].filter(Boolean),null,ptNames);
+}
+
+function addMsg(role,analisis,sugerencias,errorText,ptNames){
+  const container=document.getElementById('ia-msgs');
+  const bar=({apertura:'#1B5AA8',relevamiento:'#0E8A5F',gestion:'#B87200',resolucion:'#C03A10',cierre:'#5030A0'})[curStage];
+
+  if(role==='user'){
+    const d=document.createElement('div');
+    d.className='msg-user';
+    d.innerHTML=`<div class="msg-label">Cliente</div><div class="bubble">${escHtml(analisis)}</div>`;
+    container.appendChild(d);
+  } else {
+    const d=document.createElement('div');
+    d.className='msg-ia';
+    let inner=`<div class="msg-label" style="color:${bar}">Asistente Sekunet</div>`;
+    inner+=`<div class="bubble">`;
+    if(errorText){
+      inner+=`<span style="color:var(--Re)">${escHtml(errorText)}</span>`;
+    } else {
+      if(analisis) inner+=`<div style="font-family:var(--fd);font-size:11px;font-weight:700;color:${bar};letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Análisis: <span style="font-weight:400;font-family:var(--fr);text-transform:none;letter-spacing:0">${escHtml(analisis)}</span></div>`;
+      if(sugerencias&&sugerencias.length){
+        inner+=`<div class="suggestions">`;
+        sugerencias.forEach((s,i)=>{
+          inner+=`<div class="sug" onclick="copySug(this)">
+            <div class="sug-num" style="color:${bar}">Respuesta ${i+1}</div>
+            <div class="sug-text">${escHtml(s)}</div>
+            <button class="sug-copy" onclick="event.stopPropagation();copySug(this.closest('.sug'))">Copiar</button>
+          </div>`;
+        });
+        inner+=`</div>`;
+      }
+      // Plantillas relacionadas
+      if(ptNames&&ptNames.length){
+        const matched=ptNames.map(n=>PLANTILLAS.find(p=>p.nombre.toLowerCase().includes(n.toLowerCase())||n.toLowerCase().includes(p.nombre.toLowerCase()))).filter(Boolean);
+        if(matched.length){
+          inner+=`<div class="related-label" style="color:${bar}">Plantillas sugeridas</div><div class="rel-pills">`;
+          matched.forEach(p=>{
+            const cc=CAT[p.cat];
+            inner+=`<button class="rel-pill" style="color:${cc.bar};border-color:${cc.bar}40" onclick="openCardModal(PLANTILLAS.find(x=>x.id==${p.id}))">${p.nombre}</button>`;
+          });
+          inner+=`</div>`;
+        }
+      }
+    }
+    inner+=`</div>`;
+    d.innerHTML=inner;
+    container.appendChild(d);
+  }
+  container.scrollTop=container.scrollHeight;
+}
+
+let typingEl=null;
+function showTyping(){
+  const c=document.getElementById('ia-msgs');
+  typingEl=document.createElement('div');
+  typingEl.className='msg-ia';
+  typingEl.innerHTML=`<div class="msg-label">Analizando…</div><div class="typing"><span></span><span></span><span></span></div>`;
+  c.appendChild(typingEl);c.scrollTop=c.scrollHeight;
+}
+function hideTyping(){if(typingEl){typingEl.remove();typingEl=null}}
+function hideEmpty(){const e=document.getElementById('ia-empty');if(e)e.remove()}
+
+function copySug(el){
+  const txt=el.querySelector('.sug-text').textContent;
+  cp(txt);
+  showToast('Respuesta copiada');
+  el.style.borderColor='var(--R)';
+  setTimeout(()=>el.style.borderColor='',1800);
+}
+
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+function cp(t){if(navigator.clipboard)navigator.clipboard.writeText(t);else{const x=document.createElement('textarea');x.value=t;x.style.cssText='position:fixed;opacity:0';document.body.appendChild(x);x.select();document.execCommand('copy');document.body.removeChild(x)}}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)}
 function quickCopy(btn,txt,color){
-  cp(txt.replace(/\\n/g,'\n'));
+  cp(txt);showToast('Plantilla copiada');
   const prev=btn.innerHTML;
   btn.style.background=color;btn.style.color='#fff';btn.style.borderColor=color;
-  btn.innerHTML=`<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>¡Listo!`;
-  setTimeout(()=>{btn.style.background='';btn.style.color=color;btn.style.borderColor=color+'50';btn.innerHTML=prev;},2000);
-  showToast("Plantilla copiada al portapapeles");
-}
-function copyVer(){
-  cp(curTxt);
-  const b=document.getElementById('ver-copy');
-  const prev=b.innerHTML;
-  b.innerHTML=`<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado!`;
-  setTimeout(()=>{b.innerHTML=prev;},2000);
-  showToast("Plantilla copiada al portapapeles");
+  btn.innerHTML=`<svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>¡Listo!`;
+  setTimeout(()=>{btn.style.background='';btn.style.color=color;btn.style.borderColor=color+'40';btn.innerHTML=prev},2000);
 }
 
-/* ── MODAL CREAR ── */
-function openCreate(){
-  editId=null;
-  document.getElementById('form-ey').textContent="Nueva plantilla";
-  document.getElementById('form-tt').textContent="Crear plantilla";
-  document.getElementById('f-nombre').value="";
-  document.getElementById('f-cat').value=cur==="todas"?"apertura":cur;
-  document.getElementById('f-texto').value="";
-  document.getElementById('f-nota').value="";
-  document.querySelector('input[name="f-tipo"][value="Existente"]').checked=true;
-  hideFormError();
-  openOv('ov-form');
-  setTimeout(()=>document.getElementById('f-nombre').focus(),200);
-}
-
-/* ── MODAL EDITAR ── */
-function openEdit(id){
-  const p=DATA.find(x=>x.id===id); if(!p)return;
-  editId=id;
-  const cc=CAT[p.cat]||CAT.todas;
-  document.getElementById('form-ey').textContent="Editar plantilla · "+cc.ey;
-  document.getElementById('form-ey').style.color=cc.bar;
-  document.getElementById('form-tt').textContent=p.nombre;
-  document.getElementById('form-tt').style.color=cc.bar;
-  document.getElementById('f-nombre').value=p.nombre;
-  document.getElementById('f-cat').value=p.cat;
-  document.getElementById('f-texto').value=p.texto;
-  document.getElementById('f-nota').value=p.nota||"";
-  const rb=document.querySelector(`input[name="f-tipo"][value="${p.tipo}"]`);
-  if(rb)rb.checked=true; else document.querySelector('input[name="f-tipo"]').checked=true;
-  hideFormError();
-  openOv('ov-form');
-  setTimeout(()=>document.getElementById('f-nombre').focus(),200);
-}
-
-/* ── GUARDAR ── */
-function saveForm(){
-  const nombre=document.getElementById('f-nombre').value.trim();
-  const texto=document.getElementById('f-texto').value.trim();
-  const cat=document.getElementById('f-cat').value;
-  const tipo=document.querySelector('input[name="f-tipo"]:checked').value;
-  const nota=document.getElementById('f-nota').value.trim();
-  if(!nombre){showFormError("El nombre de la plantilla es obligatorio.");return;}
-  if(!texto){showFormError("El texto de la plantilla no puede estar vacío.");return;}
-  if(editId){
-    const idx=DATA.findIndex(p=>p.id===editId);
-    if(idx>-1){DATA[idx]={...DATA[idx],nombre,cat,tipo,texto,nota};}
-    showToast("Plantilla actualizada correctamente");
-  } else {
-    DATA.push({id:nextId(),cat,nombre,tipo,texto,nota});
-    showToast("Plantilla creada exitosamente");
-  }
-  save(); updateStats(); closeOv('ov-form'); render();
-}
-function showFormError(msg){const e=document.getElementById('f-error');e.style.display='block';e.querySelector('div').textContent=msg;}
-function hideFormError(){const e=document.getElementById('f-error');e.style.display='none';}
-
-/* ── MODAL BORRAR ── */
-function openDel(id){
-  const p=DATA.find(x=>x.id===id); if(!p)return;
-  delId=id;
-  document.getElementById('del-name').textContent='"'+p.nombre+'"';
-  openOv('ov-del');
-}
-function confirmDel(){
-  DATA=DATA.filter(p=>p.id!==delId);
-  save(); updateStats(); closeOv('ov-del'); render();
-  showToast("Plantilla eliminada");
-}
-
-/* ── INIT ── */
-load(); updateStats();
-setCat('todas',document.querySelector('.nb[data-cat="todas"]'));
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+loadKey();
+renderCards();
 </script>
 </body>
 </html>
