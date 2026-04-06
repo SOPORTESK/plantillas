@@ -227,6 +227,7 @@ textarea#chat-input::placeholder{color:var(--muted)}
       <span>Agregar Doc</span>
     </button>
     <span class="hbadge" id="model-badge-header">Gemini 2.5 Flash-Lite · Gratis</span>
+
   </div>
 </header>
 
@@ -450,9 +451,9 @@ textarea#chat-input::placeholder{color:var(--muted)}
    MODELOS — en orden de preferencia (más requests/día primero)
 ══════════════════════════════════════════════ */
 const GEMINI_MODELS = [
-  { id: 'gemini-2.5-flash-lite-preview-06-17', label: '2.5 Flash-Lite (1000/día)', rpd: 1000 },
-  { id: 'gemini-2.5-flash-preview-05-20',      label: '2.5 Flash (500/día)',      rpd: 500  },
-  { id: 'gemini-2.0-flash-lite',               label: '2.0 Flash-Lite (fallback)', rpd: 500 },
+  { id: 'gemini-2.5-flash-lite',  label: '2.5 Flash-Lite (1000/día)', rpd: 1000 },
+  { id: 'gemini-2.5-flash',       label: '2.5 Flash (500/día)',       rpd: 500  },
+  { id: 'gemini-2.5-pro',         label: '2.5 Pro (100/día)',         rpd: 100  },
 ];
 let currentModelIdx = 0;
 
@@ -505,12 +506,12 @@ const stageNames={
 /* ══════════════════════════════════════════════
    ESTADO
 ══════════════════════════════════════════════ */
-let apiKey='', curMode='cliente', curStage='apertura';
+let apiKey='AIzaSyB9m9UWCKDBiQFhAujoh87oprFuvnjKntU', curMode='cliente', curStage='apertura';
 let cases=[], trainData=[], docs=[], curCaseId=null;
 let chatHistory=[];
 
 function init(){
-  apiKey=localStorage.getItem('sk_gemini_sekunet')||'';
+  apiKey=localStorage.getItem('sk_gemini_sekunet')||'AIzaSyB9m9UWCKDBiQFhAujoh87oprFuvnjKntU';
   cases=JSON.parse(localStorage.getItem('sek_cases')||'[]');
   trainData=JSON.parse(localStorage.getItem('sek_train')||'[]');
   docs=JSON.parse(localStorage.getItem('sek_docs')||'[]');
@@ -541,12 +542,39 @@ function updateKeyUI(){
 function openKeyModal(){document.getElementById('key-input').value=apiKey?'••••••••••••••':'';document.getElementById('key-modal').classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function closeOut(e,id){if(e.target===document.getElementById(id))closeModal(id)}
-function saveKey(){
+async function saveKey(){
   const v=document.getElementById('key-input').value.trim();
   if(!v){showToast('Ingrese una clave válida');return}
-  if(!v.startsWith('AIza')){showToast('La clave Gemini comienza con "AIza"');return}
-  apiKey=v;localStorage.setItem('sk_gemini_sekunet',v);
-  updateKeyUI();closeModal('key-modal');showToast('API Key guardada — Agente activo');
+  if(!v.startsWith('AIza')){showToast('La clave debe comenzar con AIza');return}
+  const btn=document.querySelector('#key-modal .mbtn-p');
+  btn.textContent='Verificando...';btn.disabled=true;
+  try{
+    const res=await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+v,
+      {method:'POST',headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({contents:[{role:'user',parts:[{text:'hola'}]}],generationConfig:{maxOutputTokens:10}})}
+    );
+    const data=await res.json();
+    if(data.error){
+      const msg=data.error.message||'';
+      let hint='Error de API';
+      if(msg.includes('API_KEY_INVALID')||msg.toLowerCase().includes('invalid')||msg.toLowerCase().includes('api key'))
+        hint='Clave invalida — revisá que la copiaste completa sin espacios';
+      else if(msg.toLowerCase().includes('quota'))
+        hint='Cuota agotada por hoy — intenta mañana o usa otra clave';
+      else if(msg.includes('not found')||msg.includes('deprecated'))
+        hint='Modelo no disponible — contacta soporte';
+      else
+        hint='Error: '+msg.substring(0,100);
+      btn.textContent='Guardar y activar';btn.disabled=false;
+      showToast(hint,5000);return;
+    }
+    apiKey=v;localStorage.setItem('sk_gemini_sekunet',v);
+    updateKeyUI();closeModal('key-modal');showToast('Clave verificada y activa');
+  }catch(err){
+    showToast('Sin conexion: '+err.message,3500);
+  }
+  btn.textContent='Guardar y activar';btn.disabled=false;
 }
 
 /* ══════════════════════════════════════════════
