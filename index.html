@@ -642,10 +642,52 @@ textarea.chat-input::placeholder{color:var(--muted)}
 
 <script>
 /* ══════════════════════════════════════════
-   API KEY
+   CONSTANTS & STATE — DECLARED FIRST
 ══════════════════════════════════════════ */
 const STORAGE_KEY='sekunet_gemini_apikey';
 let apiKey='';
+
+const SB_URL='https://kzcyxeracvfxynddyjld.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Y3l4ZXJhY3ZmeHluZGR5amxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTE5NTQsImV4cCI6MjA5MTA4Nzk1NH0.DvEnK-g5rMxzFec4Fl3rJ5VDYVJ7-ua9ssqf3s-QKtU';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+const GEMINI_MODELS=[
+  {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash-Lite'},
+  {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash'},
+  {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro'},
+];
+let currentModelIdx=0;
+
+const PLANTILLAS_DEFAULT=[
+  {nombre:'Saludo inicial',cat:'apertura',texto:'Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?'},
+  {nombre:'Pedir más detalle',cat:'relevamiento',texto:'Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?'},
+  {nombre:'Confirmar envío para garantía',cat:'resolucion',texto:'Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, lo revisaremos y, si se trata de un defecto de fábrica, quedará cubierto por la garantía.'},
+  {nombre:'Agradecimiento por espera',cat:'gestion',texto:'Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?'},
+  {nombre:'Agradecimiento con enlace',cat:'gestion',texto:'Gracias por su paciencia. Aquí le dejo el enlace con lo que nos solicitó: []. ¿Hay algo más en lo que podamos ayudarle?'},
+  {nombre:'Actualización de estado',cat:'gestion',texto:'Al revisar el sistema, el dispositivo figura aún en [estado]. En cuanto tengamos novedades, le avisamos de inmediato. ¿Hay algo más en lo que podamos ayudarle?'},
+  {nombre:'Cierre estándar',cat:'cierre',texto:'Ha sido un placer atenderle. Quedamos a su disposición. ¡Que tenga un excelente día!'},
+  {nombre:'Cierre con confirmación',cat:'cierre',texto:'Ha sido un placer atenderle. Si no tiene ninguna otra consulta, cerramos la conversación por aquí. ¡Que tenga un excelente día!'},
+  {nombre:'Cierre por inactividad',cat:'cierre',texto:'Debido a que no hemos recibido respuesta, vamos a cerrar esta conversación. Si necesita ayuda, con gusto le atendemos. ¡Que tenga un buen día!'},
+];
+const CAT_COLORS={apertura:'var(--s-ap)',relevamiento:'var(--s-re)',gestion:'var(--s-ge)',resolucion:'var(--s-rs)',cierre:'var(--s-ci)'};
+const CAT_LABELS={apertura:'Apertura',relevamiento:'Relevamiento',gestion:'Gestión',resolucion:'Resolución',cierre:'Cierre'};
+const stageNames={apertura:'APERTURA — primer contacto',relevamiento:'RELEVAMIENTO — diagnóstico',gestion:'GESTIÓN EN TALLER',resolucion:'RESOLUCIÓN — entrega y garantía',cierre:'CIERRE'};
+const CAT_CASE={alarma:{bg:'rgba(244,63,94,.12)',c:'var(--err)'},incendio:{bg:'rgba(242,139,31,.12)',c:'var(--a2)'},cctv:{bg:'rgba(34,211,200,.12)',c:'var(--teal)'},acceso:{bg:'rgba(37,96,200,.15)',c:'var(--info)'},otro:{bg:'rgba(155,135,245,.12)',c:'var(--purple)'}};
+
+let curChat='cliente',curStage='apertura';
+let cases=[],trainData=[],docs=[],plantillas=[];
+let plantillaFilterCat='all';
+let curCaseId=null;
+let chatHistoryCliente=[],chatHistoryTecnico=[];
+let attachedImg={cli:null,tec:null};
+let attachedAud={cli:null,tec:null};
+let attachedDoc={cli:null,tec:null};
+let recorders={cli:{mr:null,chunks:[],active:false},tec:{mr:null,chunks:[],active:false}};
+let excelData={headers:[],rows:[],mapping:{},fileName:''};
+
+/* ══════════════════════════════════════════
+   API KEY
+══════════════════════════════════════════ */
 function getStoredApiKey(){return localStorage.getItem(STORAGE_KEY)||'';}
 function validateApiKey(){
   const v=document.getElementById('apikey-input').value.trim();
@@ -670,66 +712,8 @@ function changeApiKey(){
   document.getElementById('apikey-error').style.display='none';
   document.getElementById('apikey-screen').style.display='flex';
 }
-(function onLoad(){
-  const s=getStoredApiKey();
-  if(s&&s.startsWith('AIza')&&s.length>=30){
-    apiKey=s;
-    document.getElementById('apikey-screen').style.display='none';
-    document.getElementById('apikey-input').value=s;
-    document.getElementById('apikey-save-btn').disabled=false;
-    init();
-  }
-})();
 
-/* ══════════════════════════════════════════
-   SUPABASE
-══════════════════════════════════════════ */
-const SB_URL='https://kzcyxeracvfxynddyjld.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Y3l4ZXJhY3ZmeHluZGR5amxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTE5NTQsImV4cCI6MjA5MTA4Nzk1NH0.DvEnK-g5rMxzFec4Fl3rJ5VDYVJ7-ua9ssqf3s-QKtU';
-const sb=supabase.createClient(SB_URL,SB_KEY);
-
-/* ══════════════════════════════════════════
-   MODELS
-══════════════════════════════════════════ */
-const GEMINI_MODELS=[
-  {id:'gemini-2.5-flash-lite',label:'Gemini 2.5 Flash-Lite'},
-  {id:'gemini-2.5-flash',label:'Gemini 2.5 Flash'},
-  {id:'gemini-2.5-pro',label:'Gemini 2.5 Pro'},
-];
-let currentModelIdx=0;
 function updateModelLabel(){document.getElementById('model-label').textContent='● '+GEMINI_MODELS[currentModelIdx].label;}
-
-/* ══════════════════════════════════════════
-   DEFAULT PLANTILLAS
-══════════════════════════════════════════ */
-const PLANTILLAS_DEFAULT=[
-  {nombre:'Saludo inicial',cat:'apertura',texto:'Buen día, gracias por contactarnos. ¿En qué le podemos ayudar hoy?'},
-  {nombre:'Pedir más detalle',cat:'relevamiento',texto:'Para poder orientarle de la mejor manera, ¿nos podría contar un poco más sobre su consulta o situación?'},
-  {nombre:'Confirmar envío para garantía',cat:'resolucion',texto:'Por supuesto, puede enviarlo sin problema. Una vez que lo recibamos, lo revisaremos y, si se trata de un defecto de fábrica, quedará cubierto por la garantía.'},
-  {nombre:'Agradecimiento por espera',cat:'gestion',texto:'Gracias por su paciencia. Quedamos atentos por si surge alguna otra consulta. ¿Hay algo más en lo que podamos ayudarle?'},
-  {nombre:'Agradecimiento con enlace',cat:'gestion',texto:'Gracias por su paciencia. Aquí le dejo el enlace con lo que nos solicitó: []. ¿Hay algo más en lo que podamos ayudarle?'},
-  {nombre:'Actualización de estado',cat:'gestion',texto:'Al revisar el sistema, el dispositivo figura aún en [estado]. En cuanto tengamos novedades, le avisamos de inmediato. ¿Hay algo más en lo que podamos ayudarle?'},
-  {nombre:'Cierre estándar',cat:'cierre',texto:'Ha sido un placer atenderle. Quedamos a su disposición. ¡Que tenga un excelente día!'},
-  {nombre:'Cierre con confirmación',cat:'cierre',texto:'Ha sido un placer atenderle. Si no tiene ninguna otra consulta, cerramos la conversación por aquí. ¡Que tenga un excelente día!'},
-  {nombre:'Cierre por inactividad',cat:'cierre',texto:'Debido a que no hemos recibido respuesta, vamos a cerrar esta conversación. Si necesita ayuda, con gusto le atendemos. ¡Que tenga un buen día!'},
-];
-const CAT_COLORS={apertura:'var(--s-ap)',relevamiento:'var(--s-re)',gestion:'var(--s-ge)',resolucion:'var(--s-rs)',cierre:'var(--s-ci)'};
-const CAT_LABELS={apertura:'Apertura',relevamiento:'Relevamiento',gestion:'Gestión',resolucion:'Resolución',cierre:'Cierre'};
-const stageNames={apertura:'APERTURA — primer contacto',relevamiento:'RELEVAMIENTO — diagnóstico',gestion:'GESTIÓN EN TALLER',resolucion:'RESOLUCIÓN — entrega y garantía',cierre:'CIERRE'};
-
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-let curChat='cliente',curStage='apertura';
-let cases=[],trainData=[],docs=[],plantillas=[];
-let plantillaFilterCat='all';
-let curCaseId=null;
-let chatHistoryCliente=[],chatHistoryTecnico=[];
-let attachedImg={cli:null,tec:null};
-let attachedAud={cli:null,tec:null};
-let attachedDoc={cli:null,tec:null};
-let recorders={cli:{mr:null,chunks:[],active:false},tec:{mr:null,chunks:[],active:false}};
-let excelData={headers:[],rows:[],mapping:{},fileName:''};
 
 /* ══════════════════════════════════════════
    INIT — PER-TABLE ERROR HANDLING
@@ -857,7 +841,6 @@ function genId(){return (typeof crypto!=='undefined'&&crypto.randomUUID)?crypto.
 
 /* ══════════════════════════════════════════
    UNIFIED KNOWLEDGE ADDER
-   All content goes through here.
 ══════════════════════════════════════════ */
 async function addKnowledge(q,a,cat,source='manual',silentMode=false){
   if(!q||!a)return null;
@@ -947,7 +930,6 @@ async function createCase(){
   const title=document.getElementById('case-title').value.trim();
   const cat=document.getElementById('case-cat').value;
   if(!title){showToast('Ingresá un título','err');return;}
-  // Save current case history first
   if(curCaseId)await saveCurrentCaseHistory();
   const id=genId();
   const c={id,title,cat,date:new Date().toLocaleDateString('es-CR'),histCliente:[],histTecnico:[]};
@@ -985,7 +967,6 @@ async function deleteCase(id,e){
   await sb.from('sek_cases').delete().eq('id',id);
   renderCasesList();updateStatusBar();showToast('Caso eliminado','ok');
 }
-const CAT_CASE={alarma:{bg:'rgba(244,63,94,.12)',c:'var(--err)'},incendio:{bg:'rgba(242,139,31,.12)',c:'var(--a2)'},cctv:{bg:'rgba(34,211,200,.12)',c:'var(--teal)'},acceso:{bg:'rgba(37,96,200,.15)',c:'var(--info)'},otro:{bg:'rgba(155,135,245,.12)',c:'var(--purple)'}};
 function renderCasesList(){
   const el=document.getElementById('cases-list');
   if(!cases.length){el.innerHTML='<div class="sb-empty"><span class="sb-empty-icon">📁</span>Sin casos aún.</div>';return;}
@@ -1090,11 +1071,9 @@ async function saveDoc(){
   if(error){console.error('doc insert:',error);docs.unshift(doc);localStorage.setItem('sek_docs',JSON.stringify(docs));showToast('Guardado localmente','info',4000);}
   else{docs.unshift(doc);showToast('Manual guardado — indexando…','ok',2500);}
 
-  // Also add to knowledge base as a searchable entry
   const kbText=`MANUAL: ${name}\n\n${content.substring(0,800)}${tips?'\n\nTIPS: '+tips:''}`;
   await addKnowledge(`Consulta sobre manual: ${name}`,kbText,'procedimiento','manual',true);
 
-  // Add tips separately if present
   if(tips){
     await addKnowledge(`Tips del manual ${name}`,tips,'procedimiento','manual',true);
   }
@@ -1162,7 +1141,6 @@ async function processExcelFile(file){
   }catch(e){document.getElementById('excel-processing').style.display='none';showToast('Error leyendo Excel: '+e.message,'err',4000);}
 }
 
-// Auto-detect column mapping
 function detectMapping(headers){
   const hs=headers.map(h=>h.toLowerCase());
   const find=(...terms)=>{
@@ -1196,7 +1174,6 @@ function renderExcelColMap(){
         <option value="">— no mapear —</option>${opts}
       </select>
     </div>`).join('');
-  // Set detected values
   fields.forEach(f=>{const sel=document.getElementById('colmap-'+f.key);if(sel&&m[f.key]!==undefined&&m[f.key]!=='')sel.value=m[f.key];});
 }
 function renderExcelPreview(){
@@ -1208,12 +1185,10 @@ function renderExcelPreview(){
 }
 function buildSegmentTree(){
   const m=excelData.mapping;
-  // Re-read mapping from selects
   ['marca','modelo','serie','descripcion','precio','sku'].forEach(k=>{
     const sel=document.getElementById('colmap-'+k);
     if(sel)excelData.mapping[k]=sel.value;
   });
-  // Group rows by marca > modelo > serie
   const tree={};
   excelData.rows.forEach((row,idx)=>{
     const get=key=>m[key]!==''&&m[key]!==undefined?String(row[Number(m[key])]||'').trim():'';
@@ -1293,7 +1268,6 @@ async function saveExcelKnowledge(){
       if(chk&&!chk.checked){skipped++;continue;}
       const tip=(document.getElementById('tip-'+nodeId)?.value||'').trim();
       const rows=tree[brand][modelo].allRows;
-      // Build knowledge entry for this brand+model
       const serieList=[...new Set(rows.map(r=>r.serie).filter(s=>s&&s!=='—'))].join(', ');
       const descList=rows.map(r=>r.desc).filter(Boolean).slice(0,5).join(' | ');
       const skuList=rows.map(r=>r.sku).filter(Boolean).slice(0,10).join(', ');
@@ -1309,11 +1283,10 @@ async function saveExcelKnowledge(){
       if(globalTip)a+=`\nINFO GENERAL: ${globalTip}`;
       await addKnowledge(q,a,'producto','excel',true);
       saved++;
-      await new Promise(r=>setTimeout(r,120)); // rate limit
+      await new Promise(r=>setTimeout(r,120));
     }
   }
 
-  // Also save as doc for RAG
   const allText=brands.map(b=>Object.keys(tree[b]).map(m=>{
     const rows=tree[b][m].allRows;
     return `=== ${b} ${m} ===\n${rows.map(r=>[r.desc,r.sku,r.precio,r.serie].filter(Boolean).join(' | ')).join('\n')}`;
@@ -1485,7 +1458,6 @@ async function sendMessage(chat){
   const imgS=attachedImg[side],audS=attachedAud[side],docS=attachedDoc[side];
   attachedImg[side]=null;attachedAud[side]=null;attachedDoc[side]=null;renderAttachBar(side);
 
-  // RAG + training knowledge search
   let ragChunks=[],ragSources=[];
   const ragQuery=msg||'';
   if(ragQuery&&(docs.length>0||trainData.length>0)){
@@ -1493,7 +1465,6 @@ async function sendMessage(chat){
     ragSources=ragChunks.map(r=>r.doc_name).filter((v,i,a)=>a.indexOf(v)===i);
   }
 
-  // Build context
   const trainCtx=trainData.length?
     `\n\nCONOCIMIENTO BASE (entrenos, chats guardados, Excel, manuales):\n${
       trainData.slice(0,12).map(t=>`[${t.source||t.cat}] P: ${t.q}\nR: ${t.a}`).join('\n---\n')
@@ -1572,7 +1543,6 @@ ${trainCtx}${ragCtx}${inlineDoc}`;
     const usedSearch=parts.some(p=>p.executableCode)||((data.candidates?.[0]?.groundingMetadata?.searchEntryPoint)!=null);
     history.push({role:'assistant',content:text});
 
-    // Save case history
     if(curCaseId)await saveCurrentCaseHistory();
 
     if(chat==='cliente')parseAndRenderCliente(text,ragSources,usedSearch);
@@ -1783,6 +1753,20 @@ function showToast(msg,type='info',dur=2400){
   if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('on'),dur);
 }
 function copySug(el){cp(el.querySelector('.sug-text').textContent);showToast('Respuesta copiada','ok');el.style.animation='copyFlash .6s ease';setTimeout(()=>el.style.animation='',600);}
+
+/* ══════════════════════════════════════════
+   ONLOAD — runs after DOM + script parsed
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded',function onLoad(){
+  const s=getStoredApiKey();
+  if(s&&s.startsWith('AIza')&&s.length>=30){
+    apiKey=s;
+    document.getElementById('apikey-screen').style.display='none';
+    document.getElementById('apikey-input').value=s;
+    document.getElementById('apikey-save-btn').disabled=false;
+    init();
+  }
+});
 </script>
 </body>
 </html>
