@@ -9,11 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* Colores del logo Sekunet: azul #1A3A6B, naranja #F5841F */
   --brand-blue:#1A3A6B;
   --brand-orange:#F5841F;
   --brand-blue-light:#2255A0;
-
   --bg:#0C0F18;
   --surface:#111420;
   --surface2:#181C2A;
@@ -23,29 +21,22 @@
   --text:#EEF0FF;
   --text2:#8D96BE;
   --text3:#4E5570;
-
-  /* Accent usa el azul del logo */
   --accent:#2255A0;
   --accent2:#1A3A6B;
   --accent-light:#3A75D4;
   --accent-glow:rgba(34,85,160,0.20);
-
-  /* Naranja del logo como color de acción/highlight */
   --highlight:#F5841F;
   --highlight-glow:rgba(245,132,31,0.18);
-
   --gold:#F5841F;
   --teal:#2DD4BF;
   --red:#FF4D6D;
   --green:#34D399;
   --purple:#A78BFA;
-
   --stage-apertura:#2255A0;
   --stage-relevamiento:#2DD4BF;
   --stage-gestion:#F5841F;
   --stage-resolucion:#FF6B6B;
   --stage-cierre:#A78BFA;
-
   --font:'DM Sans',sans-serif;
   --font2:'Space Grotesk',sans-serif;
   --fs-xs:11px;--fs-sm:13px;--fs-base:14px;--fs-md:15px;--fs-lg:18px;--fs-xl:22px;
@@ -54,6 +45,72 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ── API KEY SETUP SCREEN ── */
+#apikey-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.apikey-box{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:36px 32px;
+  max-width:460px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,0.6);
+  text-align:center;
+}
+.apikey-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px}
+.apikey-logo-text{font-family:var(--font2);font-size:22px;font-weight:700;color:#fff;letter-spacing:.06em}
+.apikey-title{font-family:var(--font2);font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px}
+.apikey-sub{font-size:var(--fs-sm);color:var(--text3);line-height:1.7;margin-bottom:24px}
+.apikey-link{color:var(--highlight);text-decoration:none;font-weight:600}
+.apikey-link:hover{text-decoration:underline}
+.apikey-label{font-size:var(--fs-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);text-align:left;display:block;margin-bottom:6px}
+.apikey-input-wrap{position:relative;margin-bottom:8px}
+.apikey-input{
+  width:100%;border:1px solid var(--border2);border-radius:10px;
+  padding:12px 44px 12px 14px;
+  font-family:var(--font);font-size:var(--fs-base);font-weight:500;
+  color:var(--text);background:var(--surface2);outline:none;
+  transition:border-color .15s;letter-spacing:.05em;
+}
+.apikey-input:focus{border-color:var(--accent-light)}
+.apikey-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--text3);
+  font-size:16px;transition:color .14s;
+}
+.apikey-toggle:hover{color:var(--text2)}
+.apikey-hint{font-size:11px;color:var(--text3);text-align:left;margin-bottom:20px;line-height:1.6}
+.apikey-hint span{color:var(--green)}
+.apikey-save{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--brand-blue),var(--brand-blue-light));
+  color:#fff;border:none;border-radius:24px;
+  font-family:var(--font2);font-size:var(--fs-base);font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;
+  cursor:pointer;transition:opacity .14s;
+  box-shadow:0 4px 16px rgba(26,58,107,0.4);
+  margin-bottom:12px;
+}
+.apikey-save:hover{opacity:.88}
+.apikey-save:disabled{opacity:.4;cursor:not-allowed}
+.apikey-note{
+  background:rgba(245,132,31,0.08);border:1px solid rgba(245,132,31,0.2);
+  border-radius:10px;padding:12px 14px;
+  font-size:var(--fs-xs);color:var(--highlight);line-height:1.7;
+  text-align:left;margin-top:4px;
+}
+.apikey-note strong{display:block;margin-bottom:3px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.apikey-error{
+  background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.25);
+  border-radius:8px;padding:10px 13px;
+  font-size:var(--fs-sm);color:var(--red);line-height:1.6;
+  margin-bottom:12px;display:none;text-align:left;
+}
 
 /* ── HEADER ── */
 header{
@@ -65,28 +122,17 @@ header{
   box-shadow:0 2px 24px rgba(0,0,0,0.4);
 }
 .logo{display:flex;align-items:center;gap:12px}
-
-/* SVG Logo Sekunet — hexágono con ondas */
 .logo-svg{width:42px;height:42px;flex-shrink:0}
-
 .logo-text{font-family:var(--font2);font-size:20px;font-weight:700;color:#FFFFFF;letter-spacing:0.06em}
 .logo-sub{font-size:10px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:0.14em;text-transform:uppercase;margin-top:1px}
 .hright{display:flex;align-items:center;gap:8px}
-.hbadge{
-  font-size:var(--fs-xs);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
-  padding:4px 10px;border-radius:20px;
-  background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);
-  border:1px solid rgba(255,255,255,0.2);
-}
+.hbadge{font-size:var(--fs-xs);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.2)}
 .hbadge.live{background:rgba(52,211,153,0.2);color:#34D399;border-color:rgba(52,211,153,0.35)}
 .hbadge.search-on{background:rgba(245,132,31,0.2);color:var(--highlight);border-color:rgba(245,132,31,0.35)}
-.hbtn{
-  font-size:var(--fs-xs);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
-  padding:6px 12px;border-radius:8px;
-  border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);
-  color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;
-}
+.hbtn{font-size:var(--fs-xs);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s}
 .hbtn:hover{background:rgba(255,255,255,0.15);color:#fff}
+.hbtn.danger{border-color:rgba(255,77,109,0.4);color:rgba(255,77,109,0.8)}
+.hbtn.danger:hover{background:rgba(255,77,109,0.15);color:var(--red)}
 #current-model-label{font-size:11px;font-weight:700;color:var(--highlight);letter-spacing:.04em}
 
 /* ── LAYOUT ── */
@@ -140,7 +186,6 @@ header{
 .sp2[data-s="resolucion"].active{background:var(--stage-resolucion);border-color:var(--stage-resolucion);color:#fff}
 .sp2[data-s="cierre"].active{background:var(--stage-cierre);border-color:var(--stage-cierre);color:#fff}
 
-/* Status bar */
 .status-bar{padding:5px 16px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-shrink:0}
 .sb-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
 .sb-dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}
@@ -152,24 +197,11 @@ header{
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .msg-label{font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
 .msg-user{text-align:right}
-.bubble-user{
-  background:linear-gradient(135deg,var(--accent2),var(--accent-light));
-  color:#fff;border-radius:16px 16px 3px 16px;
-  padding:12px 16px;font-size:var(--fs-base);font-weight:500;line-height:1.65;
-  display:inline-block;max-width:82%;
-  box-shadow:0 4px 20px rgba(26,58,107,0.4);
-}
-.bubble-ia{
-  background:var(--surface);border:1px solid var(--border);border-radius:3px 16px 16px 16px;
-  padding:16px 18px;font-size:var(--fs-base);line-height:1.7;color:var(--text);max-width:96%;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);
-}
+.bubble-user{background:linear-gradient(135deg,var(--accent2),var(--accent-light));color:#fff;border-radius:16px 16px 3px 16px;padding:12px 16px;font-size:var(--fs-base);font-weight:500;line-height:1.65;display:inline-block;max-width:82%;box-shadow:0 4px 20px rgba(26,58,107,0.4)}
+.bubble-ia{background:var(--surface);border:1px solid var(--border);border-radius:3px 16px 16px 16px;padding:16px 18px;font-size:var(--fs-base);line-height:1.7;color:var(--text);max-width:96%;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
 .ia-section-title{font-family:var(--font2);font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-
-/* RAG source badge */
 .rag-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:rgba(245,132,31,0.1);color:var(--highlight);border:1px solid rgba(245,132,31,0.2);margin-bottom:8px;margin-right:4px}
 .search-badge{background:rgba(52,211,153,0.1);color:var(--green);border-color:rgba(52,211,153,0.2)}
-
 .suggestions{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .sug{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .14s;position:relative}
 .sug:hover{border-color:var(--border2);background:var(--surface3)}
@@ -248,6 +280,7 @@ textarea#chat-input::placeholder{color:var(--text3)}
 .file-formats{font-size:11px;color:var(--text3);margin-top:4px}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:24px;font-size:var(--fs-sm);font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,0.3);z-index:300;display:flex;align-items:center;gap:7px;transform:translateY(56px);opacity:0;transition:all .26s}
 .toast.on{transform:translateY(0);opacity:1}
+.toast-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:function;font-size:10px;flex-shrink:0}
 .toast-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
 .toast-icon.ok{background:rgba(52,211,153,0.2);color:var(--green)}
 .toast-icon.err{background:rgba(255,77,109,0.2);color:var(--red)}
@@ -257,21 +290,62 @@ textarea#chat-input::placeholder{color:var(--text3)}
 </head>
 <body>
 
+<!-- ══════ PANTALLA DE API KEY ══════ -->
+<div id="apikey-screen">
+  <div class="apikey-box">
+    <div class="apikey-logo">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="21,2 37,11 37,31 21,40 5,31 5,11" fill="#F5841F" opacity="0.15"/>
+        <polygon points="21,2 37,11 37,31 21,40 5,31 5,11" fill="none" stroke="#F5841F" stroke-width="1.5"/>
+        <path d="M17 18 Q21 14 25 18" stroke="#F5841F" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M14 22 Q21 14 28 22" stroke="#F5841F" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M11 26 Q21 14 31 26" stroke="#F5841F" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <circle cx="21" cy="21" r="2.5" fill="#F5841F"/>
+        <path d="M19 27 L24 21 L19 15" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      </svg>
+      <span class="apikey-logo-text">SEKUNET</span>
+    </div>
+
+    <div class="apikey-title">Configurar API Key de Gemini</div>
+    <div class="apikey-sub">
+      Para usar el agente necesitás una API Key de Google Gemini.<br>
+      Es gratis en <a class="apikey-link" href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a>
+    </div>
+
+    <label class="apikey-label">Tu API Key de Gemini</label>
+    <div class="apikey-input-wrap">
+      <input class="apikey-input" type="password" id="apikey-input"
+        placeholder="AIzaSy…"
+        oninput="validateApiKey()"
+        onkeydown="if(event.key==='Enter')saveApiKey()">
+      <button class="apikey-toggle" onclick="toggleApiKeyVisibility()" title="Mostrar/ocultar">👁</button>
+    </div>
+    <div class="apikey-hint">
+      La key se guarda <span>solo en tu navegador</span> (localStorage). Nunca se envía a ningún servidor nuestro.
+    </div>
+
+    <div class="apikey-error" id="apikey-error"></div>
+
+    <button class="apikey-save" id="apikey-save-btn" onclick="saveApiKey()" disabled>
+      Guardar y continuar →
+    </button>
+
+    <div class="apikey-note">
+      <strong>🔒 Privacidad</strong>
+      Tu key se usa directamente desde tu navegador para llamar a la API de Google. Podés cambiarla en cualquier momento con el botón "Cambiar API Key" en el header.
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="logo">
-    <!-- SVG Logo Sekunet fiel al original -->
     <svg class="logo-svg" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Hexágono base -->
       <polygon points="21,2 37,11 37,31 21,40 5,31 5,11" fill="#F5841F" opacity="0.15"/>
       <polygon points="21,2 37,11 37,31 21,40 5,31 5,11" fill="none" stroke="#F5841F" stroke-width="1.5"/>
-      <!-- Ondas de señal wifi arriba -->
-      <path d="M21 14 Q21 14 21 14" stroke="#F5841F" stroke-width="0"/>
       <path d="M17 18 Q21 14 25 18" stroke="#F5841F" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M14 22 Q21 14 28 22" stroke="#F5841F" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M11 26 Q21 14 31 26" stroke="#F5841F" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
-      <!-- Punto central -->
       <circle cx="21" cy="21" r="2.5" fill="#F5841F"/>
-      <!-- Flecha/chevron azul derecha -->
       <path d="M19 27 L24 21 L19 15" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
     </svg>
     <div>
@@ -286,6 +360,9 @@ textarea#chat-input::placeholder{color:var(--text3)}
     <button class="hbtn" onclick="openDocModal()">
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Subir doc
+    </button>
+    <button class="hbtn danger" onclick="changeApiKey()" title="Cambiar API Key">
+      🔑 API Key
     </button>
   </div>
 </header>
@@ -481,13 +558,79 @@ textarea#chat-input::placeholder{color:var(--text3)}
 </div>
 
 <script>
+/* ══════ API KEY MANAGEMENT ══════ */
+const STORAGE_KEY = 'sekunet_gemini_apikey';
+let apiKey = '';
+
+function getStoredApiKey() {
+  return localStorage.getItem(STORAGE_KEY) || '';
+}
+
+function validateApiKey() {
+  const val = document.getElementById('apikey-input').value.trim();
+  const btn = document.getElementById('apikey-save-btn');
+  const err = document.getElementById('apikey-error');
+  // Gemini keys start with AIza and are ~39 chars
+  const valid = val.startsWith('AIza') && val.length >= 30;
+  btn.disabled = !valid;
+  if (val.length > 5 && !valid) {
+    err.style.display = 'block';
+    err.textContent = 'La key debe empezar con "AIza" y tener al menos 30 caracteres.';
+  } else {
+    err.style.display = 'none';
+  }
+}
+
+function toggleApiKeyVisibility() {
+  const inp = document.getElementById('apikey-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function saveApiKey() {
+  const val = document.getElementById('apikey-input').value.trim();
+  if (!val.startsWith('AIza') || val.length < 30) {
+    document.getElementById('apikey-error').style.display = 'block';
+    document.getElementById('apikey-error').textContent = 'API Key inválida. Verificá que sea correcta.';
+    return;
+  }
+  apiKey = val;
+  localStorage.setItem(STORAGE_KEY, val);
+  document.getElementById('apikey-screen').style.display = 'none';
+  showToast('API Key guardada ✓', 'ok', 2500);
+  init();
+}
+
+function changeApiKey() {
+  // Show screen to change key, pre-fill current
+  const screen = document.getElementById('apikey-screen');
+  const inp = document.getElementById('apikey-input');
+  inp.value = apiKey || getStoredApiKey();
+  inp.type = 'password';
+  document.getElementById('apikey-save-btn').disabled = false;
+  document.getElementById('apikey-error').style.display = 'none';
+  screen.style.display = 'flex';
+}
+
+// On page load — check if we already have a key
+(function checkApiKeyOnLoad() {
+  const stored = getStoredApiKey();
+  if (stored && stored.startsWith('AIza') && stored.length >= 30) {
+    apiKey = stored;
+    document.getElementById('apikey-screen').style.display = 'none';
+    // Pre-fill for if they want to change it later
+    document.getElementById('apikey-input').value = stored;
+    document.getElementById('apikey-save-btn').disabled = false;
+    init();
+  }
+  // else: screen stays visible
+})();
+
 /* ══════ SUPABASE ══════ */
 const SB_URL='https://kzcyxeracvfxynddyjld.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Y3l4ZXJhY3ZmeHluZGR5amxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTE5NTQsImV4cCI6MjA5MTA4Nzk1NH0.DvEnK-g5rMxzFec4Fl3rJ5VDYVJ7-ua9ssqf3s-QKtU';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 
-/* ══════ KEYS & MODELOS ══════ */
-const apiKey='AIzaSyBKQR4TptVppsPmbOL6O6Y4Gjqm6rtXhFU';
+/* ══════ MODELOS ══════ */
 const GEMINI_MODELS=[
   {id:'gemini-2.5-flash-lite',label:'2.5 Flash-Lite'},
   {id:'gemini-2.5-flash',label:'2.5 Flash'},
@@ -541,7 +684,6 @@ async function init(){
     cases=rc.data||[];trainData=rt.data||[];docs=rd.data||[];
     document.getElementById('sb-status-badge').textContent='● Conectado';
     document.getElementById('sb-status-badge').className='hbadge live';
-    // Verificar si hay chunks RAG
     const {count}=await sb.from('sek_doc_chunks').select('*',{count:'exact',head:true});
     document.getElementById('rag-status').textContent=`● RAG: ${count||0} fragmentos`;
   }catch(e){
@@ -555,7 +697,7 @@ async function init(){
   renderCasesList();renderTrainList();renderDocsList();updateStatusBar();
 }
 
-/* ══════ RAG — EMBEDDINGS ══════ */
+/* ══════ RAG ══════ */
 async function getEmbedding(text){
   const res=await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
@@ -563,14 +705,15 @@ async function getEmbedding(text){
      body:JSON.stringify({model:'models/text-embedding-004',content:{parts:[{text:text.substring(0,2000)}]}})}
   );
   const data=await res.json();
+  if(data.error){
+    handleApiError(data.error);
+    return null;
+  }
   return data.embedding?.values||null;
 }
 
 async function indexDocumentChunks(docId,docName,content){
-  // Eliminar chunks anteriores de este doc
   await sb.from('sek_doc_chunks').delete().eq('doc_id',docId);
-
-  // Dividir en fragmentos de ~500 chars con overlap de 50
   const chunkSize=500,overlap=50;
   const chunks=[];
   for(let i=0;i<content.length;i+=chunkSize-overlap){
@@ -578,25 +721,16 @@ async function indexDocumentChunks(docId,docName,content){
     if(chunk.trim().length>50)chunks.push(chunk);
     if(i+chunkSize>=content.length)break;
   }
-
   showToast(`Indexando ${chunks.length} fragmentos…`,'info',8000);
-
-  // Generar embeddings e insertar en lotes
   for(let i=0;i<chunks.length;i++){
     try{
       const embedding=await getEmbedding(chunks[i]);
       if(embedding){
-        await sb.from('sek_doc_chunks').insert({
-          doc_id:docId,doc_name:docName,chunk_index:i,
-          content:chunks[i],embedding
-        });
+        await sb.from('sek_doc_chunks').insert({doc_id:docId,doc_name:docName,chunk_index:i,content:chunks[i],embedding});
       }
-      // Pequeña pausa para no agotar rate limits
       if(i%3===0&&i>0)await new Promise(r=>setTimeout(r,500));
     }catch(e){console.warn('Error indexando chunk',i,e)}
   }
-
-  // Actualizar contador
   const {count}=await sb.from('sek_doc_chunks').select('*',{count:'exact',head:true});
   document.getElementById('rag-status').textContent=`● RAG: ${count||0} fragmentos`;
   showToast(`Documento indexado — ${chunks.length} fragmentos RAG`,'ok',3000);
@@ -610,6 +744,22 @@ async function searchRAG(query,topK=4){
     if(error)return[];
     return (data||[]).filter(r=>r.similarity>0.5);
   }catch(e){return[]}
+}
+
+/* ══════ MANEJO DE ERRORES DE API ══════ */
+function handleApiError(error) {
+  const msg = error.message || '';
+  if (msg.includes('API key') || msg.includes('leaked') || msg.includes('invalid') || msg.includes('API_KEY')) {
+    showToast('⚠️ Error de API Key — verificá tu key', 'err', 5000);
+    // Offer to change key
+    setTimeout(() => {
+      if (confirm('Hubo un problema con tu API Key. ¿Querés cambiarla ahora?')) {
+        changeApiKey();
+      }
+    }, 500);
+    return true;
+  }
+  return false;
 }
 
 /* ══════ CASOS ══════ */
@@ -686,7 +836,7 @@ function renderTrainList(){
     </div>`).join('');
 }
 
-/* ══════ DOCUMENTOS + RAG ══════ */
+/* ══════ DOCUMENTOS ══════ */
 function openDocModal(){
   document.getElementById('doc-name').value='';
   document.getElementById('doc-content').value='';
@@ -709,7 +859,7 @@ async function extractPDFWithGemini(file){
        body:JSON.stringify({contents:[{role:'user',parts:[{inline_data:{mime_type:'application/pdf',data:b64}},{text:'Extraé todo el texto de este documento manteniendo la estructura. Solo el texto, sin comentarios.'}]}],generationConfig:{maxOutputTokens:8000}})}
     );
     const data=await res.json();
-    if(data.error)throw new Error(data.error.message);
+    if(data.error){handleApiError(data.error);throw new Error(data.error.message)}
     return data.candidates?.[0]?.content?.parts?.[0]?.text||'';
   }catch(e){showToast('Error leyendo PDF: '+e.message,'err',4000);return ''}
 }
@@ -760,15 +910,11 @@ async function saveDoc(){
   await sb.from('sek_docs').insert(doc);
   closeModal('doc-modal');
   renderDocsList();updateStatusBar();
-  // Indexar con RAG en segundo plano
   indexDocumentChunks(docId,name,content);
 }
 async function deleteDoc(id){
   docs=docs.filter(d=>d.id!==id);
-  await Promise.all([
-    sb.from('sek_docs').delete().eq('id',id),
-    sb.from('sek_doc_chunks').delete().eq('doc_id',id)
-  ]);
+  await Promise.all([sb.from('sek_docs').delete().eq('id',id),sb.from('sek_doc_chunks').delete().eq('doc_id',id)]);
   renderDocsList();updateStatusBar();
   const {count}=await sb.from('sek_doc_chunks').select('*',{count:'exact',head:true});
   document.getElementById('rag-status').textContent=`● RAG: ${count||0} fragmentos`;
@@ -854,16 +1000,12 @@ function updateStatusBar(){
   document.getElementById('docs-label').textContent=`${docs.length} docs`;
 }
 
-/* ══════ ENVÍO CON RAG + GOOGLE SEARCH ══════ */
+/* ══════ ENVÍO ══════ */
 function handleKey(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendMessage()}}
 function useTip(btn){document.getElementById('chat-input').value=btn.querySelector('strong').nextSibling.textContent.trim();document.getElementById('chat-input').focus()}
 
 async function callGeminiWithSearch(modelId,payload){
-  // Agregar Google Search como tool
-  const payloadWithSearch={
-    ...payload,
-    tools:[{google_search:{}}]
-  };
+  const payloadWithSearch={...payload,tools:[{google_search:{}}]};
   const res=await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`,
     {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payloadWithSearch)}
@@ -876,8 +1018,15 @@ async function sendMessage(){
   const msg=inp.value.trim();
   const hasMedia=attachedImage||attachedAudio||attachedDoc;
   if(!msg&&!hasMedia)return;
-  inp.value='';hideEmpty();
 
+  // Verificar que haya API key antes de enviar
+  if(!apiKey){
+    showToast('Primero configurá tu API Key','err',3000);
+    changeApiKey();
+    return;
+  }
+
+  inp.value='';hideEmpty();
   const displayMsg=msg+(attachedImage?' 📷 [imagen]':'')+(attachedAudio?' 🎤 [audio]':'')+(attachedDoc?' 📄 ['+attachedDoc.name+']':'');
   appendUserMsg(displayMsg);
   chatHistory.push({role:'user',content:msg||'[Adjunto multimedia]'});
@@ -887,16 +1036,13 @@ async function sendMessage(){
   const imgToSend=attachedImage,audToSend=attachedAudio,docToSend=attachedDoc;
   attachedImage=null;attachedAudio=null;attachedDoc=null;showAttachPreview();
 
-  // RAG — buscar fragmentos relevantes en paralelo con el resto
-  let ragChunks=[];
-  let ragSources=[];
+  let ragChunks=[],ragSources=[];
   if(msg&&docs.length>0){
     ragChunks=await searchRAG(msg,4);
     ragSources=ragChunks.map(r=>r.doc_name).filter((v,i,a)=>a.indexOf(v)===i);
   }
 
   const trainCtx=trainData.length?`\n\nCONOCIMIENTOS APRENDIDOS:\n${trainData.slice(0,8).map(t=>`[${t.cat}] P: ${t.q}\nR: ${t.a}`).join('\n\n')}`:'';
-  // RAG tiene prioridad sobre docs completos
   const ragCtx=ragChunks.length
     ?`\n\nFRAGMENTOS RELEVANTES DE DOCUMENTOS (búsqueda semántica RAG):\n${ragChunks.map(r=>`--- ${r.doc_name} ---\n${r.content}`).join('\n\n')}`
     :docs.length?`\n\nDOCUMENTOS TÉCNICOS:\n${docs.slice(0,3).map(d=>`=== ${d.name} ===\n${d.content.substring(0,1500)}`).join('\n\n')}`:'';
@@ -982,6 +1128,8 @@ VARIACIONES: (casos similares)`
     try{
       data=await callGeminiWithSearch(GEMINI_MODELS[i].id,payload);
       if(data.error){
+        const handled=handleApiError(data.error);
+        if(handled){typEl.remove();chatHistory.pop();document.getElementById('send-btn').disabled=false;return;}
         const em=data.error.message||'';
         if((em.includes('not found')||em.includes('deprecated'))&&i<GEMINI_MODELS.length-1){
           showToast('Modelo '+GEMINI_MODELS[i].label+' no disponible…','info',2000);continue;
@@ -1003,7 +1151,6 @@ VARIACIONES: (casos similares)`
     appendErrorMsg('Error API: '+data.error.message);chatHistory.pop();
   } else {
     if(usedModelIdx!==currentModelIdx){currentModelIdx=usedModelIdx;updateModelLabel();showToast('Usando: '+GEMINI_MODELS[currentModelIdx].label,'info',3000)}
-    // Extraer texto — puede venir de múltiples partes si usó search
     const parts=data.candidates?.[0]?.content?.parts||[];
     const text=parts.map(p=>p.text||'').join('').trim()||'Sin respuesta';
     const usedSearch=parts.some(p=>p.executableCode||p.codeExecutionResult)||
@@ -1042,7 +1189,6 @@ function parseAndRender(text,ragSources=[],usedSearch=false){
   const bar=CAT_COLORS[curStage]||'var(--accent)';
   let html=`<div class="msg-label" style="color:${bar}">Agente Sekunet</div><div class="bubble-ia">`;
 
-  // Mostrar fuentes RAG y búsqueda web
   if(ragSources.length||usedSearch){
     html+=`<div style="margin-bottom:10px">`;
     if(ragSources.length)ragSources.forEach(s=>{html+=`<span class="rag-badge">📚 ${escHtml(s)}</span>`});
@@ -1159,8 +1305,6 @@ function showToast(msg,type='info',dur=2400){
 }
 function copySug(el){cp(el.querySelector('.sug-text').textContent);showToast('Respuesta copiada','ok');el.style.borderColor='var(--highlight)';setTimeout(()=>el.style.borderColor='',1800)}
 function quickCopyPlantilla(txt){cp(txt);showToast('Plantilla copiada','ok')}
-
-init();
 </script>
 </body>
 </html>
