@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sekunet — Agente IA</title>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/base.css">
+  <link rel="stylesheet" href="/src/styles/components.css">
+  <link rel="stylesheet" href="/src/styles/layout.css">
+  <link rel="stylesheet" href="/src/styles/responsive.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     API KEY / LOGIN SCREEN
+══════════════════════════════════════════════ -->
+<div id="apikey-screen" style="display:none">
+  <div class="ak-card">
+    <div class="ak-brand"><img src="logoTiendaHD.png" alt="Sekunet" onerror="this.style.display='none'"></div>
+    <div class="ak-trust">Sistema de Agentes Sekunet</div>
+    <div class="ak-title">Acceso de Agentes</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--border)">
+      <button id="tab-login" onclick="showLoginTab('login')" style="flex:1;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:600">Ingresar</button>
+      <button id="tab-register" onclick="showLoginTab('register')" style="flex:1;padding:10px;background:var(--bg);color:var(--text);border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:600">Registrarme</button>
+    </div>
+    <div id="form-login">
+      <label class="m-label" for="login-email">Email</label>
+      <input class="ak-input" type="email" id="login-email" placeholder="tu@email.com" style="margin-bottom:12px" oninput="validateLoginForm()">
+      <label class="m-label" for="login-pass">Contraseña</label>
+      <input class="ak-input" type="password" id="login-pass" placeholder="••••••••" minlength="8" oninput="validateLoginForm()">
+      <div class="ak-error" id="login-error" style="display:none"></div>
+      <button class="ak-btn" id="login-btn" onclick="handleLogin()" style="margin-top:16px">Ingresar al sistema →</button>
+    </div>
+    <div id="form-register" style="display:none">
+      <label class="m-label" for="reg-nombre">Nombre</label>
+      <input class="ak-input" type="text" id="reg-nombre" placeholder="Juan" style="margin-bottom:12px" oninput="validateRegForm()">
+      <label class="m-label" for="reg-apellido">Apellido</label>
+      <input class="ak-input" type="text" id="reg-apellido" placeholder="Pérez" style="margin-bottom:12px" oninput="validateRegForm()">
+      <label class="m-label" for="reg-email">Email</label>
+      <input class="ak-input" type="email" id="reg-email" placeholder="tu@email.com" style="margin-bottom:12px" oninput="validateRegForm()">
+      <label class="m-label" for="reg-pass">Contraseña (8+ caracteres)</label>
+      <input class="ak-input" type="password" id="reg-pass" placeholder="••••••••" minlength="8" style="margin-bottom:16px" oninput="validateRegForm()">
+      <div class="ak-error" id="reg-error" style="display:none"></div>
+      <button class="ak-btn" id="reg-btn" onclick="handleRegister()">Crear cuenta →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════ -->
+<header>
+  <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileSidebar()" aria-label="Menú">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="logo-area">
+    <img src="logoTiendaHD.png" alt="Sekunet" onerror="this.style.display='none'">
+    <div class="logo-sub">
+      Agente Técnico IA
+      <span id="ia-health-dot" class="ia-health-dot" title="Estado del sistema IA"></span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div id="online-agents" class="online-agents-row" title="Agentes en línea"></div>
+    <div id="agent-status-selector" class="agt-status-wrap"></div>
+    <span id="model-label" style="display:none"></span>
+    <div class="perfil-menu-wrap" id="perfil-menu-wrap">
+      <button class="agt-status-cur" onclick="togglePerfilMenu()" title="Menú de usuario">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="perfil-dropdown" id="perfil-dropdown" style="display:none">
+        <div class="perfil-drop-item" onclick="openPerfilModal();togglePerfilMenu()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Mi perfil
+        </div>
+        <div class="perfil-drop-item" id="theme-toggle-btn" onclick="toggleTheme()">
+          <span id="theme-toggle-icon">☀️</span>
+          <span id="theme-toggle-label">Claro</span>
+        </div>
+        <div class="perfil-drop-sep"></div>
+        <div class="perfil-drop-item danger" onclick="doLogout()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="modo-manual-banner" style="display:none;align-items:center;justify-content:center;gap:12px;padding:10px 20px;background:#7f1d1d;color:#fca5a5;font-size:13px;font-weight:700;border-bottom:2px solid #ef4444">
+  <span>⚠️ MODO MANUAL ACTIVO — El agente IA no responde. Los agentes humanos atienden directamente.</span>
+  <button onclick="reactivarIA()" style="padding:4px 14px;border-radius:20px;border:1.5px solid #fca5a5;background:transparent;color:#fca5a5;font-size:12px;font-weight:700;cursor:pointer">Reintentar IA</button>
+</div>
+<div class="layout">
+  <!-- Overlay para cerrar sidebar en móvil -->
+  <div class="sb-overlay" id="sb-overlay" onclick="toggleMobileSidebar()"></div>
+  <!-- ══════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════ -->
+  <aside class="sb-aside" id="sb-aside">
+    <div class="sb-head">
+      <button class="sb-new" onclick="createQuickCase('Nueva consulta')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva consulta
+      </button>
+    </div>
+    <nav class="sb-nav">
+      <button class="active" data-panel="recientes" onclick="showPanel('recientes')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chats Recientes
+      </button>
+      <button data-panel="conversaciones" onclick="showPanel('conversaciones')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-7L10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+        Conversaciones
+      </button>
+      <button data-panel="plantillas" onclick="showPanel('plantillas')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        Plantillas
+      </button>
+    </nav>
+
+    <!-- Panel Recientes -->
+    <div class="sb-panel" id="panel-recientes">
+      <div class="sb-recientes-head">
+        <span class="sb-sec" style="padding:0">Recientes</span>
+        <button class="sb-ver-todos" onclick="showPanel('conversaciones')">
+          Ver todos
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <div id="chats-recientes"></div>
+    </div>
+
+    <!-- Panel Conversaciones -->
+    <div class="sb-panel hidden" id="panel-conversaciones">
+      <div class="conv-search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="conv-search-input" placeholder="Buscar por nombre o mensaje..." oninput="searchConversaciones(this.value)" autocomplete="off">
+        <button class="conv-search-clear" id="conv-search-clear" onclick="clearConvSearch()" title="Limpiar">×</button>
+      </div>
+      <div class="conv-filters">
+        <button class="conv-filter active" data-estado="todos" onclick="filterConv('todos')">Todos</button>
+        <button class="conv-filter" data-estado="nuevo" onclick="filterConv('nuevo')">Nuevos</button>
+        <button class="conv-filter" data-estado="en_proceso" onclick="filterConv('en_proceso')">En proceso</button>
+        <button class="conv-filter" data-estado="resuelto" onclick="filterConv('resuelto')">Resueltos</button>
+        <button class="conv-filter" data-estado="cerrado" onclick="filterConv('cerrado')">Cerrados</button>
+      </div>
+      <div class="conv-count" id="conv-count"></div>
+      <div id="conversaciones-list"></div>
+    </div>
+
+    <!-- Panel Plantillas -->
+    <div class="sb-panel hidden" id="panel-plantillas">
+      <button class="add-btn" onclick="openModal('plantilla-modal')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva plantilla
+      </button>
+      <div id="plantillas-filter" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px"></div>
+      <div id="plantillas-list"></div>
+    </div>
+
+    <!-- Botón admin (solo admin/superadmin) -->
+    <div class="sb-admin-area" id="admin-btn-container">
+      <button class="sb-admin-btn" onclick="openAdminTools()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Ajustes
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════════ -->
+  <main>
+    <div class="ch-h">
+      <div>
+        <h1 id="chat-title">Nueva consulta</h1>
+        <div class="s" id="chat-subtitle">Seleccioná el modo de chat</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="toggle">
+          <button id="toggle-tecnico" onclick="switchChat('tecnico')">🔧 Técnico</button>
+          <button class="active" id="toggle-cliente" onclick="switchChat('cliente')">🎧 Cliente</button>
+        </div>
+      </div>
+    </div>
+    <div class="chat-area">
+    <div class="chat-col">
+
+    <!-- CHAT TÉCNICO -->
+    <div class="chat-view hidden" id="view-tecnico">
+      <div class="body" id="msgs-tecnico">
+        <div class="empty-wrap" id="empty-tecnico">
+          <div class="empty-glow tec">🔧</div>
+          <div class="empty-title">Chat Técnico</div>
+          <div class="empty-sub">Consultas técnicas especializadas. Usa manuales indexados, RAG y búsqueda avanzada.</div>
+          <div class="quick-btns">
+            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>Diagnóstico DSC</strong><span>Panel DSC Power 832 — zona 3 activa constantemente sin sensor disparado</span></button>
+            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>Configuración</strong><span>¿Cómo programo una zona 24h en panel Paradox SP5500?</span></button>
+            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>CCTV</strong><span>Cámara Hikvision DS-2CD2143G2 sin imagen, conexión PoE OK</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="input">
+        <div class="attach-bar" id="attach-bar-tec"></div>
+        <div class="ibox">
+          <textarea id="input-tecnico" placeholder="Escribí tu consulta técnica…" rows="3" onkeydown="handleKey(event,'tecnico')" aria-label="Consulta técnica"></textarea>
+          <div class="iact">
+            <input type="file" id="img-input-tec" accept="image/*" style="display:none" onchange="handleImg(event,'tec')">
+            <input type="file" id="doc-attach-tec" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleDocAttach(event,'tec')">
+            <input type="file" id="audio-input-tec" accept="audio/*,.opus,.ogg,.webm" style="display:none" onchange="handleAudioAttach(event,'tec')">
+            <button class="ib" onclick="document.getElementById('img-input-tec').click()" title="Imagen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <button class="ib" onclick="document.getElementById('doc-attach-tec').click()" title="Documento">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </button>
+            <button class="ib" onclick="document.getElementById('audio-input-tec').click()" title="Audio">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </button>
+            <button class="ib" id="mic-btn-tec" onclick="toggleRec('tec')" title="Grabar voz">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+            </button>
+            <button class="ib" onclick="agregarNotaInterna()" title="Nota interna" style="color:var(--orange)">📝</button>
+            <button class="ib" onclick="escalarAN2()" title="Escalar a N2" style="color:var(--err)">🚨</button>
+            <button class="ib" onclick="cerrarCasoActual()" title="Cerrar caso" style="color:var(--ok)">✓</button>
+            <button class="send" id="send-tec" onclick="sendMessage('tecnico')">
+              Enviar
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hint">
+          <span><kbd>Enter</kbd> enviar · <kbd>⇧ Enter</kbd> nueva línea</span>
+          <span id="rag-hint-tec" style="color:var(--text-light)">RAG: 0 fragmentos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT CLIENTE -->
+    <div class="chat-view" id="view-cliente">
+      <div id="modo-ia-bar" style="display:none;align-items:center;justify-content:space-between;padding:8px 14px;background:#1e3a5f;border-bottom:1px solid #3b82f6;font-size:13px;color:#93c5fd;font-weight:600;gap:10px"></div>
+      <div id="notas-internas-panel" style="display:none"></div>
+      <div class="body" id="msgs-cliente">
+        <div class="empty-wrap" id="empty-cliente">
+          <div class="empty-glow cli">🎧</div>
+          <div class="empty-title">Soporte al Cliente</div>
+          <div class="empty-sub">Genera respuestas profesionales y humanas listas para copiar y enviar al cliente.</div>
+          <div class="quick-btns">
+            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Falsa alarma</strong><span>Mi alarma suena sola de noche pero no hay intrusión</span></button>
+            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Garantía</strong><span>Quiero enviar mi detector de humo para revisión de garantía</span></button>
+            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Consulta precio</strong><span>¿Cuánto cuesta una cámara de seguridad para exterior?</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="input">
+        <div class="attach-bar" id="attach-bar-cli"></div>
+        <div class="ibox">
+          <textarea id="input-cliente" placeholder="Pegá el mensaje del cliente aquí…" rows="3" onkeydown="handleKey(event,'cliente')" aria-label="Mensaje del cliente"></textarea>
+          <div class="iact">
+            <input type="file" id="img-input-cli" accept="image/*" style="display:none" onchange="handleImg(event,'cli')">
+            <input type="file" id="doc-attach-cli" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleDocAttach(event,'cli')">
+            <input type="file" id="audio-input-cli" accept="audio/*,.opus,.ogg,.webm" style="display:none" onchange="handleAudioAttach(event,'cli')">
+            <button class="ib" onclick="document.getElementById('img-input-cli').click()" title="Imagen">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <button class="ib" onclick="document.getElementById('doc-attach-cli').click()" title="Documento">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </button>
+            <button class="ib" onclick="document.getElementById('audio-input-cli').click()" title="Audio">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </button>
+            <button class="ib" id="mic-btn-cli" onclick="toggleRec('cli')" title="Grabar voz">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+            </button>
+            <button class="ib" onclick="agregarNotaInterna()" title="Nota interna" style="color:var(--orange)">📝</button>
+            <button class="ib" onclick="escalarAN2()" title="Escalar a N2" style="color:var(--err)">🚨</button>
+            <button class="ib" onclick="cerrarCasoActual()" title="Cerrar caso" style="color:var(--ok)">✓</button>
+            <button class="send" id="send-cli" onclick="sendMessage('cliente')">
+              Enviar
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hint">
+          <span><kbd>Enter</kbd> enviar · <kbd>⇧ Enter</kbd> nueva línea</span>
+          <span id="rag-hint-cli" style="color:var(--text-light)">RAG: 0 fragmentos</span>
+        </div>
+      </div>
+    </div>
+    </div><!-- /chat-col -->
+    <!-- ══ PANEL DERECHO — INFO CLIENTE ══ -->
+    <aside class="info-panel" id="info-panel">
+
+    <!-- Header del panel -->
+    <div class="ip-header">
+      <div class="ip-header-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Info del cliente
+      </div>
+      <span class="ip-badge" id="ip-estado-badge"></span>
+    </div>
+
+    <!-- Avatar + nombre -->
+    <div class="ip-identity" id="ip-identity">
+      <div class="ip-avatar" id="ip-avatar">?</div>
+      <div>
+        <div class="ip-name" id="ip-name">Sin identificar</div>
+        <div class="ip-sub" id="ip-sub">Datos pendientes</div>
+      </div>
+    </div>
+
+    <!-- Datos de contacto -->
+    <div class="ip-section">
+      <div class="ip-section-title">Contacto</div>
+      <div class="ip-field" id="ipf-telefono">
+        <span class="ip-field-icon">📞</span>
+        <div>
+          <div class="ip-field-label">Teléfono</div>
+          <div class="ip-field-val" id="ip-telefono">—</div>
+        </div>
+      </div>
+      <div class="ip-field" id="ipf-correo">
+        <span class="ip-field-icon">✉️</span>
+        <div>
+          <div class="ip-field-label">Correo</div>
+          <div class="ip-field-val" id="ip-correo">—</div>
+        </div>
+      </div>
+      <div class="ip-field" id="ipf-cuenta">
+        <span class="ip-field-icon">🏷️</span>
+        <div>
+          <div class="ip-field-label">Cuenta registrada</div>
+          <div class="ip-field-val" id="ip-cuenta">—</div>
+        </div>
+      </div>
+      <div class="ip-field" id="ipf-ticket">
+        <span class="ip-field-icon">🎫</span>
+        <div>
+          <div class="ip-field-label">Ticket / Caso abierto</div>
+          <div class="ip-field-val" id="ip-ticket">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipo consultado -->
+    <div class="ip-section" id="ip-equipo-section">
+      <div class="ip-section-title">Equipo</div>
+      <div class="ip-field" id="ipf-tipo-equipo">
+        <span class="ip-field-icon">🖥️</span>
+        <div>
+          <div class="ip-field-label">Tipo</div>
+          <div class="ip-field-val" id="ip-tipo-equipo">—</div>
+        </div>
+      </div>
+      <div class="ip-field" id="ipf-marca-equipo">
+        <span class="ip-field-icon">🏭</span>
+        <div>
+          <div class="ip-field-label">Marca / Modelo</div>
+          <div class="ip-field-val" id="ip-marca-equipo">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Archivos compartidos -->
+    <div class="ip-section">
+      <div class="ip-section-title">
+        Archivos compartidos
+        <span class="ip-count" id="ip-files-count">0</span>
+      </div>
+      <div id="ip-files-list">
+        <div class="ip-empty">No hay archivos compartidos aún</div>
+      </div>
+    </div>
+
+    <!-- Enlace rápido a Supabase -->
+    <div class="ip-section" id="ip-db-section" style="display:none">
+      <div class="ip-section-title">Base de datos</div>
+      <div class="ip-field">
+        <span class="ip-field-icon">🗄️</span>
+        <div>
+          <div class="ip-field-label">Registro encontrado</div>
+          <div class="ip-field-val ip-link" id="ip-db-match">—</div>
+        </div>
+      </div>
+    </div>
+
+    </aside>
+    </div><!-- /chat-area -->
+  </main>
+
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODALES
+══════════════════════════════════════════════ -->
+
+<!-- Modal: Agregar conocimiento -->
+<div class="modal-ov" id="train-modal" onclick="closeOut(event,'train-modal')">
+  <div class="modal-box">
+    <div class="m-title">Agregar conocimiento</div>
+    <div class="m-sub">Enseñale al agente un caso real, procedimiento o tip técnico.</div>
+    <input type="hidden" id="train-edit-id">
+    <label class="m-label" for="train-q">Situación / Pregunta</label>
+    <input class="m-input" type="text" id="train-q" placeholder="Ej: Panel DSC 832 zona 3 activa constante…">
+    <label class="m-label" for="train-a">Respuesta / Solución / Tip</label>
+    <textarea class="m-textarea" id="train-a" placeholder="Ej: Verificar resistencia EOL, revisar cableado…"></textarea>
+    <label class="m-label" style="margin-top:13px" for="train-cat">Categoría</label>
+    <select class="m-input" id="train-cat" style="cursor:pointer;margin-bottom:0">
+      <option value="alarma">Alarmas intrusión</option>
+      <option value="incendio">Detección incendio</option>
+      <option value="cctv">CCTV / Video</option>
+      <option value="acceso">Control de acceso</option>
+      <option value="procedimiento" selected>Procedimiento interno</option>
+      <option value="producto">Producto específico</option>
+    </select>
+    <div class="m-btns">
+      <button class="m-btn-primary" onclick="saveTrainHandler()">Guardar</button>
+      <button class="m-btn-sec" onclick="closeModal('train-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Subir manual -->
+<div class="modal-ov" id="doc-modal" onclick="closeOut(event,'doc-modal')">
+  <div class="modal-box">
+    <div class="m-title">Subir manual técnico</div>
+    <div class="m-sub">PDF, Word o texto. Se indexa con RAG.</div>
+    <label class="m-label" for="doc-name">Nombre del documento</label>
+    <input class="m-input" type="text" id="doc-name" placeholder="Ej: Manual DSC Power 832">
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('doc-file-input').click()" ondrop="handleDropDoc(event)" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
+      <span class="dz-icon">📄</span>
+      <strong>Arrastrá o hacé clic para seleccionar</strong>
+      PDF · Word (.docx) · Texto (.txt)
+    </div>
+    <input type="file" id="doc-file-input" accept=".txt,.md,.csv,.pdf,.doc,.docx" style="display:none" onchange="handleDocFile(event)">
+    <label class="m-label" for="doc-content">O pegá el contenido directamente</label>
+    <textarea class="m-textarea" id="doc-content" placeholder="Pegá el texto aquí…" style="min-height:90px"></textarea>
+    <label class="m-label" style="margin-top:9px" for="doc-tips">Comentarios / Tips adicionales (opcional)</label>
+    <textarea class="m-textarea" id="doc-tips" style="min-height:65px" placeholder="Ej: Aplica a modelos v2 y v3…"></textarea>
+    <div class="processing-note" id="doc-processing">⏳ Procesando…</div>
+    <div class="m-btns">
+      <button class="m-btn-primary" id="doc-save-btn" onclick="saveDocHandler()">Guardar e indexar</button>
+      <button class="m-btn-sec" onclick="closeModal('doc-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Plantilla -->
+<div class="modal-ov" id="plantilla-modal" onclick="closeOut(event,'plantilla-modal')">
+  <div class="modal-box">
+    <div class="m-title" id="ptl-modal-title">Nueva plantilla</div>
+    <input type="hidden" id="ptl-edit-id">
+    <label class="m-label" for="ptl-nombre">Nombre</label>
+    <input class="m-input" type="text" id="ptl-nombre" placeholder="Ej: Saludo inicial">
+    <label class="m-label" for="ptl-cat">Categoría / Etapa</label>
+    <select class="m-input" id="ptl-cat" style="cursor:pointer">
+      <option value="apertura">Apertura</option>
+      <option value="relevamiento">Relevamiento</option>
+      <option value="gestion">Gestión</option>
+      <option value="resolucion">Resolución</option>
+      <option value="cierre">Cierre</option>
+    </select>
+    <label class="m-label" for="ptl-texto">Texto</label>
+    <textarea class="m-textarea" id="ptl-texto" placeholder="Usá [CAMPO] para variables." style="min-height:120px"></textarea>
+    <div class="m-btns">
+      <button class="m-btn-primary" onclick="savePlantillaHandler()">Guardar plantilla</button>
+      <button class="m-btn-sec" onclick="closeModal('plantilla-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Perfil -->
+<div class="modal-ov" id="perfil-modal" onclick="closeOut(event,'perfil-modal')">
+  <div class="modal-box">
+    <div class="m-title">Mi perfil</div>
+    <div class="m-sub" id="perfil-email-display" style="margin-bottom:18px;font-weight:600;color:var(--navy)"></div>
+    <label class="m-label" for="perfil-nombre">Nombre</label>
+    <input class="m-input" type="text" id="perfil-nombre" placeholder="Tu nombre">
+    <label class="m-label" for="perfil-apellido">Apellido</label>
+    <input class="m-input" type="text" id="perfil-apellido" placeholder="Tu apellido">
+    <label class="m-label" for="perfil-pass">Nueva contraseña (dejar vacío para no cambiar)</label>
+    <input class="m-input" type="password" id="perfil-pass" placeholder="••••••••" minlength="8">
+    <div class="m-btns">
+      <button class="m-btn-primary" onclick="savePerfilHandler()">Guardar cambios</button>
+      <button class="m-btn-sec" onclick="closeModal('perfil-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <div class="t-ico info" id="toast-icon">●</div>
+  <span id="toast-msg">Listo</span>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PUNTO DE ENTRADA JS (ES Modules via Vite)
+══════════════════════════════════════════════ -->
+<script type="module" src="/src/main.js"></script>
+
+<!-- Glue para funciones de modal que el HTML llama directamente -->
+<script type="module">
+import { doLogin, doRegister, updateProfile } from '/src/features/auth.js';
+import { savePlantilla, deletePlantilla, addKnowledge, saveDoc, deleteTrain, deleteDoc } from '/src/features/knowledge.js';
+import { showPanel, renderChatsRecientes, renderConversacionesList, renderPlantillasList, filterConv, searchConversaciones, filterPlantillas } from '/src/ui/sidebar.js';
+import { state } from '/src/state.js';
+
+// Login / Register handlers con validación inline
+window.showLoginTab = (tab) => {
+  document.getElementById('form-login').style.display   = tab === 'login'    ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tab-login').style.background    = tab === 'login'    ? 'var(--navy)' : 'var(--bg)';
+  document.getElementById('tab-login').style.color         = tab === 'login'    ? '#fff' : 'var(--text)';
+  document.getElementById('tab-register').style.background = tab === 'register' ? 'var(--navy)' : 'var(--bg)';
+  document.getElementById('tab-register').style.color      = tab === 'register' ? '#fff' : 'var(--text)';
+};
+
+window.handleLogin = async () => {
+  const email  = document.getElementById('login-email').value.trim();
+  const pass   = document.getElementById('login-pass').value;
+  const errEl  = document.getElementById('login-error');
+  const btn    = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Ingresando…';
+  const ok = await doLogin(email, pass);
+  if (!ok) {
+    errEl.textContent = 'Email o contraseña incorrectos. Verificá tus datos.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Ingresar al sistema →';
+    return;
+  }
+  // Login OK — ocultar pantalla de login y arrancar la app
+  document.getElementById('apikey-screen').style.display = 'none';
+  // _showAgentBadge y init() están en main.js — los disparamos via evento
+  window.dispatchEvent(new CustomEvent('sekunet:login-ok'));
+};
+
+window.handleRegister = async () => {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const apellido = document.getElementById('reg-apellido').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const errEl    = document.getElementById('reg-error');
+  errEl.style.display = 'none';
+  if (!nombre || !email || !pass || pass.length < 8) {
+    errEl.textContent = 'Completá todos los campos (contraseña mínimo 8 caracteres)';
+    errEl.style.display = 'block'; return;
+  }
+  const ok = await doRegister(email, pass, nombre, apellido);
+  if (ok === false) {
+    errEl.textContent = 'No se pudo crear la cuenta. Verificá el email o intentá de nuevo.';
+    errEl.style.display = 'block';
+  }
+};
+
+window.validateLoginForm = () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  document.getElementById('login-btn').disabled = !email || pass.length < 8;
+};
+
+window.validateRegForm = () => {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  document.getElementById('reg-btn').disabled = !nombre || !email || pass.length < 8;
+};
+
+window.saveTrainHandler = async () => {
+  const id  = document.getElementById('train-edit-id').value;
+  const q   = document.getElementById('train-q').value.trim();
+  const a   = document.getElementById('train-a').value.trim();
+  const cat = document.getElementById('train-cat').value;
+  if (id) { const { updateKnowledge } = await import('/src/features/knowledge.js'); await updateKnowledge(id, q, a, cat); }
+  else    { await addKnowledge(q, a, cat); }
+  window.closeModal('train-modal');
+  if (typeof renderAdminTools === 'function') renderAdminTools();
+};
+
+window.openTrainModal = (id) => {
+  const editId = id || '';
+  document.getElementById('train-edit-id').value = editId;
+  const title = document.querySelector('#train-modal .m-title');
+  if (title) title.textContent = editId ? 'Editar conocimiento' : 'Agregar conocimiento';
+  if (editId) {
+    const t = state.trainData.find(x => x.id === editId);
+    if (t) {
+      document.getElementById('train-q').value   = t.q   || '';
+      document.getElementById('train-a').value   = t.a   || '';
+      document.getElementById('train-cat').value = t.cat || 'procedimiento';
+    }
+  } else {
+    document.getElementById('train-q').value   = '';
+    document.getElementById('train-a').value   = '';
+    document.getElementById('train-cat').value = 'procedimiento';
+  }
+  window.openModal('train-modal');
+};
+
+window.editTrain = (id) => window.openTrainModal(id);
+
+window.saveDocHandler = async () => {
+  const name    = document.getElementById('doc-name').value.trim();
+  const content = document.getElementById('doc-content').value.trim();
+  const tips    = document.getElementById('doc-tips').value.trim();
+  await saveDoc(name, content, tips);
+  window.closeModal('doc-modal');
+};
+
+window.savePlantillaHandler = async () => {
+  const id     = document.getElementById('ptl-edit-id').value;
+  const nombre = document.getElementById('ptl-nombre').value.trim();
+  const cat    = document.getElementById('ptl-cat').value;
+  const texto  = document.getElementById('ptl-texto').value.trim();
+  await savePlantilla(id || null, nombre, cat, texto);
+  renderPlantillasList();
+  window.closeModal('plantilla-modal');
+};
+
+window.openPlantillaModal = (id) => {
+  document.getElementById('ptl-edit-id').value = id || '';
+  document.getElementById('ptl-modal-title').textContent = id ? 'Editar plantilla' : 'Nueva plantilla';
+  if (id) {
+    const p = state.plantillas.find(x => x.id === id);
+    if (p) {
+      document.getElementById('ptl-nombre').value = p.nombre;
+      document.getElementById('ptl-cat').value    = p.cat;
+      document.getElementById('ptl-texto').value  = p.texto;
+    }
+  } else {
+    document.getElementById('ptl-nombre').value = '';
+    document.getElementById('ptl-texto').value  = '';
+  }
+  window.openModal('plantilla-modal');
+};
+
+window.deletePlantillaHandler = async (id) => {
+  await deletePlantilla(id);
+  renderPlantillasList();
+};
+
+window.openPerfilModal = () => {
+  document.getElementById('perfil-email-display').textContent = state.currentAgent.email;
+  document.getElementById('perfil-nombre').value   = state.currentAgent.nombre   || '';
+  document.getElementById('perfil-apellido').value = state.currentAgent.apellido || '';
+  document.getElementById('perfil-pass').value     = '';
+  window.openModal('perfil-modal');
+};
+
+window.savePerfilHandler = async () => {
+  const nombre   = document.getElementById('perfil-nombre').value.trim();
+  const apellido = document.getElementById('perfil-apellido').value.trim();
+  const pass     = document.getElementById('perfil-pass').value;
+  await updateProfile(nombre, apellido, pass || null);
+  window.closeModal('perfil-modal');
+};
+
+window.setStage = (stage) => {
+  state.curStage = stage;
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.toggle('active', b.dataset.s === stage));
+};
+
+window.showPanel          = showPanel;
+window.filterConv         = filterConv;
+window.searchConversaciones = searchConversaciones;
+window.filterPlantillas   = filterPlantillas;
+
+
+// Stubs para funciones del monolito que aún no están migradas
+window.handleImg          = () => window.showToast?.('Adjunto de imagen — migración pendiente', 'info');
+window.handleDocAttach    = () => window.showToast?.('Adjunto de documento — migración pendiente', 'info');
+window.handleAudioAttach  = () => window.showToast?.('Adjunto de audio — migración pendiente', 'info');
+window.handleDropDoc      = (e) => e.preventDefault();
+window.handleDocFile      = () => {};
+window.toggleRec          = () => window.showToast?.('Grabación de voz — migración pendiente', 'info');
+window.reenviarMensaje    = (msg) => { const inp = document.getElementById('input-' + state.curChat); if (inp) inp.value = msg; };
+</script>
+
+<!-- ══════════════════════════════════════════════
+     ADMIN TOOLS OVERLAY (pantalla completa)
+══════════════════════════════════════════════ -->
+<div class="admin-overlay" id="admin-overlay">
+
+  <!-- Header navy -->
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <div class="admin-header-icon">⚙️</div>
+      <div>
+        <h2>Herramientas de Administración</h2>
+        <div class="admin-header-sub">Sekunet Agent · Base de conocimiento, Documentos e Inventario</div>
+      </div>
+    </div>
+    <button class="admin-close" onclick="closeAdminTools()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Volver al agente
+    </button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Sidebar de navegación -->
+    <div class="admin-sidebar">
+      <div class="admin-sidebar-section">Contenido</div>
+      <button class="admin-nav-btn active" onclick="showAdminSection('admin-docs',this)">
+        <span class="anb-icon">📄</span>
+        <span>Documentos</span>
+        <span class="anb-count" id="count-docs">0</span>
+      </button>
+      <button class="admin-nav-btn" onclick="showAdminSection('admin-train',this)">
+        <span class="anb-icon">🧠</span>
+        <span>Entrenamiento</span>
+        <span class="anb-count" id="count-train">0</span>
+      </button>
+      <button class="admin-nav-btn" onclick="showAdminSection('admin-inventario',this)">
+        <span class="anb-icon">📦</span>
+        <span>Inventario</span>
+        <span class="anb-count" id="count-inv">0</span>
+      </button>
+      <div class="admin-sidebar-section" style="margin-top:auto">Sistema</div>
+      <button class="admin-nav-btn" onclick="showAdminSection('admin-config',this)">
+        <span class="anb-icon">🔧</span>
+        <span>Configuración IA</span>
+      </button>
+    </div>
+
+    <!-- Área de contenido -->
+    <div class="admin-content">
+
+      <!-- ── Documentos ── -->
+      <div class="admin-section active" id="admin-docs">
+        <div class="admin-section-inner">
+          <div class="admin-sh">
+            <div>
+              <div class="admin-sh-title">Documentos</div>
+              <div class="admin-sh-meta">Manuales técnicos indexados con RAG para consulta del agente</div>
+            </div>
+            <div class="admin-sh-actions">
+              <button class="m-btn-primary" style="padding:9px 18px;border-radius:8px;font-size:13px" onclick="openModal('doc-modal')">+ Subir documento</button>
+            </div>
+          </div>
+          <div class="admin-grid">
+            <div class="admin-card" onclick="openModal('doc-modal')">
+              <div class="admin-card-icon">📄</div>
+              <div class="admin-card-title">Subir Manual / PDF</div>
+              <div class="admin-card-desc">PDF, Word o texto. Se indexa para RAG y alimenta el conocimiento técnico del agente.</div>
+            </div>
+          </div>
+          <div class="admin-items-hd">
+            <span class="admin-items-title">Documentos cargados</span>
+            <span class="admin-items-count" id="count-docs-2">0 docs</span>
+          </div>
+          <div id="admin-docs-list"></div>
+        </div>
+      </div>
+
+      <!-- ── Entrenamiento ── -->
+      <div class="admin-section" id="admin-train">
+        <div class="admin-section-inner">
+          <div class="admin-sh">
+            <div>
+              <div class="admin-sh-title">Entrenamiento</div>
+              <div class="admin-sh-meta">Base de conocimiento Q&A para respuestas precisas del agente</div>
+            </div>
+            <div class="admin-sh-actions">
+              <button class="m-btn-primary" style="padding:9px 18px;border-radius:8px;font-size:13px" onclick="openTrainModal()">+ Agregar conocimiento</button>
+            </div>
+          </div>
+          <div class="admin-grid">
+            <div class="admin-card" onclick="openTrainModal()">
+              <div class="admin-card-icon">🧠</div>
+              <div class="admin-card-title">Nuevo conocimiento</div>
+              <div class="admin-card-desc">Crear par pregunta–respuesta para entrenar al agente en situaciones específicas.</div>
+            </div>
+          </div>
+          <div class="admin-items-hd">
+            <span class="admin-items-title">Base de conocimiento</span>
+            <span class="admin-items-count" id="count-train-2">0 registros</span>
+          </div>
+          <div id="admin-train-list"></div>
+        </div>
+      </div>
+
+      <!-- ── Inventario ── -->
+      <div class="admin-section" id="admin-inventario">
+        <div class="admin-section-inner">
+          <div class="admin-sh">
+            <div>
+              <div class="admin-sh-title">Inventario</div>
+              <div class="admin-sh-meta">Productos, equipos y materiales SEKUNET disponibles</div>
+            </div>
+            <div class="admin-sh-actions">
+              <button class="m-btn-sec" style="padding:9px 18px;border-radius:8px;font-size:13px" onclick="document.getElementById('admin-inventario-csv').click()">Importar CSV</button>
+              <button class="m-btn-primary" style="padding:9px 18px;border-radius:8px;font-size:13px" onclick="openModal('inventario-modal')">+ Agregar producto</button>
+            </div>
+          </div>
+          <input type="file" id="admin-inventario-csv" accept=".csv,.xlsx,.xls" style="display:none">
+          <div class="admin-items-hd">
+            <span class="admin-items-title">Productos en inventario</span>
+            <span class="admin-items-count" id="count-inv-2">0 productos</span>
+          </div>
+          <div id="admin-inventario-list"></div>
+        </div>
+      </div>
+
+      <!-- ── Configuración IA ── -->
+      <div class="admin-section" id="admin-config">
+        <div class="admin-section-inner">
+          <div class="admin-sh">
+            <div>
+              <div class="admin-sh-title">Configuración IA</div>
+              <div class="admin-sh-meta">Ajustes del modelo Gemini y parámetros de generación</div>
+            </div>
+          </div>
+          <div style="max-width:480px;display:flex;flex-direction:column;gap:18px">
+            <div>
+              <label class="m-label">Modelo Gemini</label>
+              <select class="m-input" id="aj-model" style="cursor:pointer">
+                <option value="0">Gemini 2.5 Flash — Rápido y eficiente</option>
+                <option value="1">Gemini 2.5 Flash Lite — Ultra rápido</option>
+                <option value="2">Gemini 2.5 Pro — Máxima capacidad</option>
+              </select>
+            </div>
+            <div>
+              <label class="m-label">Temperature <span style="font-size:11px;color:var(--text-light);text-transform:none;letter-spacing:0">(0 = preciso · 1 = creativo)</span></label>
+              <input class="m-input" type="number" id="aj-temp" min="0" max="1" step="0.05" value="0.4">
+            </div>
+            <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+              <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-mute);margin-bottom:8px">Versión del sistema</div>
+              <div style="font-size:14px;color:var(--text)">Sekunet Agent <strong>v2.0</strong></div>
+              <div style="font-size:12px;color:var(--text-mute);margin-top:3px">Supabase + Gemini 2.5 · Edge Functions</div>
+            </div>
+            <button class="m-btn-primary" style="border-radius:8px;padding:12px 24px;width:fit-content" onclick="saveAjustesHandler()">Guardar configuración</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+function togglePerfilMenu() {
+  const dd = document.getElementById('perfil-dropdown');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('perfil-menu-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    const dd = document.getElementById('perfil-dropdown');
+    if (dd) dd.style.display = 'none';
+  }
+});
+
+// ─── LOGIN / REGISTRO ─────────────────────────────────────────────────────
+function showLoginTab(tab) {
+  const fl = document.getElementById('form-login');
+  const fr = document.getElementById('form-register');
+  const tl = document.getElementById('tab-login');
+  const tr = document.getElementById('tab-register');
+  if (tab === 'login') {
+    fl.style.display = 'block'; fr.style.display = 'none';
+    tl.style.background = 'var(--navy)'; tl.style.color = '#fff';
+    tr.style.background = 'var(--bg)'; tr.style.color = 'var(--text)';
+  } else {
+    fl.style.display = 'none'; fr.style.display = 'block';
+    tr.style.background = 'var(--navy)'; tr.style.color = '#fff';
+    tl.style.background = 'var(--bg)'; tl.style.color = 'var(--text)';
+  }
+}
+
+function validateLoginForm() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const btn   = document.getElementById('login-btn');
+  btn.disabled = !(email && pass.length >= 8);
+}
+
+function validateRegForm() {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const apellido = document.getElementById('reg-apellido').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const btn      = document.getElementById('reg-btn');
+  btn.disabled = !(nombre && apellido && email && pass.length >= 8);
+}
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Conectando…';
+  try {
+    const ok = await doLogin(email, pass);
+    if (ok) {
+      document.getElementById('apikey-screen').style.display = 'none';
+      window.dispatchEvent(new Event('sekunet:login-ok'));
+    } else {
+      errEl.textContent = 'Credenciales incorrectas. Verificá email y contraseña.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Error de conexión: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Ingresar al sistema →';
+}
+
+async function handleRegister() {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const apellido = document.getElementById('reg-apellido').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const errEl    = document.getElementById('reg-error');
+  const btn      = document.getElementById('reg-btn');
+  errEl.style.display = 'none';
+
+  if (!nombre || !apellido) {
+    errEl.textContent = 'Nombre y apellido son obligatorios.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!email.includes('@')) {
+    errEl.textContent = 'Ingresá un email válido.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (pass.length < 8) {
+    errEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creando cuenta…';
+  try {
+    const ok = await doRegister(email, pass, nombre, apellido);
+    if (ok) {
+      showLoginTab('login');
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-pass').focus();
+    } else {
+      errEl.textContent = 'No se pudo crear la cuenta. Intentá de nuevo.';
+      errEl.style.display = 'block';
+    }
+  } catch (e) {
+    errEl.textContent = 'Error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Crear cuenta →';
+}
+</script>
+</body>
+</html>

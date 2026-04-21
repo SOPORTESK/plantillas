@@ -1,0 +1,114 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- MIGRACIÓN 003: USUARIOS EXISTENTES → SUPABASE AUTH
+-- 
+-- INSTRUCCIONES:
+--   1. Abrí Supabase Dashboard → SQL Editor
+--   2. Ejecutá el bloque A primero (ver usuarios actuales)
+--   3. Luego ejecutá el bloque B por cada usuario que quieras migrar
+--   4. Finalmente ejecutá el bloque C (limpieza)
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- ─── BLOQUE A: VER USUARIOS ACTUALES EN sek_agent_config ─────────────────────
+-- Ejecutá esto primero para ver qué usuarios hay que migrar.
+-- (Solo lectura, no modifica nada)
+
+SELECT email, nombre, apellido, rol, created_at
+FROM sek_agent_config
+ORDER BY created_at;
+
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- BLOQUE B: CREAR USUARIO EN AUTH + PERFIL
+-- ═══════════════════════════════════════════════════════════════════════════
+--
+-- Ejecutá este bloque UNA VEZ POR USUARIO.
+-- Reemplazá los valores entre << >> con los datos reales.
+--
+-- IMPORTANTE: La contraseña que ponés acá ES TEMPORAL.
+--             El usuario deberá cambiarla en su primer login.
+--
+-- ─── EJEMPLO: cbatista@sekunet.com ──────────────────────────────────────────
+
+DO $$
+DECLARE
+  v_uid uuid;
+BEGIN
+  -- 1. Crear el usuario en auth.users
+  --    (requiere que la función auth.create_user exista — siempre existe en Supabase)
+  INSERT INTO auth.users (
+    id,
+    instance_id,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    role,
+    aud,
+    created_at,
+    updated_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    is_super_admin,
+    confirmation_token,
+    email_change,
+    email_change_token_new,
+    recovery_token
+  )
+  VALUES (
+    gen_random_uuid(),                              -- id
+    '00000000-0000-0000-0000-000000000000',         -- instance_id (siempre este valor en Supabase hosted)
+    'cbatista@sekunet.com',                         -- << EMAIL DEL AGENTE >>
+    crypt('Sekunet2025!', gen_salt('bf')),          -- << CONTRASEÑA TEMPORAL >>
+    now(),                                          -- email_confirmed_at (ya confirmado)
+    'authenticated',
+    'authenticated',
+    now(),
+    now(),
+    '{"provider":"email","providers":["email"]}',
+    '{}',
+    false,
+    '',
+    '',
+    '',
+    ''
+  )
+  ON CONFLICT (email) DO NOTHING
+  RETURNING id INTO v_uid;
+
+  -- 2. Asegurarse que el perfil existe en sek_agent_config
+  --    (si ya existe, lo actualiza; si no, lo inserta)
+  INSERT INTO sek_agent_config (email, nombre, apellido, rol, created_at)
+  VALUES (
+    'cbatista@sekunet.com',                         -- << EMAIL >>
+    'Cristian',                                     -- << NOMBRE >>
+    'Batista',                                      -- << APELLIDO >>
+    'superadmin',                                   -- << ROL: superadmin | admin | tecnico >>
+    now()
+  )
+  ON CONFLICT (email)
+  DO UPDATE SET
+    nombre   = EXCLUDED.nombre,
+    apellido = EXCLUDED.apellido,
+    rol      = EXCLUDED.rol;
+
+  RAISE NOTICE 'Usuario % migrado con ID %', 'cbatista@sekunet.com', v_uid;
+END $$;
+
+
+-- ─── REPETIR BLOQUE B PARA CADA USUARIO ADICIONAL ────────────────────────────
+-- Copiá el bloque DO $$ ... END $$; de arriba y cambiá email, nombre, apellido, rol y contraseña.
+
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- BLOQUE C: VERIFICACIÓN FINAL
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Ejecutá al final para confirmar que todo quedó bien.
+
+SELECT
+  au.email,
+  au.email_confirmed_at IS NOT NULL AS auth_ok,
+  ac.nombre,
+  ac.apellido,
+  ac.rol
+FROM auth.users au
+LEFT JOIN sek_agent_config ac ON ac.email = au.email
+ORDER BY au.created_at DESC;

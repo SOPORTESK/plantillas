@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Simulacro — Alerta N2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 30px;
+  }
+
+  /* ── Overlay de alerta ── */
+  .alert-overlay {
+    position: fixed; inset: 0;
+    background: rgba(29,78,216,.08);
+    pointer-events: none;
+    animation: flashOverlay 1s ease 3;
+    z-index: 0;
+  }
+  @keyframes flashOverlay {
+    0%,100% { background: rgba(29,78,216,.0); }
+    50%      { background: rgba(29,78,216,.18); }
+  }
+
+  .panel {
+    width: 420px;
+    background: #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 60px rgba(59,130,246,.25), 0 2px 20px rgba(0,0,0,.6);
+    position: relative;
+    z-index: 1;
+    animation: panelPop .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes panelPop {
+    from { transform: scale(.92); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  /* ── Barra de modo IA ── */
+  .modo-ia-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #1e3a5f;
+    border-bottom: 1px solid #3b82f6;
+    font-size: 13px;
+    color: #93c5fd;
+    font-weight: 700;
+  }
+  .ia-resume-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #3b82f6;
+    background: transparent;
+    color: #93c5fd;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .ia-resume-btn:hover { background: #1d4ed8; color: #fff; }
+
+  /* ── Card N2 ── */
+  .n2-card {
+    background: linear-gradient(135deg, #0f2d4a 0%, #1e3a5f 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    margin: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 30px rgba(59,130,246,.5);
+    animation: slideIn .5s cubic-bezier(.34,1.56,.64,1), glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform:translateY(-16px) scale(.96); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 4px 20px rgba(59,130,246,.3); }
+    50%     { box-shadow: 0 4px 40px rgba(59,130,246,.7); }
+  }
+
+  .n2-header {
+    background: linear-gradient(90deg,#1d4ed8,#2563eb);
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .n2-header .icon { font-size: 22px; animation: bell .5s ease infinite alternate; display:inline-block; }
+  @keyframes bell {
+    from { transform: rotate(-18deg) scale(1.1); }
+    to   { transform: rotate(18deg)  scale(1.1); }
+  }
+  /* badge parpadeante */
+  .n2-badge {
+    display:inline-flex;align-items:center;gap:5px;
+    background:#ef4444;color:#fff;
+    font-size:10px;font-weight:800;letter-spacing:.5px;
+    padding:3px 10px;border-radius:20px;
+    animation: badgePulse 1s ease infinite;
+  }
+  @keyframes badgePulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%     { opacity:.7; transform:scale(.95); }
+  }
+  .n2-header .title {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .5px;
+  }
+  .n2-header .time {
+    margin-left: auto;
+    color: #bfdbfe;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .n2-body {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+  }
+  .n2-field-label {
+    color: #93c5fd;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: 3px;
+  }
+  .n2-field-value {
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .n2-field-value.ok   { color: #4ade80; }
+  .n2-field-value.warn { color: #f87171; }
+
+  .n2-footer {
+    padding: 10px 16px 14px;
+    font-size: 12px;
+    color: #94a3b8;
+    border-top: 1px solid #1e3a5f;
+    line-height: 1.5;
+  }
+  .n2-footer strong { color: #60a5fa; }
+
+  /* ── Chat simulado ── */
+  .chat-area {
+    padding: 14px 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .msg {
+    max-width: 80%;
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .msg.bot {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+  }
+  .msg.user {
+    background: #1d4ed8;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+  .msg-time {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+    padding: 0 4px;
+  }
+  .msg-time.right { text-align: right; }
+
+  .tag-n2 {
+    display: inline-block;
+    background: #1d4ed8;
+    color: #bfdbfe;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin: 4px 14px 8px;
+    letter-spacing: .3px;
+  }
+
+  .panel-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: #475569;
+    padding: 12px 14px 4px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="panel" id="panel">
+
+  <!-- Mensajes del chat -->
+  <div class="chat-area">
+    <div class="msg bot">Hola, soy Alejandra del equipo de soporte de SEKUNET. Para atenderle necesito algunos datos: ¿me puede indicar su nombre, teléfono y el equipo que tiene?</div>
+    <div class="msg-time">14:28</div>
+
+    <div class="msg user">Juan Pérez, 8888-1234, tengo una cámara Hikvision DS-2</div>
+    <div class="msg-time right">14:29</div>
+
+    <div class="msg bot">Gracias Juan. Veo que su cámara no está grabando. ¿Podría indicarme qué mensaje aparece en el NVR?</div>
+    <div class="msg-time">14:30</div>
+
+    <div class="msg user">No sé cómo ver eso, no entiendo nada de esto</div>
+    <div class="msg-time right">14:31</div>
+
+    <div class="msg bot">Entiendo, no se preocupe. Para poder brindarle la mejor asistencia en este caso, ¿le gustaría que le transfiriera con uno de nuestros asesores especializados de Nivel 2?</div>
+    <div class="msg-time">14:32</div>
+
+    <div class="msg user">Sí por favor</div>
+    <div class="msg-time right">14:32</div>
+
+    <div class="msg bot">Perfecto, en un momento le atiende uno de nuestros asesores especializados. ¡Que tenga un excelente día!</div>
+    <div class="msg-time">14:32</div>
+  </div>
+
+  <span class="tag-n2">🔔 Transferido a N2 · 14:32</span>
+
+  <!-- Barra modo IA -->
+  <div class="modo-ia-bar">
+    <span>🔴 IA finalizada en este caso</span>
+    <button class="ia-resume-btn">▶ Reanudar IA</button>
+  </div>
+
+  <!-- Panel notas internas -->
+  <div class="panel-label">Notas internas</div>
+
+  <!-- Card N2 -->
+  <div class="n2-card">
+    <div class="n2-header">
+      <span class="icon">🔔</span>
+      <span class="title">TRANSFERENCIA A NIVEL 2</span>
+      <span class="n2-badge">● URGENTE</span>
+      <span class="time" style="margin-left:auto">14:32</span>
+    </div>
+    <div class="n2-body">
+      <div>
+        <div class="n2-field-label">Cliente</div>
+        <div class="n2-field-value">Juan Pérez</div>
+      </div>
+      <div>
+        <div class="n2-field-label">Teléfono</div>
+        <div class="n2-field-value">+506 8888-1234</div>
+      </div>
+      <div>
+        <div class="n2-field-label">Equipo</div>
+        <div class="n2-field-value">Hikvision DS-2</div>
+      </div>
+      <div>
+        <div class="n2-field-label">Asignado a</div>
+        <div class="n2-field-value ok">✓ Carlos Mora</div>
+      </div>
+    </div>
+    <div class="n2-footer">
+      El cliente aceptó la transferencia. La IA finalizó su participación.
+      Use <strong>"▶ Reanudar IA"</strong> si necesita reactivarla.
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Audio context — se crea/desbloquea en el primer gesto ──────────────────
+let _ctx = null;
+let _alertaLanzada = false;
+
+function _getCtx() {
+  if (!_ctx) _ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ctx.state === 'suspended') _ctx.resume();
+  return _ctx;
+}
+
+function _beep(freq, start, dur, vol = 0.45) {
+  const ctx  = _getCtx();
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+  gain.gain.setValueAtTime(0,   ctx.currentTime + start);
+  gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + start + 0.02);
+  gain.gain.linearRampToValueAtTime(0,   ctx.currentTime + start + dur);
+  osc.start(ctx.currentTime + start);
+  osc.stop(ctx.currentTime  + start + dur + 0.05);
+}
+
+function _sonarAlerta() {
+  _beep(660,  0.0,  0.18);
+  _beep(880,  0.22, 0.18);
+  _beep(1100, 0.44, 0.28);
+  _beep(660,  0.90, 0.14, 0.28);
+  _beep(880,  1.08, 0.14, 0.28);
+  _beep(1100, 1.26, 0.22, 0.28);
+}
+
+// ── Notificación del sistema operativo ────────────────────────────────────
+function _notificarOS() {
+  if (!('Notification' in window)) return;
+  const show = () => new Notification('🔔 TRANSFERENCIA A NIVEL 2', {
+    body: 'Juan Pérez aceptó ser atendido por un asesor N2.\nAgente asignado: Carlos Mora',
+    icon: 'logo.png',
+    requireInteraction: true,
+  });
+  if (Notification.permission === 'granted') { show(); }
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(p => { if (p === 'granted') show(); });
+  }
+}
+
+// ── Lanzar alerta completa ─────────────────────────────────────────────────
+function lanzarAlerta() {
+  if (_alertaLanzada) return;
+  _alertaLanzada = true;
+  _sonarAlerta();
+  _notificarOS();
+  document.body.style.animation = 'flashBg .5s ease 4';
+}
+
+// ── Desbloquear audio en primer gesto del usuario ─────────────────────────
+// (mousemove, keydown, touchstart cuentan como gesto)
+let _gestoDone = false;
+function _onGesto() {
+  if (_gestoDone) return;
+  _gestoDone = true;
+  _getCtx(); // desbloquear contexto
+  document.removeEventListener('mousemove', _onGesto);
+  document.removeEventListener('keydown',   _onGesto);
+  document.removeEventListener('touchstart',_onGesto);
+  // Lanzar alerta 1.5s después del primer gesto
+  setTimeout(lanzarAlerta, 1500);
+}
+document.addEventListener('mousemove',  _onGesto);
+document.addEventListener('keydown',    _onGesto);
+document.addEventListener('touchstart', _onGesto);
+// Fallback: si el usuario no mueve el mouse, lanzar a los 3s igual (sin sonido)
+setTimeout(() => {
+  if (!_alertaLanzada) {
+    _alertaLanzada = true;
+    document.body.style.animation = 'flashBg .5s ease 4';
+  }
+}, 3000);
+</script>
+<style>
+@keyframes flashBg {
+  0%,100% { background: #0f172a; }
+  50%     { background: #0c2340; }
+}
+</style>
+</body>
+</html>

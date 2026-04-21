@@ -1,0 +1,473 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE PREMIUM — SEKUNET
+   Diseño mobile-first inspirado en WhatsApp Business / Intercom / Zendesk
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Hamburger button — oculto en desktop ──────────────────────────────── */
+.hamburger-btn {
+  display:none;
+  background:transparent;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  padding:10px;
+  margin-right:2px;
+  border-radius:12px;
+  transition:background .2s, transform .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.hamburger-btn:hover { background:rgba(255,255,255,.12); }
+.hamburger-btn:active { transform:scale(.9); }
+
+/* ── Safe area para dispositivos con notch ──────────────────────────────── */
+@supports (padding-top: env(safe-area-inset-top)) {
+  header { padding-top:env(safe-area-inset-top); }
+  .input { padding-bottom:calc(12px + env(safe-area-inset-bottom)); }
+  .toast { bottom:calc(12px + env(safe-area-inset-bottom)); }
+  .sb-aside { top:calc(56px + env(safe-area-inset-top)); }
+  .sb-overlay { top:calc(56px + env(safe-area-inset-top)); }
+}
+
+/* ══ TABLET (≤1024px) ═══════════════════════════════════════════════════════ */
+@media (max-width:1024px) {
+  .info-panel, #info-panel { display:none !important; }
+  .sb-aside { width:300px; }
+  .body { padding:20px 20px; }
+  .ch-h { padding:14px 20px; }
+  .input { padding:10px 16px 14px; }
+  .admin-sidebar { width:210px; }
+  .admin-section-inner { padding:22px 22px; }
+}
+
+/* ══ MÓVIL (≤768px) ═════════════════════════════════════════════════════════ */
+@media (max-width:768px) {
+
+  /* ── Hamburger visible ───────────────────────────────────────────────── */
+  .hamburger-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* ── Header premium — glassmorphism ──────────────────────────────────── */
+  header {
+    height:56px;
+    padding:0 12px;
+    backdrop-filter:blur(20px) saturate(1.5);
+    -webkit-backdrop-filter:blur(20px) saturate(1.5);
+    background:rgba(8,48,128,.92);
+    box-shadow:0 1px 0 rgba(255,255,255,.06), 0 4px 20px rgba(0,0,0,.25);
+  }
+  .logo-area img { height:36px; }
+  .logo-sub { font-size:10px; padding-left:8px; margin-left:8px; letter-spacing:.08em; }
+  .header-btn-group { display:none; }
+  .header-right { gap:3px; }
+  .icon-btn-h { padding:6px 8px; min-height:34px; }
+  .agt-status-cur { padding:4px 10px; font-size:11px; }
+  .online-agent-dot { width:28px; height:28px; font-size:10px; }
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  .layout { flex-direction:column; position:relative; }
+
+  /* ── Sidebar — slide-in con spring animation ─────────────────────────── */
+  .sb-aside {
+    position:fixed;
+    top:56px;
+    left:0;
+    bottom:0;
+    width:88vw;
+    max-width:380px;
+    z-index:1000;
+    transform:translateX(-100%);
+    transition:transform .32s cubic-bezier(.32,1.2,.5,1);
+    box-shadow:none;
+    will-change:transform;
+  }
+  .sb-aside.open {
+    transform:translateX(0);
+    box-shadow:8px 0 40px rgba(0,0,0,.28), 2px 0 8px rgba(0,0,0,.12);
+  }
+
+  /* Sidebar internos premium */
+  .sb-head { padding:12px 14px 10px; }
+  .sb-new {
+    border-radius:14px;
+    padding:13px 14px;
+    font-size:14px;
+    box-shadow:0 2px 8px rgba(8,48,128,.2);
+  }
+  .sb-nav { padding:6px 10px; }
+  .sb-nav button { padding:10px 12px; border-radius:12px; font-size:13px; min-height:42px; }
+  .sb-case { padding:10px 12px; border-radius:12px; margin-bottom:3px; }
+  .sb-case .t { font-size:13px; }
+  .sb-case .m { font-size:11px; }
+  .sb-admin-btn { border-radius:12px; font-size:12px; }
+
+  /* ── Overlay sidebar — fade con blur ─────────────────────────────────── */
+  .sb-overlay {
+    position:fixed;
+    inset:0;
+    top:56px;
+    background:rgba(0,0,0,0);
+    backdrop-filter:blur(0px);
+    -webkit-backdrop-filter:blur(0px);
+    z-index:999;
+    pointer-events:none;
+    transition:background .3s, backdrop-filter .3s;
+  }
+  .sb-overlay.open {
+    display:block;
+    pointer-events:auto;
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
+
+  /* Panel info oculto */
+  .info-panel, #info-panel { display:none !important; }
+
+  /* ── Chat area — full screen experience ──────────────────────────────── */
+  .main, main { min-width:0; width:100%; }
+  .chat-area { flex-direction:column; }
+  .chat-col { min-width:0; }
+
+  /* Chat header compacto con línea inferior sutil */
+  .ch-h {
+    padding:10px 16px;
+    border-bottom:none;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .ch-h h1 { font-size:15px; letter-spacing:-.01em; }
+  .ch-h .s { font-size:11px; }
+
+  /* Tabs — estilo pill moderno */
+  .chat-tabs {
+    padding:8px 12px 6px;
+    gap:4px;
+    background:var(--surface);
+    border-bottom:none;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .chat-tab {
+    padding:9px 18px;
+    font-size:11px;
+    border-radius:10px;
+    border-bottom:none;
+    min-height:38px;
+    letter-spacing:.08em;
+    transition:all .2s cubic-bezier(.4,0,.2,1);
+  }
+  .chat-tab.active-cliente {
+    background:var(--orange);
+    color:#fff;
+    box-shadow:0 2px 8px rgba(184,84,0,.3);
+  }
+  .chat-tab.active-tecnico {
+    background:var(--blue);
+    color:#fff;
+    box-shadow:0 2px 8px rgba(20,71,196,.3);
+  }
+
+  /* ── Mensajes — burbujas premium ─────────────────────────────────────── */
+  .body {
+    padding:16px 14px;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+  }
+  .msg-group { gap:8px; margin-bottom:14px; }
+  .av { width:32px; height:32px; font-size:11px; }
+  .mh .n { font-size:13px; }
+  .mh .t { font-size:11px; }
+
+  .bubble-user {
+    max-width:85%;
+    padding:11px 16px;
+    font-size:14px;
+    line-height:1.55;
+    border-radius:20px 20px 4px 20px;
+    box-shadow:0 1px 4px rgba(37,99,235,.15);
+  }
+  .bubble-ia {
+    max-width:92%;
+    padding:14px 18px;
+    font-size:14px;
+    line-height:1.6;
+    border-radius:4px 20px 20px 20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+    border:none;
+    background:var(--surface);
+  }
+
+  /* Typing indicator más sutil */
+  .typing-wrap {
+    border-radius:20px;
+    padding:12px 18px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+
+  /* Source badges compactos */
+  .src-badges { gap:4px; margin-bottom:8px; }
+  .src-badge { font-size:10px; padding:3px 8px; }
+
+  /* Suggestions compactas */
+  .sug-card { padding:12px 14px; border-radius:12px; }
+  .sug-text { font-size:14px; line-height:1.55; }
+
+  /* ── Input area — premium floating style ─────────────────────────────── */
+  .input {
+    padding:8px 12px 12px;
+    border-top:none;
+    background:var(--bg);
+    box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  }
+  .ibox {
+    padding:10px 14px;
+    border-radius:16px;
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+    transition:border-color .2s, box-shadow .2s, transform .15s;
+  }
+  .ibox:focus-within {
+    border-color:var(--orange);
+    box-shadow:0 0 0 3px var(--orange-bg), 0 4px 16px rgba(184,84,0,.1);
+    transform:translateY(-1px);
+  }
+  .ibox textarea {
+    font-size:15px;
+    min-height:42px;
+    max-height:120px;
+    line-height:1.5;
+  }
+  .iact { gap:5px; }
+  .ib, .icon-btn {
+    width:38px;
+    height:38px;
+    border-radius:10px;
+  }
+  .send-btn {
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    box-shadow:0 3px 12px rgba(184,84,0,.3);
+  }
+  .send-btn:active { transform:scale(.92); }
+  .hint { display:none; }
+
+  /* Attach bar */
+  .attach-bar { margin-bottom:6px; }
+  .attach-chip { font-size:11px; padding:4px 10px; border-radius:16px; }
+
+  /* ── Modales — bottom sheet style ────────────────────────────────────── */
+  .modal-ov { padding:0; align-items:flex-end; }
+  .modal-box {
+    padding:24px 20px 28px;
+    border-radius:24px 24px 0 0;
+    max-height:90vh;
+    max-width:100%;
+    width:100%;
+    box-shadow:0 -8px 40px rgba(0,0,0,.2);
+    transform:translateY(100%);
+    animation:none;
+  }
+  .modal-ov.open .modal-box {
+    transform:translateY(0);
+    transition:transform .35s cubic-bezier(.32,1.2,.5,1);
+  }
+  .m-title { font-size:22px; margin-bottom:4px; }
+  .m-sub { font-size:13px; margin-bottom:18px; }
+  .m-btns { flex-direction:column-reverse; gap:8px; }
+  .m-btn-primary, .m-btn-sec, .m-btn-green, .m-btn {
+    padding:14px;
+    font-size:15px;
+    border-radius:14px;
+    min-height:48px;
+  }
+  .m-input {
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:16px;
+  }
+  .m-textarea {
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:15px;
+    min-height:90px;
+  }
+
+  /* ── Admin overlay — mobile native feel ──────────────────────────────── */
+  .admin-header { height:52px; padding:0 14px; }
+  .admin-header h2 { font-size:15px; }
+  .admin-header-sub { display:none; }
+  .admin-close { height:32px; padding:0 12px; font-size:12px; border-radius:10px; }
+  .admin-body { flex-direction:column; }
+  .admin-sidebar {
+    width:100%;
+    flex-direction:row;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:10px 12px;
+    gap:6px;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .admin-sidebar::-webkit-scrollbar { display:none; }
+  .admin-sidebar-section { display:none; }
+  .admin-nav-btn {
+    flex-shrink:0;
+    padding:9px 14px;
+    font-size:12px;
+    white-space:nowrap;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--bg);
+  }
+  .admin-nav-btn.active {
+    border-color:var(--navy);
+    box-shadow:0 2px 8px rgba(8,48,128,.15);
+  }
+  .admin-nav-btn .anb-icon { width:26px; height:26px; font-size:13px; border-radius:7px; }
+  .admin-nav-btn .anb-count { font-size:10px; }
+  .admin-section-inner { padding:18px 14px; }
+  .admin-grid { grid-template-columns:1fr; gap:10px; }
+  .admin-card { padding:18px 16px; border-radius:16px; }
+  .admin-item { padding:12px 14px; border-radius:12px; }
+  .admin-sh { flex-direction:column; align-items:flex-start; gap:12px; }
+  .admin-sh-title { font-size:20px; }
+
+  /* ── Empty state — limpio ────────────────────────────────────────────── */
+  .empty-wrap { padding:24px 20px; gap:14px; }
+  .empty-glow { width:64px; height:64px; border-radius:18px; font-size:28px; }
+  .empty-title { font-size:22px; }
+  .empty-sub { font-size:13px; max-width:100%; }
+  .quick-btns { grid-template-columns:1fr; gap:8px; }
+  .quick-btn { padding:12px 14px; border-radius:14px; font-size:13px; }
+  .quick-btn strong { font-size:10px; }
+
+  /* ── Toast — premium floating ────────────────────────────────────────── */
+  .toast {
+    right:14px;
+    left:14px;
+    bottom:16px;
+    border-radius:16px;
+    padding:14px 18px;
+    font-size:13px;
+    box-shadow:0 8px 32px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.04);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+  }
+
+  /* ── Login screen — centrado elegante ────────────────────────────────── */
+  #apikey-screen { padding:16px; }
+  .ak-card {
+    padding:32px 22px;
+    border-radius:24px;
+    box-shadow:0 16px 48px rgba(0,0,0,.12);
+  }
+  .ak-title { font-size:26px; }
+  .ak-brand img { height:48px; }
+  .ak-btn {
+    padding:16px;
+    border-radius:14px;
+    font-size:14px;
+  }
+  .ak-input {
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:15px;
+  }
+
+  /* ── Conversaciones panel ────────────────────────────────────────────── */
+  .conv-search-box {
+    margin:10px 12px;
+    border-radius:14px;
+    padding:10px 14px;
+  }
+  .conv-filters { padding:6px 12px; gap:6px; }
+  .conv-filter { border-radius:10px; padding:5px 12px; font-size:11px; }
+  .conv-item { padding:10px 14px; }
+  .conv-title { font-size:14px; }
+  .conv-preview { font-size:12px; }
+  .conv-estado { font-size:9px; }
+
+  /* ── Stage bar — scroll suave ────────────────────────────────────────── */
+  .stage-bar {
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:6px 10px;
+  }
+  .stage-bar::-webkit-scrollbar { display:none; }
+  .stage-btn { font-size:10px; padding:6px 12px; border-radius:8px; }
+
+  /* ── Micro-interaction: tap feedback global ──────────────────────────── */
+  button:active, .sb-case:active, .conv-item:active, .quick-btn:active {
+    transform:scale(.97);
+    transition:transform .1s;
+  }
+}
+
+/* ══ MÓVIL PEQUEÑO (≤480px) ═════════════════════════════════════════════════ */
+@media (max-width:480px) {
+  header { padding:0 8px; }
+  .logo-sub { display:none; }
+  .logo-area img { height:32px; }
+
+  .sb-aside { width:92vw; max-width:none; }
+
+  .body { padding:12px 10px; }
+  .bubble-user {
+    max-width:90%;
+    font-size:13.5px;
+    padding:10px 14px;
+  }
+  .bubble-ia {
+    max-width:95%;
+    font-size:13.5px;
+    padding:13px 16px;
+  }
+
+  .ch-h { padding:8px 12px; }
+  .ch-h h1 { font-size:14px; }
+  .chat-tab { padding:8px 14px; font-size:10px; }
+
+  .modal-box {
+    padding:20px 16px 24px;
+    border-radius:20px 20px 0 0;
+  }
+  .m-title { font-size:20px; }
+  .m-input, .m-textarea { font-size:15px; }
+
+  /* Input extra compacto */
+  .input { padding:6px 8px 10px; }
+  .ibox { padding:8px 12px; border-radius:14px; }
+  .ibox textarea { font-size:14px; min-height:38px; }
+  .send-btn { width:40px; height:40px; }
+  .ib, .icon-btn { width:36px; height:36px; }
+
+  /* Login */
+  .ak-card { padding:24px 18px; border-radius:20px; }
+  .ak-title { font-size:22px; }
+
+  /* Admin */
+  .admin-section-inner { padding:14px 10px; }
+  .admin-card { padding:16px 14px; }
+}
+
+/* ══ LANDSCAPE MÓVIL ═══════════════════════════════════════════════════════ */
+@media (max-width:768px) and (orientation:landscape) {
+  header { height:48px; }
+  .logo-area img { height:30px; }
+  .hamburger-btn { padding:6px; }
+  .sb-aside { top:48px; }
+  .sb-overlay { top:48px; }
+  .body { padding:10px 14px; }
+  .msg-group { margin-bottom:10px; }
+  .bubble-user, .bubble-ia { font-size:13px; }
+  .input { padding:4px 10px 8px; }
+  .ibox textarea { min-height:32px; }
+  .chat-tabs { padding:4px 10px 2px; }
+  .chat-tab { padding:6px 14px; min-height:32px; }
+}
