@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-DmjKpsNU.js"></script>
+  <script type="module" crossorigin src="./assets/index-Cn9h7-7o.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-HdOH5vRR.css">
 </head>
 <body>
@@ -622,6 +622,9 @@
             </div>
           </div>
           <input type="file" id="admin-inventario-csv" accept=".csv,.xlsx,.xls" style="display:none">
+          <div style="padding:8px 0">
+            <input type="text" id="inventario-search" placeholder="🔍 Buscar por marca, modelo o descripción…" oninput="buscarInventario(this.value)" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg-secondary);color:var(--text-primary);outline:none">
+          </div>
           <div class="admin-items-hd">
             <span class="admin-items-title">Productos en inventario</span>
             <span class="admin-items-count" id="count-inv-2">0 productos</span>
