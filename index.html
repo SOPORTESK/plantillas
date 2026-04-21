@@ -770,7 +770,10 @@ async function handleRegister() {
   btn.textContent = 'Creando cuenta…';
   try {
     const ok = await doRegister(email, pass, nombre, apellido);
-    if (ok) {
+    if (ok === 'session') {
+      document.getElementById('apikey-screen').style.display = 'none';
+      window.dispatchEvent(new Event('sekunet:login-ok'));
+    } else if (ok) {
       showLoginTab('login');
       document.getElementById('login-email').value = email;
       document.getElementById('login-pass').value = '';
