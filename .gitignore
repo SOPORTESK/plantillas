@@ -1,0 +1,5 @@
+FIX/
+*.exe
+*.blockmap
+node_modules/
+.env
