@@ -368,6 +368,8 @@ Si mencionÃ¡s o recomendÃ¡s una descarga de firmware, software, aplicaciÃ³
 
 ${inv}
 
+${inv}
+
 PLANTILLAS DISPONIBLES:
 ${i||"(ninguna para esta etapa)"}`}function $o(t=[],e=null){const n=Ps(),s=Ls(t),r=e?`
 
