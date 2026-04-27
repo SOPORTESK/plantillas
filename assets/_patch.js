@@ -222,8 +222,9 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
   }
 
   // ── 8. Arranque ──────────────────────────────────────────────────────────
-  function _boot() {
-    if (!_patchLoadCase()) { setTimeout(_boot, 400); return; }
+  // _bootRT patches loadCase (retries until ready). _bootInactive runs always.
+  function _bootRT() {
+    if (!_patchLoadCase()) { setTimeout(_bootRT, 400); return; }
     console.log('[Premium v3] loadCase patched — WhatsApp-mode ON');
     setTimeout(() => {
       const state = window.getState && window.getState();
@@ -232,10 +233,15 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
         _subscribeCase(state.curCaseId);
       }
     }, 1500);
+  }
+
+  function _boot() {
+    // Inactivity check starts unconditionally — independent of loadCase patch
     setTimeout(() => {
       _checkInactive();
       setInterval(_checkInactive, 30000);
     }, 3000);
+    _bootRT();
   }
 
   _boot();
