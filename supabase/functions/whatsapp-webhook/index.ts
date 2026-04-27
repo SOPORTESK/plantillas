@@ -10,6 +10,10 @@ const ANON_KEY           = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 const db = createClient(SUPABASE_URL, SERVICE_KEY || ANON_KEY)
 
 const HORARIO_MSG = '¡Gracias por comunicarse con SEKUNET! Nuestro horario de atención es de lunes a viernes de 7:30 a.m. a 5:00 p.m. En cuanto estemos disponibles, con gusto le atendemos. 🙏'
+const INACTIVITY_CLOSE_MINUTES = 5
+const INACTIVITY_CLOSE_MSG = `⏱️ Por inactividad, su conversación anterior fue cerrada automáticamente.
+
+Con gusto le seguimos atendiendo. Por favor indíquenos nuevamente su consulta para abrir un nuevo caso.`
 
 const gs: Record<string, string> = {
   apertura:    'Apertura / Primer contacto',
@@ -33,6 +37,29 @@ interface ClienteData {
 }
 
 type Msg = { role: string; content: string; time: string }
+
+function getCaseLastActivityAt(caso: {
+  histcliente?: Msg[]
+  histtecnico?: Msg[]
+  updated_at?: string
+  created_at?: string
+}): Date {
+  const all = [...(caso.histcliente ?? []), ...(caso.histtecnico ?? [])]
+  const last = all.at(-1)?.time ?? caso.updated_at ?? caso.created_at ?? new Date(0).toISOString()
+  const d = new Date(last)
+  return Number.isNaN(d.getTime()) ? new Date(0) : d
+}
+
+function isCaseInactive(caso: {
+  histcliente?: Msg[]
+  histtecnico?: Msg[]
+  updated_at?: string
+  created_at?: string
+}): boolean {
+  const lastActivity = getCaseLastActivityAt(caso).getTime()
+  const elapsed = Date.now() - lastActivity
+  return elapsed > INACTIVITY_CLOSE_MINUTES * 60 * 1000
+}
 
 function isBusinessHours(): boolean {
   // Costa Rica = UTC-6, sin horario de verano
@@ -385,9 +412,19 @@ Deno.serve(async (req) => {
       .order('created_at', { ascending: false })
       .limit(50)
 
-    const caso = (casos ?? []).find(
+    let caso = (casos ?? []).find(
       (c: { cliente?: { telefono?: string } }) => c.cliente?.telefono === from
     )
+
+    if (caso && isCaseInactive(caso)) {
+      await sendWA(from, INACTIVITY_CLOSE_MSG)
+      await db.from('sek_cases').update({
+        estado: 'cerrado',
+        cat: 'cierre',
+        tags: [...new Set([...(caso.tags ?? []), 'auto_cierre_inactividad'])],
+      }).eq('id', caso.id)
+      caso = undefined
+    }
 
     const caseId   = caso?.id ?? crypto.randomUUID()
     const histPrev: Msg[] = caso?.histcliente ?? []
