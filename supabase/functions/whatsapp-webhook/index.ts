@@ -423,8 +423,12 @@ Deno.serve(async (req) => {
       return new Response('', { status: 200 })
     }
 
+    const _digits = (p: string) => p.replace(/\D/g, '').replace(/^506/, '')
     let caso = (casos ?? []).find(
-      (c: { cliente?: { telefono?: string } }) => c.cliente?.telefono === from
+      (c: { cliente?: { telefono?: string } }) => {
+        const t = c.cliente?.telefono ?? ''
+        return t === from || _digits(t) === _digits(from)
+      }
     )
 
     if (caso && isCaseInactive(caso)) {
@@ -493,6 +497,7 @@ Deno.serve(async (req) => {
     await sendWA(from, reply)
 
     const clienteActualizado = extractClienteData(rawReply, cliente)
+    clienteActualizado.telefono = from // always preserve canonical Twilio E.164 number
     const datosCompletos = !!(clienteActualizado.nombre && clienteActualizado.correo && clienteActualizado.cuenta)
     if (!datosCompletos && saludado) clienteActualizado.intentosDatos = (cliente.intentosDatos ?? 0) + 1
     else if (datosCompletos) clienteActualizado.intentosDatos = 0
