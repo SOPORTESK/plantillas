@@ -9,15 +9,15 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
 (function () {
   'use strict';
 
-  // ── 1. CSS ───────────────────────────────────────────────────────────────
+  // ── 1. CSS — solo #msgs-cliente, chat técnico sin tocar ─────────────────
   const _s = document.createElement('style');
   _s.textContent = [
-    '.msg-group:not(._seen){animation:_mi .22s cubic-bezier(.2,0,0,1) both}',
+    '#msgs-cliente .msg-group:not(._seen){animation:_mi .22s cubic-bezier(.2,0,0,1) both}',
     '@keyframes _mi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}',
-    '.msg-group._seen{animation:none!important;opacity:1!important;transform:none!important}',
-    '.date-separator{text-align:center;font-size:12px;margin:14px 0 6px;padding:4px 0;',
+    '#msgs-cliente .msg-group._seen{animation:none!important;opacity:1!important;transform:none!important}',
+    '#msgs-cliente .date-separator{text-align:center;font-size:12px;margin:14px 0 6px;padding:4px 0;',
     'background:rgba(0,0,0,.03);border-radius:4px;font-weight:600;letter-spacing:.3px}',
-    '.msg-time{font-size:11px;text-align:right;margin-top:4px;font-weight:500;opacity:.62}',
+    '#msgs-cliente .msg-time{font-size:11px;text-align:right;margin-top:4px;font-weight:500;opacity:.62}',
   ].join('');
   document.head.appendChild(_s);
 
@@ -132,10 +132,8 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     _busy = true;
     try {
       const cC = document.getElementById('msgs-cliente');
-      const cT = document.getElementById('msgs-tecnico');
-      // Cambio de caso: todos silenciados. Mismo caso: solo nuevos animan.
+      // Solo #msgs-cliente. El chat técnico no se toca.
       _markMessages(cC, state.chatHistoryCliente, caseId, !isSameCase);
-      _markMessages(cT, state.chatHistoryTecnico, caseId, !isSameCase);
       if (state.chatHistoryCliente) _applyTimestamps(cC, state.chatHistoryCliente);
       // Scroll al último mensaje solo en actualización del mismo caso
       if (isSameCase && cC) cC.scrollTop = cC.scrollHeight;
@@ -175,8 +173,8 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
   // ── 7. Arranque ──────────────────────────────────────────────────────────
   function _startObserver() {
     const cC = document.getElementById('msgs-cliente');
-    const cT = document.getElementById('msgs-tecnico');
-    if (!cC || !cT) { setTimeout(_startObserver, 400); return; }
+    if (!cC) { setTimeout(_startObserver, 400); return; }
+    const cT = document.getElementById('msgs-tecnico'); // solo para verificar que el UI cargó
 
     // Seed: marcar mensajes ya mostrados como vistos antes de arrancar el observer
     const state = window.getState && window.getState();
@@ -185,15 +183,12 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
       (state.chatHistoryCliente || []).forEach(m => {
         if (m.time) _seenKeys.add(state.curCaseId + ':' + m.time);
       });
-      (state.chatHistoryTecnico || []).forEach(m => {
-        if (m.time) _seenKeys.add(state.curCaseId + ':' + m.time);
-      });
       _subscribeCase(state.curCaseId);
     }
 
+    // Solo observamos msgs-cliente. El chat técnico queda 100% libre.
     const obs = new MutationObserver(_onMutation);
     obs.observe(cC, { childList: true });
-    obs.observe(cT, { childList: true });
     console.log('[Premium v5] MutationObserver activo — WhatsApp-mode ON');
   }
 
