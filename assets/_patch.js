@@ -110,14 +110,24 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
 
   function _onTechMutation(mutations) {
     if (_techBusy) return;
-    // Solo nos interesa cuando _o() vacía el chat (añade empty-wrap / .msg-group desde cero)
-    const cleared = mutations.some(m =>
-      Array.from(m.addedNodes).some(n =>
-        n.nodeType === 1 &&
-        (n.classList.contains('empty-wrap') || (n.id && n.id.startsWith('empty-')) || n.classList.contains('msg-group'))
-      )
-    );
-    if (!cleared) return;
+
+    // Re-render completo de _o(): siempre hay nodos ELIMINADOS (innerHTML='') + adiciones.
+    // Una adición pura (nuevo mensaje, typing indicator) NO tiene removals → no restaurar.
+    const hasRemovals = mutations.some(m => m.removedNodes.length > 0);
+
+    if (!hasRemovals) {
+      // Adición legítima (nuevo msg o indicador de escritura) → solo actualizar snapshot
+      const hasNewContent = mutations.some(m =>
+        Array.from(m.addedNodes).some(n =>
+          n.nodeType === 1 &&
+          (n.classList.contains('msg-group') || n.classList.contains('empty-wrap'))
+        )
+      );
+      if (hasNewContent) _snapTech();
+      return;
+    }
+
+    // Hay eliminaciones → _o() hizo un re-render completo → decidir si restaurar
     if (!_techSnap) { _snapTech(); return; }
 
     const state         = window.getState && window.getState();
@@ -126,13 +136,14 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     const currentCaseId = state && state.curCaseId;
 
     if (newLastTime === _techSnap.lastTime && currentCaseId === _techSnap.caseId) {
-      // histtecnico no cambió → fue un re-render por update del canal cliente → restaurar
+      // histtecnico no cambió → re-render causado por update del canal cliente → restaurar
       _techBusy = true;
       const el = document.getElementById('msgs-tecnico');
       if (el) { el.innerHTML = _techSnap.html; el.scrollTop = _techSnap.scrollTop; }
-      _techBusy = false;
+      // setTimeout(0): esperar a que el observer del propio restore se descarte antes de liberar
+      setTimeout(() => { _techBusy = false; }, 0);
     } else {
-      // histtecnico cambió (nuevo mensaje IA/técnico) → aceptar el render y actualizar snapshot
+      // histtecnico cambió (nuevo mensaje IA/técnico) → aceptar render y actualizar snapshot
       _snapTech();
     }
   }
