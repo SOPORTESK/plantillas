@@ -10,7 +10,7 @@ const ANON_KEY           = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
 const db = createClient(SUPABASE_URL, SERVICE_KEY || ANON_KEY)
 
 const HORARIO_MSG = '¡Gracias por comunicarse con SEKUNET! Nuestro horario de atención es de lunes a viernes de 7:30 a.m. a 5:00 p.m. En cuanto estemos disponibles, con gusto le atendemos. 🙏'
-const FALLBACK_MSG = 'Disculpe, tuve un problema técnico. Por favor intente de nuevo en un momento.'
+const FALLBACK_MSG = 'Disculpe la demora, estoy verificando la información con mi equipo. ¿Podría indicarme nuevamente su consulta, por favor?'
 const INACTIVITY_CLOSE_MINUTES = 5
 const INACTIVITY_CLOSE_MSG = `⏱️ Por inactividad, su conversación anterior fue cerrada automáticamente.
 
@@ -88,29 +88,59 @@ async function sendWA(to: string, body: string) {
 }
 
 async function callGemini(system: string, history: unknown[], userMsg: string): Promise<string> {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/gemini-proxy`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SERVICE_KEY || ANON_KEY}`,
-      'apikey': ANON_KEY,
-    },
-    body: JSON.stringify({
-      modelId: 'gemini-2.5-flash',
-      payload: {
-        system_instruction: { parts: [{ text: system }] },
-        contents: [...history, { role: 'user', parts: [{ text: userMsg }] }],
-        generationConfig: { maxOutputTokens: 2500, temperature: 0.4 },
-        tools: [{ google_search: {} }],
-      },
-    }),
-  })
-  const d = await res.json()
-  return (d?.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? '').join('').trim()
+  const doCall = async (): Promise<string> => {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 25000)
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/gemini-proxy`, {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SERVICE_KEY || ANON_KEY}`,
+          'apikey': ANON_KEY,
+        },
+        body: JSON.stringify({
+          modelId: 'gemini-2.5-flash',
+          payload: {
+            system_instruction: { parts: [{ text: system }] },
+            contents: [...history, { role: 'user', parts: [{ text: userMsg }] }],
+            generationConfig: { maxOutputTokens: 2500, temperature: 0.4 },
+            tools: [{ google_search: {} }],
+          },
+        }),
+      })
+      clearTimeout(timeout)
+      if (!res.ok) {
+        console.error('[whatsapp-webhook] Gemini proxy HTTP error:', res.status)
+        return ''
+      }
+      const d = await res.json()
+      const finishReason = d?.candidates?.[0]?.finishReason
+      if (finishReason && finishReason !== 'STOP' && finishReason !== 'MAX_TOKENS') {
+        console.error('[whatsapp-webhook] Gemini finish reason:', finishReason)
+      }
+      return (d?.candidates?.[0]?.content?.parts ?? []).map((p: { text?: string }) => p.text ?? '').join('').trim()
+    } catch (err) {
+      clearTimeout(timeout)
+      console.error('[whatsapp-webhook] callGemini fetch error:', err)
+      return ''
+    }
+  }
+
+  // Primer intento
+  let result = await doCall()
+  // Reintento si falló
+  if (!result) {
+    console.log('[whatsapp-webhook] Retrying Gemini call...')
+    result = await doCall()
+  }
+  return result
 }
 
 async function fetchKnowledge(): Promise<string> {
-  const { data } = await db.from('sek_train').select('q,a,cat,source').limit(12)
+  const { data, error } = await db.from('sek_train').select('q,a,cat,source').limit(500)
+  if (error) { console.error('[whatsapp-webhook] fetchKnowledge error:', error); return '' }
   if (!data || data.length === 0) return ''
   return '\n\nCONOCIMIENTO BASE:\n' +
     data.map((r: { source?: string; cat: string; q: string; a: string }) =>
@@ -119,7 +149,8 @@ async function fetchKnowledge(): Promise<string> {
 }
 
 async function fetchInventario(): Promise<string> {
-  const { data } = await db.from('sek_inventario').select('marca,modelo,categoria').limit(400)
+  const { data, error } = await db.from('sek_inventario').select('marca,modelo,categoria').limit(400)
+  if (error) { console.error('[whatsapp-webhook] fetchInventario error:', error); return '' }
   if (!data || data.length === 0) return ''
 
   // Group models by brand
@@ -158,6 +189,7 @@ function cleanReply(text: string): string {
     .replace(/\[R[123]\][^\n]*/gi, '')
     .replace(/\[PLANTILLAS\][^\n\r]*/gi, '')
     .replace(/\[TECNICO\][^\n\r]*/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
     .trim()
 }
 
@@ -167,7 +199,20 @@ function extractClienteData(raw: string, existing: ClienteData): ClienteData {
   const line = match[1]
   const get = (key: string) => { const m = line.match(new RegExp(key + '=([^;\\n\\r]*)'));return m ? m[1].trim() : undefined }
   const updated = { ...existing }
-  const nombre = get('nombre'); if (nombre  && !/^</.test(nombre))  updated.nombre  = nombre
+  const nombre = get('nombre')
+  if (nombre && !/^</.test(nombre)) {
+    const existingN = (existing.nombre ?? '').trim()
+    const newN = nombre.trim()
+    // If both parts are single words (e.g. existing="Luis", new="Maroto"), combine them
+    // instead of overwriting. This handles the case where the client gives first name
+    // in one message and last name in the next.
+    if (existingN && !existingN.includes(' ') && !newN.includes(' ')
+        && existingN.toLowerCase() !== newN.toLowerCase()) {
+      updated.nombre = `${existingN} ${newN}`
+    } else {
+      updated.nombre = newN
+    }
+  }
   const correo = get('correo'); if (correo  && !/^</.test(correo))  updated.correo  = correo
   const cuenta = get('cuenta'); if (cuenta  && !/^</.test(cuenta))  updated.cuenta  = cuenta
   const ticket = get('ticket'); if (ticket  && !/^</.test(ticket))  updated.ticket  = ticket
@@ -442,7 +487,7 @@ Deno.serve(async (req) => {
       return new Response('', { status: 200 })
     }
 
-    const _digits = (p: string) => p.replace(/\D/g, '').replace(/^506/, '')
+    const _digits = (p: string) => { const d = p.replace(/\D/g, ''); return d.length > 8 ? d.slice(-8) : d }
     let caso = (casos ?? []).find(
       (c: { cliente?: { telefono?: string } }) => {
         const t = c.cliente?.telefono ?? ''
@@ -525,7 +570,7 @@ Deno.serve(async (req) => {
 
     const estadoRaw = rawReply.match(/\[ESTADO:\s*([\w_]+)\]/i)?.[1]?.toLowerCase()
     const escalado  = /\[ESCALAR_HUMANO\]|\[ESCALAR_N2\]|\[ESCALAR_TICKET\]|\[ACEPTA_N2\]/i.test(rawReply)
-    const estado    = escalado ? 'escalado' : estadoRaw ?? 'en_proceso'
+    const estado    = escalado ? 'en_proceso' : estadoRaw ?? 'en_proceso'
     const prioridad = escalado ? 'alta' : (caso?.prioridad ?? 'normal')
     const tags: string[] = [...(caso?.tags ?? ['whatsapp'])]
     if (escalado && !tags.includes('N2')) tags.push('N2')
