@@ -111,23 +111,28 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
   function _onTechMutation(mutations) {
     if (_techBusy) return;
 
-    // Re-render completo de _o(): siempre hay nodos ELIMINADOS (innerHTML='') + adiciones.
-    // Una adición pura (nuevo mensaje, typing indicator) NO tiene removals → no restaurar.
-    const hasRemovals = mutations.some(m => m.removedNodes.length > 0);
+    // Distinción clave:
+    // · _o() wipe: clearChat() elimina los .msg-group existentes → wipedMessages=true
+    // · Acciones del usuario (botón, enviar, hideEmpty): solo elimina .empty-wrap, nunca .msg-group
+    const wipedMessages = mutations.some(m =>
+      Array.from(m.removedNodes).some(n =>
+        n.nodeType === 1 && n.classList.contains('msg-group')
+      )
+    );
 
-    if (!hasRemovals) {
-      // Adición legítima (nuevo msg o indicador de escritura) → solo actualizar snapshot
-      const hasNewContent = mutations.some(m =>
+    if (!wipedMessages) {
+      // Adición pura o eliminación de empty-wrap → interacción legítima → actualizar snapshot
+      const hasContent = mutations.some(m =>
         Array.from(m.addedNodes).some(n =>
           n.nodeType === 1 &&
           (n.classList.contains('msg-group') || n.classList.contains('empty-wrap'))
         )
       );
-      if (hasNewContent) _snapTech();
+      if (hasContent) _snapTech();
       return;
     }
 
-    // Hay eliminaciones → _o() hizo un re-render completo → decidir si restaurar
+    // Se eliminaron .msg-group → _o() hizo wipe → decidir si restaurar
     if (!_techSnap) { _snapTech(); return; }
 
     const state         = window.getState && window.getState();
@@ -136,14 +141,13 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     const currentCaseId = state && state.curCaseId;
 
     if (newLastTime === _techSnap.lastTime && currentCaseId === _techSnap.caseId) {
-      // histtecnico no cambió → re-render causado por update del canal cliente → restaurar
+      // histtecnico no cambió → wipe causado por update del canal cliente → restaurar
       _techBusy = true;
       const el = document.getElementById('msgs-tecnico');
       if (el) { el.innerHTML = _techSnap.html; el.scrollTop = _techSnap.scrollTop; }
-      // setTimeout(0): esperar a que el observer del propio restore se descarte antes de liberar
       setTimeout(() => { _techBusy = false; }, 0);
     } else {
-      // histtecnico cambió (nuevo mensaje IA/técnico) → aceptar render y actualizar snapshot
+      // histtecnico cambió o es otro caso → aceptar render y actualizar snapshot
       _snapTech();
     }
   }
@@ -183,6 +187,7 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     const isSameCase = caseId === _curCaseId;
     if (!isSameCase) {
       _curCaseId = caseId;
+      _techSnap = null; // invalidar snapshot al cambiar de caso
       _subscribeCase(caseId);
     }
 
