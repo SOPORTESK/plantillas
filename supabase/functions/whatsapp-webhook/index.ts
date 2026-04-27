@@ -119,10 +119,29 @@ async function fetchKnowledge(): Promise<string> {
 }
 
 async function fetchInventario(): Promise<string> {
-  const { data } = await db.from('sek_inventario').select('marca,modelo,categoria').limit(200)
+  const { data } = await db.from('sek_inventario').select('marca,modelo,categoria').limit(400)
   if (!data || data.length === 0) return ''
-  const marcas = [...new Set(data.map((r: { marca: string }) => r.marca))].join(', ')
-  return `\n📦 INVENTARIO SEKUNET — Marcas comercializadas: ${marcas}\nConsultá esta lista SIEMPRE antes de confirmar si una marca tiene soporte.\n`
+
+  // Group models by brand
+  const byBrand: Record<string, string[]> = {}
+  for (const r of data as { marca?: string; modelo?: string; categoria?: string }[]) {
+    const brand = (r.marca ?? '').trim()
+    if (!brand) continue
+    if (!byBrand[brand]) byBrand[brand] = []
+    const model = (r.modelo ?? '').trim()
+    if (model && !byBrand[brand].includes(model)) byBrand[brand].push(model)
+  }
+
+  const lines = Object.entries(byBrand).map(([brand, models]) => {
+    if (models.length === 0) return `• ${brand}`
+    return `• ${brand}: ${models.slice(0, 20).join(' | ')}`
+  })
+
+  return `\n📦 INVENTARIO SEKUNET — Equipos comercializados:\n${lines.join('\n')}\n
+⚠️ REGLA DE MATCHING OBLIGATORIA: Usá coincidencia PARCIAL e ignorá guiones, espacios y mayúsculas.
+Ejemplos: cliente dice "DS2CD2185" → buscá "DS-2CD2185"; "U7ProMax" → "U7 Pro Max"; "ax3" → "AX-3".
+Si el código base del modelo coincide parcialmente, considerá que la marca/modelo SÍ tiene soporte.
+Si hay duda entre soportado o no, preferí consultar antes de rechazar.\n`
 }
 
 function cleanReply(text: string): string {
