@@ -34,7 +34,7 @@ async function sendWA(to: string, body: string) {
   }
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`
   const auth = btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`)
-  await fetch(url, {
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Authorization': `Basic ${auth}`,
@@ -42,10 +42,14 @@ async function sendWA(to: string, body: string) {
     },
     body: new URLSearchParams({
       From: TWILIO_WA_FROM,
-      To: to,
+      To: `whatsapp:${to}`,
       Body: body,
     }),
   })
+  if (!res.ok) {
+    const err = await res.text()
+    console.error('[auto-close-inactive] sendWA Twilio error:', res.status, err)
+  }
 }
 
 Deno.serve(async () => {
@@ -104,7 +108,11 @@ Deno.serve(async () => {
 
       // Send WhatsApp message if it's a WhatsApp case
       if (caso.canal === 'whatsapp' && caso.cliente?.telefono) {
-        await sendWA(caso.cliente.telefono, INACTIVITY_CLOSE_MSG)
+        try {
+          await sendWA(caso.cliente.telefono, INACTIVITY_CLOSE_MSG)
+        } catch (err) {
+          console.error('[auto-close-inactive] Failed to send WhatsApp to', caso.cliente.telefono, err)
+        }
       }
 
       closedCount++

@@ -5,11 +5,12 @@ const TWILIO_AUTH_TOKEN  = Deno.env.get('TWILIO_AUTH_TOKEN')  ?? ''
 const TWILIO_WA_FROM     = Deno.env.get('TWILIO_WA_FROM')     ?? 'whatsapp:+14155238886'
 const SUPABASE_URL       = Deno.env.get('SUPABASE_URL')       ?? 'https://kzcyxeracvfxynddyjld.supabase.co'
 const SERVICE_KEY        = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-const ANON_KEY           = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Y3l4ZXJhY3ZmeHluZGR5amxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTE5NTQsImV4cCI6MjA5MTA4Nzk1NH0.DvEnK-g5rMxzFec4Fl3rJ5VDYVJ7-ua9ssqf3s-QKtU'
+const ANON_KEY           = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
 
 const db = createClient(SUPABASE_URL, SERVICE_KEY || ANON_KEY)
 
 const HORARIO_MSG = '¡Gracias por comunicarse con SEKUNET! Nuestro horario de atención es de lunes a viernes de 7:30 a.m. a 5:00 p.m. En cuanto estemos disponibles, con gusto le atendemos. 🙏'
+const FALLBACK_MSG = 'Disculpe, tuve un problema técnico. Por favor intente de nuevo en un momento.'
 const INACTIVITY_CLOSE_MINUTES = 5
 const INACTIVITY_CLOSE_MSG = `⏱️ Por inactividad, su conversación anterior fue cerrada automáticamente.
 
@@ -72,7 +73,7 @@ function isBusinessHours(): boolean {
 
 async function sendWA(to: string, body: string) {
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) return
-  await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
     method: 'POST',
     headers: {
       'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
@@ -80,6 +81,10 @@ async function sendWA(to: string, body: string) {
     },
     body: new URLSearchParams({ From: TWILIO_WA_FROM, To: `whatsapp:${to}`, Body: body }).toString(),
   })
+  if (!res.ok) {
+    const err = await res.text()
+    console.error('[whatsapp-webhook] sendWA Twilio error:', res.status, err)
+  }
 }
 
 async function callGemini(system: string, history: unknown[], userMsg: string): Promise<string> {
@@ -404,13 +409,19 @@ Deno.serve(async (req) => {
     }
 
     // Buscar caso WA activo
-    const { data: casos } = await db
+    const { data: casos, error: casosError } = await db
       .from('sek_cases')
       .select('*')
       .eq('canal', 'whatsapp')
       .not('estado', 'in', '("cerrado","resuelto")')
       .order('created_at', { ascending: false })
       .limit(50)
+
+    if (casosError) {
+      console.error('[whatsapp-webhook] Error fetching cases:', casosError)
+      await sendWA(from, FALLBACK_MSG)
+      return new Response('', { status: 200 })
+    }
 
     let caso = (casos ?? []).find(
       (c: { cliente?: { telefono?: string } }) => c.cliente?.telefono === from
@@ -435,14 +446,13 @@ Deno.serve(async (req) => {
     const histConMsg = [...histPrev, { role: 'user', content: text, time: new Date().toISOString() }]
 
     if (!caso) {
-      await db.from('sek_cases').insert({
+      const { error: insertError } = await db.from('sek_cases').insert({
         id: caseId, title: text.substring(0, 60), cat: 'apertura',
         date: new Date().toLocaleDateString('es-CR'), estado: 'nuevo',
         canal: 'whatsapp', prioridad: 'normal', cliente: { telefono: from },
         tags: ['whatsapp'], notasInternas: [], histcliente: histConMsg, histtecnico: [],
       })
-    } else {
-      await db.from('sek_cases').update({ histcliente: histConMsg }).eq('id', caseId)
+      if (insertError) console.error('[whatsapp-webhook] Error creating case:', insertError)
     }
 
     const [knowledge, inventario] = await Promise.all([fetchKnowledge(), fetchInventario()])
@@ -459,11 +469,13 @@ Deno.serve(async (req) => {
     )
     if (!rawReply) {
       console.error('[whatsapp-webhook] callGemini returned empty reply')
+      await sendWA(from, FALLBACK_MSG)
       return new Response('', { status: 200 })
     }
     const reply = cleanReply(rawReply)
     if (!reply) {
       console.error('[whatsapp-webhook] cleanReply produced empty string, raw:', rawReply.substring(0, 200))
+      await sendWA(from, FALLBACK_MSG)
       return new Response('', { status: 200 })
     }
 
@@ -485,11 +497,12 @@ Deno.serve(async (req) => {
 
     const histFinal = [...histConMsg, { role: 'assistant', content: rawReply, time: new Date().toISOString() }]
 
-    await db.from('sek_cases').update({
+    const { error: updateError } = await db.from('sek_cases').update({
       histcliente: histFinal,
       cliente: clienteActualizado,
       estado, prioridad, tags,
     }).eq('id', caseId)
+    if (updateError) console.error('[whatsapp-webhook] Error updating case:', updateError)
 
   } catch (err) {
     console.error('[whatsapp-webhook] error:', err)
