@@ -440,7 +440,18 @@ Deno.serve(async (req) => {
     const caseId   = caso?.id ?? crypto.randomUUID()
     const histPrev: Msg[] = caso?.histcliente ?? []
     const saludado = histPrev.some((m: Msg) => m.role === 'assistant')
-    const cliente: ClienteData = { telefono: from, ...(caso?.cliente ?? {}) }
+    let cliente: ClienteData = { telefono: from, ...(caso?.cliente ?? {}) }
+    // Race condition fix: second rapid message may arrive before first write completes.
+    // Recover client data from last assistant message in history as fallback.
+    if (!cliente.nombre) {
+      for (let i = histPrev.length - 1; i >= 0; i--) {
+        if (histPrev[i].role === 'assistant') {
+          const recovered = extractClienteData(histPrev[i].content, cliente)
+          if (recovered.nombre) Object.assign(cliente, recovered)
+          break
+        }
+      }
+    }
     const curStage = caso?.cat ?? 'apertura'
 
     const histConMsg = [...histPrev, { role: 'user', content: text, time: new Date().toISOString() }]
