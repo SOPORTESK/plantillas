@@ -17,7 +17,31 @@ const MIME = {
 }
 
 http.createServer((req, res) => {
-  const filePath = path.join(ROOT, req.url === '/' ? 'index.html' : req.url)
+  // Decodificar URL y quitar query string
+  const url = decodeURIComponent(req.url.split('?')[0])
+
+  // Si es raíz, servir index.html
+  if (url === '/') {
+    const filePath = path.join(ROOT, 'index.html')
+    fs.readFile(filePath, (err, data) => {
+      if (err) { res.writeHead(404); res.end('Not found'); return }
+      res.writeHead(200, { 'Content-Type': 'text/html' })
+      res.end(data)
+    })
+    return
+  }
+
+  // Normalizar y prevenir path traversal
+  const safe = path.normalize(url)
+  const filePath = path.join(ROOT, safe)
+
+  // Verificar que la ruta resuelta esté dentro del directorio raíz
+  if (!filePath.startsWith(ROOT)) {
+    res.writeHead(403)
+    res.end('Forbidden')
+    return
+  }
+
   fs.readFile(filePath, (err, data) => {
     if (err) { res.writeHead(404); res.end('Not found'); return }
     const ct = MIME[path.extname(filePath)] || 'text/plain'

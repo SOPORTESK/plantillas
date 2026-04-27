@@ -1,3 +1,5 @@
+import { createClient } from 'npm:@supabase/supabase-js@2'
+
 const TWILIO_ACCOUNT_SID = Deno.env.get('TWILIO_ACCOUNT_SID') ?? ''
 const TWILIO_AUTH_TOKEN  = Deno.env.get('TWILIO_AUTH_TOKEN')  ?? ''
 const TWILIO_WA_FROM     = Deno.env.get('TWILIO_WA_FROM')     ?? 'whatsapp:+14155238886'
@@ -16,6 +18,22 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 })
 
   try {
+    // ── Fix #7: Verificar autenticación JWT ──────────────────────────────
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...CORS, 'Content-Type': 'application/json' },
+      })
+    }
+    const token = authHeader.replace('Bearer ', '')
+    const sb = createClient(SUPABASE_URL, ANON_KEY)
+    const { data: { user }, error: authError } = await sb.auth.getUser(token)
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+        status: 401, headers: { ...CORS, 'Content-Type': 'application/json' },
+      })
+    }
+
     const { to, body, caseId, agente } = await req.json()
     if (!to || !body) {
       return new Response(JSON.stringify({ error: 'to and body required' }), {
@@ -63,6 +81,7 @@ Deno.serve(async (req) => {
               time: new Date().toISOString(),
               agente: agente ?? 'Agente',
             }]
+            // Fix #3: Solo actualizar historial, NO sobrescribir el estado del caso
             const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/sek_cases?id=eq.${encodeURIComponent(caseId)}`, {
               method: 'PATCH',
               headers: {
@@ -71,7 +90,7 @@ Deno.serve(async (req) => {
                 'Content-Type': 'application/json',
                 'Prefer': 'return=minimal',
               },
-              body: JSON.stringify({ histcliente: hist, estado: 'en_proceso' }),
+              body: JSON.stringify({ histcliente: hist }),
             })
             if (!patchRes.ok) {
               console.error('[send-wa] Supabase PATCH failed:', patchRes.status)
