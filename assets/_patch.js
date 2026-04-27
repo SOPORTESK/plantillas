@@ -5,11 +5,11 @@ if(typeof y==='undefined')window.y=function(){};
 async function _processDocFile(file){const ext=file.name.split('.').pop().toLowerCase();const dz=document.getElementById('drop-zone');const ta=document.getElementById('doc-content');const ni=document.getElementById('doc-name');if(ni&&!ni.value.trim())ni.value=file.name.replace(/\.[^.]+$/,'');if(dz)dz.innerHTML='<span class="dz-icon">...</span><strong>Leyendo '+C(file.name)+'...</strong>';try{let text='';if(ext==='txt'||ext==='md'||ext==='csv'){text=await file.text();}else if(ext==='docx'||ext==='doc'){if(typeof mammoth==='undefined'){y('Error: mammoth no disponible','err');if(dz)dz.innerHTML='<span class="dz-icon">doc</span><strong>Arrasta o hace clic para seleccionar</strong>';return;}const ab=await file.arrayBuffer();const res=await mammoth.extractRawText({arrayBuffer:ab});text=res.value||'';}else if(ext==='pdf'){y('Para PDF: abri el PDF, selecciona todo (Ctrl+A), copialo y pegalo en el area de texto.','info',7000);if(dz)dz.innerHTML='<span class="dz-icon">doc</span><strong>Arrasta o hace clic para seleccionar</strong> PDF - Word - Texto';return;}else{try{text=await file.text();}catch{y('Formato no reconocido. Pega el contenido manualmente.','err');if(dz)dz.innerHTML='<span class="dz-icon">doc</span><strong>Arrasta o hace clic</strong>';return;}}if(!text.trim()){y('No se pudo extraer texto del archivo','err');if(dz)dz.innerHTML='<span class="dz-icon">doc</span><strong>Arrasta o hace clic</strong>';return;}if(ta)ta.value=text.substring(0,10000);if(dz)dz.innerHTML='<span class="dz-icon">OK</span><strong>'+C(file.name)+' - '+text.length.toLocaleString()+' caracteres cargados</strong>';y('Archivo cargado - revisa el contenido y guarda','ok',4000);}catch(err){y('Error leyendo archivo: '+(err.message||err),'err');if(dz)dz.innerHTML='<span class="dz-icon">doc</span><strong>Arrasta o hace clic</strong>';}}
 window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getElementById('drop-zone');if(dz)dz.classList.remove('drag');var f=t.dataTransfer&&t.dataTransfer.files&&t.dataTransfer.files[0];if(f)await _processDocFile(f);};window.handleDocFile=async function(e){var f=e&&e.target&&e.target.files&&e.target.files[0];if(f)await _processDocFile(f);if(e&&e.target)e.target.value='';};
 
-// ===== SEKUNET PREMIUM RT v6 — MutationObserver (intercepta _o() interno) =====
+// ===== SEKUNET PREMIUM RT v7 — solo msgs-cliente, técnico sin tocar =====
 (function () {
   'use strict';
 
-  // ── 1. CSS — solo #msgs-cliente, chat técnico sin tocar ─────────────────
+  // ── 1. CSS — solo #msgs-cliente ──────────────────────────────────────────
   const _s = document.createElement('style');
   _s.textContent = [
     '#msgs-cliente .msg-group:not(._seen){animation:_mi .22s cubic-bezier(.2,0,0,1) both}',
@@ -21,7 +21,7 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
   ].join('');
   document.head.appendChild(_s);
 
-  // ── 2. Notificaciones de escritorio ─────────────────────────────────────
+  // ── 2. Notificaciones de escritorio ──────────────────────────────────────
   if (window.isSecureContext && typeof Notification !== 'undefined' && Notification.permission === 'default') {
     Notification.requestPermission();
   }
@@ -75,82 +75,14 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     });
   }
 
-  // ── 5. MutationObserver — anti-parpadeo sin depender de window.loadCase ───
-  // La app llama _o() directo desde cases-live, sin pasar por window.loadCase.
-  // El único punto de intercepción fiable es el DOM mismo.
-  //
-  // Estrategia:
-  //  • Observamos childList en msgs-cliente y msgs-tecnico.
-  //  • Cuando el chat se re-renderiza, el observer llama a _onMutation().
-  //  • Comparamos cada mensaje contra _seenKeys (Set de "caseId:msgTime").
-  //  • Mensajes ya vistos → ._seen (sin animación).
-  //  • Mensajes nuevos  → sin ._seen (slide-in CSS).
-  //  • Cambio de caso   → todos marcados ._seen (no queremos 20 slides a la vez).
+  // ── 5. MutationObserver — solo msgs-cliente ──────────────────────────────
+  // msgs-tecnico NO se toca: la app ya renderiza correctamente histtecnico
+  // en msgs-tecnico e histcliente en msgs-cliente. Intervenir con snapshot/restore
+  // sobreescribía el render correcto con contenido potencialmente desactualizado.
 
   const _seenKeys = new Set(); // "caseId:msgTime"
   let _curCaseId  = null;
-  let _busy       = false;   // re-entry guard (applyTimestamps inserta nodos)
-
-  // ── Tech chat snapshot (para restaurar cuando _o() hace wipe por update de cliente) ──
-  let _techSnap = null; // { html, scrollTop, lastTime, caseId }
-  let _techBusy = false;
-
-  function _snapTech() {
-    const el = document.getElementById('msgs-tecnico');
-    if (!el) return;
-    const state = window.getState && window.getState();
-    const hist  = (state && state.chatHistoryTecnico) || [];
-    _techSnap = {
-      html:      el.innerHTML,
-      scrollTop: el.scrollTop,
-      lastTime:  (hist.length ? hist[hist.length - 1].time : null),
-      caseId:    state && state.curCaseId,
-    };
-  }
-
-  function _onTechMutation(mutations) {
-    if (_techBusy) return;
-
-    // Distinción clave:
-    // · _o() wipe: clearChat() elimina los .msg-group existentes → wipedMessages=true
-    // · Acciones del usuario (botón, enviar, hideEmpty): solo elimina .empty-wrap, nunca .msg-group
-    const wipedMessages = mutations.some(m =>
-      Array.from(m.removedNodes).some(n =>
-        n.nodeType === 1 && n.classList.contains('msg-group')
-      )
-    );
-
-    if (!wipedMessages) {
-      // Adición pura o eliminación de empty-wrap → interacción legítima → actualizar snapshot
-      const hasContent = mutations.some(m =>
-        Array.from(m.addedNodes).some(n =>
-          n.nodeType === 1 &&
-          (n.classList.contains('msg-group') || n.classList.contains('empty-wrap'))
-        )
-      );
-      if (hasContent) _snapTech();
-      return;
-    }
-
-    // Se eliminaron .msg-group → _o() hizo wipe → decidir si restaurar
-    if (!_techSnap) { _snapTech(); return; }
-
-    const state         = window.getState && window.getState();
-    const hist          = (state && state.chatHistoryTecnico) || [];
-    const newLastTime   = hist.length ? hist[hist.length - 1].time : null;
-    const currentCaseId = state && state.curCaseId;
-
-    if (newLastTime === _techSnap.lastTime && currentCaseId === _techSnap.caseId) {
-      // histtecnico no cambió → wipe causado por update del canal cliente → restaurar
-      _techBusy = true;
-      const el = document.getElementById('msgs-tecnico');
-      if (el) { el.innerHTML = _techSnap.html; el.scrollTop = _techSnap.scrollTop; }
-      setTimeout(() => { _techBusy = false; }, 0);
-    } else {
-      // histtecnico cambió o es otro caso → aceptar render y actualizar snapshot
-      _snapTech();
-    }
-  }
+  let _busy       = false;
 
   function _markMessages(container, hist, caseId, forceAllSeen) {
     if (!container || !hist) return;
@@ -162,16 +94,13 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
         b.classList.add('_seen');
         _seenKeys.add(key);
       } else {
-        _seenKeys.add(key); // marca como visto para la próxima vez
-        // sin ._seen → la animación CSS se activa
+        _seenKeys.add(key);
       }
     });
   }
 
   function _onMutation(mutations) {
     if (_busy) return;
-    // Solo nos interesa cuando se agregan .msg-group o .empty-wrap (re-render del chat).
-    // Ignoramos .date-separator y .msg-time que agrega _applyTimestamps.
     const relevant = mutations.some(m =>
       Array.from(m.addedNodes).some(n =>
         n.nodeType === 1 &&
@@ -187,17 +116,14 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
     const isSameCase = caseId === _curCaseId;
     if (!isSameCase) {
       _curCaseId = caseId;
-      _techSnap = null; // invalidar snapshot al cambiar de caso
       _subscribeCase(caseId);
     }
 
     _busy = true;
     try {
       const cC = document.getElementById('msgs-cliente');
-      // Solo #msgs-cliente. El chat técnico no se toca.
       _markMessages(cC, state.chatHistoryCliente, caseId, !isSameCase);
       if (state.chatHistoryCliente) _applyTimestamps(cC, state.chatHistoryCliente);
-      // Scroll al último mensaje solo en actualización del mismo caso
       if (isSameCase && cC) cC.scrollTop = cC.scrollHeight;
     } finally {
       _busy = false;
@@ -236,9 +162,7 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
   function _startObserver() {
     const cC = document.getElementById('msgs-cliente');
     if (!cC) { setTimeout(_startObserver, 400); return; }
-    const cT = document.getElementById('msgs-tecnico'); // solo para verificar que el UI cargó
 
-    // Seed: marcar mensajes ya mostrados como vistos antes de arrancar el observer
     const state = window.getState && window.getState();
     if (state && state.curCaseId) {
       _curCaseId = state.curCaseId;
@@ -248,19 +172,10 @@ window.handleDropDoc=async function(t){t.preventDefault();var dz=document.getEle
       _subscribeCase(state.curCaseId);
     }
 
-    // Observer cliente: anti-parpadeo + timestamps + scroll
     const obs = new MutationObserver(_onMutation);
     obs.observe(cC, { childList: true });
 
-    // Observer técnico: snapshot/restore para independencia total del chat IA
-    const cT2 = document.getElementById('msgs-tecnico');
-    if (cT2) {
-      const techObs = new MutationObserver(_onTechMutation);
-      techObs.observe(cT2, { childList: true });
-      setTimeout(_snapTech, 500); // captura estado inicial tras renderizado
-    }
-
-    console.log('[Premium v6] MutationObservers activos — cliente antiflicker + técnico independiente');
+    console.log('[Premium v7] Observer activo — msgs-cliente antiflicker, msgs-tecnico libre');
   }
 
   setTimeout(_startObserver, 1500);
