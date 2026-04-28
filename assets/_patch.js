@@ -837,24 +837,11 @@ window.handleDocFile=async function(e){
       min-width: 16px;
       text-align: center;
     }
-    .sb-nav button {
-      position: relative;
-    }
     .sb-nav button.active {
       background: var(--sidebar-active) !important;
-      color: var(--sidebar-text) !important;
+      color: #fff !important;
+      box-shadow: inset 3px 0 #93c5fd !important;
       font-weight: 700;
-    }
-    .sb-nav button.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 60%;
-      background: var(--primary);
-      border-radius: 0 3px 3px 0;
     }
     .n2-item {
       padding: 10px 12px;
