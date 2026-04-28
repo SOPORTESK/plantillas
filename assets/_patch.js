@@ -815,3 +815,247 @@ window.handleDocFile=async function(e){
   document.addEventListener('DOMContentLoaded', ()=>setTimeout(_applyInfoPanelByChat, 120));
   setTimeout(_applyInfoPanelByChat, 250);
 })();
+
+// ===== NUEVOS PANELES: CASOS N2 Y MIS CHATS =====
+(function() {
+  // CSS styles
+  const styles = document.createElement('style');
+  styles.textContent = `
+    .sb-nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 12px;
+    }
+    .sb-badge {
+      margin-left: auto;
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      min-width: 16px;
+      text-align: center;
+    }
+    .sb-panel .sb-sec {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+    .n2-item {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: var(--bg);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .n2-item:hover {
+      border-color: var(--primary);
+    }
+    .n2-item.active {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+    .n2-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .n2-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .n2-estado {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .n2-estado.nuevo { background: var(--blue-bg); color: var(--blue); }
+    .n2-estado.en_proceso { background: var(--orange-bg); color: var(--orange); }
+    .n2-estado.resuelto { background: var(--green-bg); color: var(--green); }
+    .n2-estado.cerrado { background: var(--gray-bg); color: var(--text-light); }
+    .n2-meta {
+      font-size: 11px;
+      color: var(--text-light);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .n2-preview {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  `;
+  document.head.appendChild(styles);
+
+  // Helper: get case activity timestamp
+  function _getCaseTs(c) {
+    const ts = [];
+    (c.histcliente || []).forEach(m => ts.push(new Date(m.time || 0).getTime()));
+    (c.histtecnico || []).forEach(m => ts.push(new Date(m.time || 0).getTime()));
+    ts.push(new Date(c.updated_at || 0).getTime());
+    ts.push(new Date(c.createdAt || c.created_at || 0).getTime());
+    return ts.length ? Math.max(...ts) : 0;
+  }
+
+  // Render N2 cases
+  window.renderN2Cases = function() {
+    const container = document.getElementById('n2-cases-list');
+    if (!container) return;
+
+    const state = window.getState ? window.getState() : null;
+    const cases = state ? state.cases || [] : [];
+
+    // Filter N2 cases
+    const n2Cases = cases.filter(c => (c.tags || []).includes('N2'));
+
+    if (!n2Cases.length) {
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">Sin casos escalados a N2</div>';
+      return;
+    }
+
+    // Sort by activity
+    n2Cases.sort((a, b) => _getCaseTs(b) - _getCaseTs(a));
+
+    container.innerHTML = n2Cases.map(c => {
+      const isActive = state && c.id === state.curCaseId;
+      const lastMsg = (c.histcliente || []).filter(m => m.role === 'user').pop();
+      const preview = lastMsg ? (lastMsg.content || '').substring(0, 80) : '';
+
+      return `
+        <div class="n2-item ${isActive ? 'active' : ''}" onclick="loadCase('${c.id}')">
+          <div class="n2-header">
+            <div class="n2-title">${(c.title || 'Sin título').substring(0, 40)}</div>
+            <div class="n2-estado ${c.estado || 'nuevo'}">${c.estado || 'nuevo'}</div>
+          </div>
+          <div class="n2-meta">
+            <span>${c.canal || 'web'}</span>
+            <span>${c.prioridad || 'normal'}</span>
+          </div>
+          ${preview ? `<div class="n2-preview">${preview}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  };
+
+  // Render Mis Chats
+  window.renderMisChats = function() {
+    const container = document.getElementById('mischats-list');
+    if (!container) return;
+
+    const state = window.getState ? window.getState() : null;
+    const cases = state ? state.cases || [] : [];
+    const agent = state ? state.currentAgent : null;
+
+    if (!agent) {
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">Agente no identificado</div>';
+      return;
+    }
+
+    // Filter cases where current agent has participated
+    const myCases = cases.filter(c => {
+      // Check internal notes
+      const hasNote = (c.notasInternas || []).some(n => n.agente === agent.nombre || n.agente === agent.email);
+      // Check messages where agente field matches
+      const hasMsg = (c.histcliente || []).some(m => m.agente === agent.nombre || m.agente === agent.email);
+      return hasNote || hasMsg;
+    });
+
+    if (!myCases.length) {
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-light);font-size:12px">No tienes chats asignados</div>';
+      return;
+    }
+
+    // Sort by activity
+    myCases.sort((a, b) => _getCaseTs(b) - _getCaseTs(a));
+
+    container.innerHTML = myCases.map(c => {
+      const isActive = state && c.id === state.curCaseId;
+      const lastMsg = (c.histcliente || []).filter(m => m.role === 'user').pop();
+      const preview = lastMsg ? (lastMsg.content || '').substring(0, 80) : '';
+
+      return `
+        <div class="n2-item ${isActive ? 'active' : ''}" onclick="loadCase('${c.id}')">
+          <div class="n2-header">
+            <div class="n2-title">${(c.title || 'Sin título').substring(0, 40)}</div>
+            <div class="n2-estado ${c.estado || 'nuevo'}">${c.estado || 'nuevo'}</div>
+          </div>
+          <div class="n2-meta">
+            <span>${c.canal || 'web'}</span>
+          </div>
+          ${preview ? `<div class="n2-preview">${preview}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  };
+
+  // Update badges
+  window.updateSidebarBadges = function() {
+    const state = window.getState ? window.getState() : null;
+    const cases = state ? state.cases || [] : [];
+    const agent = state ? state.currentAgent : null;
+
+    const n2Count = cases.filter(c => (c.tags || []).includes('N2')).length;
+    const myChatsCount = agent ? cases.filter(c => {
+      const hasNote = (c.notasInternas || []).some(n => n.agente === agent.nombre || n.agente === agent.email);
+      const hasMsg = (c.histcliente || []).some(m => m.agente === agent.nombre || m.agente === agent.email);
+      return hasNote || hasMsg;
+    }).length : 0;
+
+    const badgeN2 = document.getElementById('badge-n2');
+    const badgeMisChats = document.getElementById('badge-mischats');
+
+    if (badgeN2) badgeN2.textContent = n2Count;
+    if (badgeMisChats) badgeMisChats.textContent = myChatsCount;
+  };
+
+  // Wrap showPanel to trigger renders
+  const origShowPanel = window.showPanel;
+  if (typeof origShowPanel === 'function') {
+    window.showPanel = function(panelName) {
+      origShowPanel.apply(this, arguments);
+      if (panelName === 'n2') {
+        setTimeout(window.renderN2Cases, 50);
+      } else if (panelName === 'mischats') {
+        setTimeout(window.renderMisChats, 50);
+      }
+    };
+  }
+
+  // Polling for updates
+  setInterval(() => {
+    window.updateSidebarBadges();
+    const activePanel = document.querySelector('.sb-nav button.active');
+    if (activePanel) {
+      const panelName = activePanel.getAttribute('data-panel');
+      if (panelName === 'n2') window.renderN2Cases();
+      if (panelName === 'mischats') window.renderMisChats();
+    }
+  }, 5000);
+
+  // Initial render
+  window.addEventListener('sekunet:login-ok', () => {
+    setTimeout(() => {
+      window.updateSidebarBadges();
+    }, 1000);
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      window.updateSidebarBadges();
+    }, 2000);
+  });
+})();
