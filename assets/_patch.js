@@ -837,15 +837,6 @@ window.handleDocFile=async function(e){
       min-width: 16px;
       text-align: center;
     }
-    .sb-panel .sb-sec {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-      padding: 0 4px;
-    }
     .n2-item {
       padding: 10px 12px;
       border: 1px solid var(--border);
