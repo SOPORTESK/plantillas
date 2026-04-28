@@ -8,7 +8,8 @@ const TWILIO_WA_FROM = Deno.env.get('TWILIO_WA_FROM') ?? 'whatsapp:+14155238886'
 
 const db = createClient(SUPABASE_URL, SERVICE_KEY)
 
-const INACTIVITY_CLOSE_MINUTES = 5
+const INACTIVITY_CLOSE_MINUTES = 5;
+const DISABLE_AUTO_CLOSE = false; // set false to re‑enable auto‑close
 const INACTIVITY_CLOSE_MSG = `⏱️ Por inactividad, su conversación anterior fue cerrada automáticamente.
 
 Con gusto le seguimos atendiendo. Por favor indíquenos nuevamente su consulta para abrir un nuevo caso.`
@@ -79,7 +80,7 @@ Deno.serve(async () => {
     const lastActivity = getCaseLastActivity(caso).getTime()
     const elapsed = now - lastActivity
 
-    if (elapsed > inactiveThreshold) {
+    if (!DISABLE_AUTO_CLOSE && elapsed > inactiveThreshold) {
       console.log(`[auto-close-inactive] Closing case ${caso.id} (inactive for ${Math.round(elapsed / 60000)} minutes)`)
 
       // Add closure message to history

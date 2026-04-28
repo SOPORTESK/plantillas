@@ -87,10 +87,84 @@ async function sendWA(to: string, body: string) {
   }
 }
 
-async function callGemini(system: string, history: unknown[], userMsg: string): Promise<string> {
+// ── Media helpers ──────────────────────────────────────────────────────────
+interface TwilioMedia {
+  url: string
+  contentType: string
+}
+
+function parseTwilioMedia(params: URLSearchParams): TwilioMedia[] {
+  const n = parseInt(params.get('NumMedia') ?? '0', 10)
+  const out: TwilioMedia[] = []
+  for (let i = 0; i < n; i++) {
+    const url = params.get(`MediaUrl${i}`) ?? ''
+    const ct  = params.get(`MediaContentType${i}`) ?? ''
+    if (url) out.push({ url, contentType: ct })
+  }
+  return out
+}
+
+async function downloadMedia(media: TwilioMedia): Promise<{ base64: string; mime: string } | null> {
+  try {
+    const res = await fetch(media.url, {
+      headers: TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN
+        ? { 'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`) }
+        : {},
+    })
+    if (!res.ok) { console.error('[whatsapp-webhook] media download failed:', res.status); return null }
+    const buf = await res.arrayBuffer()
+    // Limit: ~15MB for inline_data
+    if (buf.byteLength > 15 * 1024 * 1024) {
+      console.warn('[whatsapp-webhook] media too large, skipping:', buf.byteLength)
+      return null
+    }
+    const bytes = new Uint8Array(buf)
+    let binary = ''
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
+    return { base64: btoa(binary), mime: media.contentType || 'application/octet-stream' }
+  } catch (err) {
+    console.error('[whatsapp-webhook] downloadMedia error:', err)
+    return null
+  }
+}
+
+function mediaCategory(ct: string): 'image' | 'video' | 'audio' | 'other' {
+  if (ct.startsWith('image/')) return 'image'
+  if (ct.startsWith('video/')) return 'video'
+  if (ct.startsWith('audio/')) return 'audio'
+  return 'other'
+}
+
+function buildUserParts(text: string, mediaList: TwilioMedia[], downloaded: ({ base64: string; mime: string } | null)[]): unknown[] {
+  const parts: unknown[] = []
+  // Add inline media
+  for (let i = 0; i < mediaList.length; i++) {
+    const dl = downloaded[i]
+    if (!dl) continue
+    const cat = mediaCategory(mediaList[i].contentType)
+    parts.push({ inline_data: { mime_type: dl.mime, data: dl.base64 } })
+    // Add context label so model knows what it's looking at
+    if (cat === 'video') {
+      parts.push({ text: '[VIDEO enviado por el cliente vía WhatsApp. Analizá el contenido visual: equipos, pantallas, LEDs, cables, errores visibles. Respondé con diagnóstico + pasos.]' })
+    } else if (cat === 'image') {
+      parts.push({ text: '[IMAGEN enviada por el cliente vía WhatsApp. Analizá lo que se ve: equipos, pantallas, LEDs, cables, texto en pantalla, errores. Respondé con diagnóstico + pasos.]' })
+    } else if (cat === 'audio') {
+      parts.push({ text: '[AUDIO enviado por el cliente vía WhatsApp. Escuchá y transcribí el contenido. Respondé según lo que el cliente dice o los sonidos que se escuchan.]' })
+    }
+  }
+  // Add text (or a fallback if media-only)
+  if (text) {
+    parts.push({ text })
+  } else if (parts.length > 0) {
+    parts.push({ text: 'El cliente envió este archivo. Analizalo y respondé con diagnóstico técnico y pasos de resolución si aplica.' })
+  }
+  return parts
+}
+
+async function callGemini(system: string, history: unknown[], userParts: unknown[]): Promise<string> {
   const doCall = async (): Promise<string> => {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 25000)
+    const timeout = setTimeout(() => controller.abort(), 55000)
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/gemini-proxy`, {
         method: 'POST',
@@ -104,7 +178,7 @@ async function callGemini(system: string, history: unknown[], userMsg: string): 
           modelId: 'gemini-2.5-flash',
           payload: {
             system_instruction: { parts: [{ text: system }] },
-            contents: [...history, { role: 'user', parts: [{ text: userMsg }] }],
+            contents: [...history, { role: 'user', parts: userParts }],
             generationConfig: { maxOutputTokens: 2500, temperature: 0.4 },
             tools: [{ google_search: {} }],
           },
@@ -451,6 +525,18 @@ REGLA DE ESTADO:
 DESCARGAS DE FIRMWARE Y SOFTWARE:
 Si mencionás o recomendás una descarga, SIEMPRE incluí el enlace directo o el sitio oficial del fabricante.
 
+📸🎥🎧 CAPACIDAD MULTIMEDIA — REGLA OBLIGATORIA:
+- SÍ podés ver imágenes, SÍ podés analizar videos fotograma a fotograma, SÍ podés escuchar audios.
+- Cuando el cliente envía una imagen, video o audio, DEBÉS analizarlo en detalle.
+- Para IMÁGENES y VIDEOS: describí qué equipos/pantallas/LEDs/cables/errores ves. Identificá marcas y modelos si son visibles.
+- Para AUDIOS: transcribí lo que dice el cliente y respondé en base a eso.
+- NUNCA digas "no puedo ver/analizar/escuchar archivos multimedia". Eso es FALSO, SÍ PODÉS.
+- Tu respuesta ante media SIEMPRE debe incluir:
+  1. Resumen de lo que observás/escuchás del cliente
+  2. Diagnóstico basado en lo visual/auditivo
+  3. Pasos de resolución concretos
+- Si la imagen/video no es clara, pedí al cliente que envíe otra más nítida en vez de decir que no podés.
+
 ${inventario}
 
 PLANTILLAS DISPONIBLES:
@@ -464,7 +550,9 @@ Deno.serve(async (req) => {
     const params = new URLSearchParams(await req.text())
     const from   = params.get('From')?.replace('whatsapp:', '') ?? ''
     const text   = params.get('Body')?.trim() ?? ''
-    if (!from || !text) return new Response('OK', { status: 200 })
+    const mediaList = parseTwilioMedia(params)
+    const hasMedia  = mediaList.length > 0
+    if (!from || (!text && !hasMedia)) return new Response('OK', { status: 200 })
 
     // Fuera de horario: aviso automático y terminar
     if (!isBusinessHours()) {
@@ -522,11 +610,17 @@ Deno.serve(async (req) => {
     }
     const curStage = caso?.cat ?? 'apertura'
 
-    const histConMsg = [...histPrev, { role: 'user', content: text, time: new Date().toISOString() }]
+    // Build display text for history (text + media labels)
+    const mediaDesc = mediaList.map(m => {
+      const cat = mediaCategory(m.contentType)
+      return cat === 'image' ? '[Imagen adjunta]' : cat === 'video' ? '[Video adjunto]' : cat === 'audio' ? '[Audio adjunto]' : '[Archivo adjunto]'
+    }).join(' ')
+    const histText = [text, mediaDesc].filter(Boolean).join(' ')
+    const histConMsg = [...histPrev, { role: 'user', content: histText, time: new Date().toISOString() }]
 
     if (!caso) {
       const { error: insertError } = await db.from('sek_cases').insert({
-        id: caseId, title: text.substring(0, 60), cat: 'apertura',
+        id: caseId, title: (text || mediaDesc || 'Consulta WhatsApp').substring(0, 60), cat: 'apertura',
         date: new Date().toLocaleDateString('es-CR'), estado: 'nuevo',
         canal: 'whatsapp', prioridad: 'normal', cliente: { telefono: from },
         tags: ['whatsapp'], notasInternas: [], histcliente: histConMsg, histtecnico: [],
@@ -541,10 +635,16 @@ Deno.serve(async (req) => {
       parts: [{ text: m.content }],
     }))
 
+    // Download media attachments from Twilio
+    const downloaded = await Promise.all(mediaList.map(m => downloadMedia(m)))
+    const userParts = buildUserParts(text, mediaList, downloaded)
+    const mediaLabels = mediaList.map(m => mediaCategory(m.contentType))
+    if (hasMedia) console.log('[whatsapp-webhook] Media received:', mediaLabels.join(', '))
+
     const rawReply = await callGemini(
       buildPrompt(saludado, cliente, knowledge, inventario, histPrev, curStage),
       geminiHist,
-      text
+      userParts
     )
     if (!rawReply) {
       console.error('[whatsapp-webhook] callGemini returned empty reply')

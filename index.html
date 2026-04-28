@@ -6,11 +6,61 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Sekunet — Agente IA</title>
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    }
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-Cn9h7-7o.js"></script>
-  <script defer src="./assets/_patch.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-HdOH5vRR.css">
+  <script type="module" crossorigin src="./assets/index-Cn9h7-7o.js?v=20260428-25"></script>
+  <script defer src="./assets/_patch.js?v=20260428-25"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-HdOH5vRR.css?v=20260428-25">
+  <style>
+    .attach-dropdown {
+      position: relative;
+    }
+    .attach-dropdown-menu {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      min-width: 140px;
+      z-index: 100;
+    }
+    .attach-dropdown-menu.show {
+      display: block;
+    }
+    .attach-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      transition: background 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .attach-dropdown-item:hover {
+      background: var(--navy);
+      color: #fff;
+    }
+    .attach-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
 </head>
 <body>
 
@@ -198,11 +248,6 @@
           <div class="empty-glow tec">🔧</div>
           <div class="empty-title">Chat Técnico</div>
           <div class="empty-sub">Consultas técnicas especializadas. Usa manuales indexados, RAG y búsqueda avanzada.</div>
-          <div class="quick-btns">
-            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>Diagnóstico DSC</strong><span>Panel DSC Power 832 — zona 3 activa constantemente sin sensor disparado</span></button>
-            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>Configuración</strong><span>¿Cómo programo una zona 24h en panel Paradox SP5500?</span></button>
-            <button class="quick-btn" onclick="document.getElementById('input-tecnico').value=this.querySelector('span').textContent;sendMessage('tecnico')"><strong>CCTV</strong><span>Cámara Hikvision DS-2CD2143G2 sin imagen, conexión PoE OK</span></button>
-          </div>
         </div>
       </div>
       <div class="input">
@@ -213,15 +258,32 @@
             <input type="file" id="img-input-tec" accept="image/*" style="display:none" onchange="handleImg(event,'tec')">
             <input type="file" id="doc-attach-tec" accept=".pdf,.doc,.docx,.txt,.xml" style="display:none" onchange="handleDocAttach(event,'tec')">
             <input type="file" id="audio-input-tec" accept="audio/*,.opus,.ogg,.webm" style="display:none" onchange="handleAudioAttach(event,'tec')">
-            <button class="ib" onclick="document.getElementById('img-input-tec').click()" title="Imagen">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>
-            <button class="ib" onclick="document.getElementById('doc-attach-tec').click()" title="Documento">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </button>
-            <button class="ib" onclick="document.getElementById('audio-input-tec').click()" title="Audio">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-            </button>
+            <input type="file" id="video-input-tec" accept="video/*,.mp4,.mov,.mkv,.webm,.avi" style="display:none" onchange="handleVideoAttach(event,'tec')">
+            
+            <div class="attach-dropdown">
+              <button class="ib" onclick="toggleAttachDropdown('tec')" title="Adjuntar archivo" aria-label="Adjuntar archivo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <div class="attach-dropdown-menu" id="attach-dropdown-tec">
+                <button class="attach-dropdown-item" onclick="document.getElementById('img-input-tec').click();toggleAttachDropdown('tec')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Imagen
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('doc-attach-tec').click();toggleAttachDropdown('tec')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Documento
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('audio-input-tec').click();toggleAttachDropdown('tec')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                  Audio
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('video-input-tec').click();toggleAttachDropdown('tec')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="13" height="14" rx="2"/><polygon points="21 8 16 11 16 13 21 16 21 8"/></svg>
+                  Video
+                </button>
+              </div>
+            </div>
+            
             <button class="ib" id="mic-btn-tec" onclick="toggleRec('tec')" title="Grabar voz">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
             </button>
@@ -250,11 +312,6 @@
           <div class="empty-glow cli">🎧</div>
           <div class="empty-title">Soporte al Cliente</div>
           <div class="empty-sub">Genera respuestas profesionales y humanas listas para copiar y enviar al cliente.</div>
-          <div class="quick-btns">
-            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Falsa alarma</strong><span>Mi alarma suena sola de noche pero no hay intrusión</span></button>
-            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Garantía</strong><span>Quiero enviar mi detector de humo para revisión de garantía</span></button>
-            <button class="quick-btn" onclick="document.getElementById('input-cliente').value=this.querySelector('span').textContent;sendMessage('cliente')"><strong>Consulta precio</strong><span>¿Cuánto cuesta una cámara de seguridad para exterior?</span></button>
-          </div>
         </div>
       </div>
       <div class="input">
@@ -265,25 +322,43 @@
             <input type="file" id="img-input-cli" accept="image/*" style="display:none" onchange="handleImg(event,'cli')">
             <input type="file" id="doc-attach-cli" accept=".pdf,.doc,.docx,.txt,.xml" style="display:none" onchange="handleDocAttach(event,'cli')">
             <input type="file" id="audio-input-cli" accept="audio/*,.opus,.ogg,.webm" style="display:none" onchange="handleAudioAttach(event,'cli')">
-            <button class="ib" onclick="document.getElementById('img-input-cli').click()" title="Imagen">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>
-            <button class="ib" onclick="document.getElementById('doc-attach-cli').click()" title="Documento">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </button>
-            <button class="ib" onclick="document.getElementById('audio-input-cli').click()" title="Audio">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-            </button>
+            <input type="file" id="video-input-cli" accept="video/*,.mp4,.mov,.mkv,.webm,.avi" style="display:none" onchange="handleVideoAttach(event,'cli')">
+            
+            <div class="attach-dropdown">
+              <button class="ib" onclick="toggleAttachDropdown('cli')" title="Adjuntar archivo" aria-label="Adjuntar archivo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <div class="attach-dropdown-menu" id="attach-dropdown-cli">
+                <button class="attach-dropdown-item" onclick="document.getElementById('img-input-cli').click();toggleAttachDropdown('cli')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Imagen
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('doc-attach-cli').click();toggleAttachDropdown('cli')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Documento
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('audio-input-cli').click();toggleAttachDropdown('cli')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                  Audio
+                </button>
+                <button class="attach-dropdown-item" onclick="document.getElementById('video-input-cli').click();toggleAttachDropdown('cli')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="13" height="14" rx="2"/><polygon points="21 8 16 11 16 13 21 16 21 8"/></svg>
+                  Video
+                </button>
+              </div>
+            </div>
+            
             <button class="ib" id="mic-btn-cli" onclick="toggleRec('cli')" title="Grabar voz">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
             </button>
             <button class="ib" onclick="agregarNotaInterna()" title="Nota interna" style="color:var(--orange)">📝</button>
             <button class="ib" onclick="escalarAN2()" title="Escalar a N2" style="color:var(--err)">🚨</button>
             <button class="ib" onclick="cerrarCasoActual()" title="Cerrar caso" style="color:var(--ok)">✓</button>
-            <button class="send" id="send-cli" onclick="sendMessage('cliente')">
+            <button class="send" id="send-cli" onclick="sendWhatsAppMessage()">
               Enviar
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
+
           </div>
         </div>
         <div class="hint">
@@ -297,7 +372,7 @@
     <aside class="info-panel" id="info-panel">
 
     <!-- Header del panel -->
-    <div class="ip-header">
+    <div class="ip-header" id="ip-header-section">
       <div class="ip-header-title">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Info del cliente
@@ -315,7 +390,7 @@
     </div>
 
     <!-- Datos de contacto -->
-    <div class="ip-section">
+    <div class="ip-section" id="ip-contacto-section">
       <div class="ip-section-title">Contacto</div>
       <div class="ip-field" id="ipf-telefono">
         <span class="ip-field-icon">📞</span>
@@ -367,7 +442,7 @@
     </div>
 
     <!-- Archivos compartidos -->
-    <div class="ip-section">
+    <div class="ip-section" id="ip-files-section">
       <div class="ip-section-title">
         Archivos compartidos
         <span class="ip-count" id="ip-files-count">0</span>
@@ -676,12 +751,26 @@ function togglePerfilMenu() {
   const dd = document.getElementById('perfil-dropdown');
   if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
 }
+
+function toggleAttachDropdown(chat) {
+  const menu = document.getElementById('attach-dropdown-' + chat);
+  if (menu) menu.classList.toggle('show');
+}
+
 document.addEventListener('click', e => {
   const wrap = document.getElementById('perfil-menu-wrap');
   if (wrap && !wrap.contains(e.target)) {
     const dd = document.getElementById('perfil-dropdown');
     if (dd) dd.style.display = 'none';
   }
+  // Close attach dropdowns when clicking outside
+  ['tec', 'cli'].forEach(chat => {
+    const menu = document.getElementById('attach-dropdown-' + chat);
+    const btn = menu?.previousElementSibling;
+    if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
+      menu.classList.remove('show');
+    }
+  });
 });
 
 // ─── LOGIN / REGISTRO ─────────────────────────────────────────────────────
