@@ -3,3 +3,5 @@ FIX/
 *.blockmap
 node_modules/
 .env
+.claude/settings.local.json
+supabase/.temp/
