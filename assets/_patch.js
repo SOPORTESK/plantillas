@@ -838,10 +838,9 @@ window.handleDocFile=async function(e){
       text-align: center;
     }
     .sb-nav button.active {
-      background: var(--sidebar-active) !important;
-      color: #fff !important;
-      box-shadow: inset 3px 0 #93c5fd !important;
-      font-weight: 700;
+      background: var(--sidebar-active);
+      color: #fff;
+      box-shadow: inset 3px 0 #93c5fd;
     }
     .n2-item {
       padding: 10px 12px;
