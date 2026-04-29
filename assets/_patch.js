@@ -837,11 +837,6 @@ window.handleDocFile=async function(e){
       min-width: 16px;
       text-align: center;
     }
-    .sb-nav button.active {
-      background: var(--sidebar-active);
-      color: #fff;
-      box-shadow: inset 3px 0 #93c5fd;
-    }
     .n2-item {
       padding: 10px 12px;
       border: 1px solid var(--border);
